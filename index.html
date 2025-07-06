@@ -16,6 +16,19 @@
       resize: none;
       overflow: hidden;
     }
+    #premium-popup {
+      position: fixed;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+      z-index: 9999;
+      max-width: 300px;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
@@ -27,6 +40,7 @@
         <button id="clear-btn" aria-label="Clear chat history" title="Clear Chat">Clear Chat</button>
       </div>
     </header>
+
     <div id="settings-panel" class="hidden" aria-live="polite" aria-atomic="true">
       <button id="theme-toggle" aria-label="Toggle light or dark mode">☀️ Light Mode</button>
       <br><br>
@@ -35,9 +49,11 @@
       <input type="file" id="upload-image-btn" accept="image/*" />
       <div id="image-preview"></div>
     </div>
+
     <div id="chat-box" role="log" aria-live="polite" aria-relevant="additions" tabindex="0">
       <!-- Messages will appear here -->
     </div>
+
     <form id="input-form" aria-label="Chat input form">
       <textarea
         id="user-input"
@@ -50,6 +66,16 @@
       <button type="submit" id="send-btn" aria-label="Send message">Send</button>
     </form>
   </div>
+
+  <!-- 🔔 Premium Offer Popup -->
+  <div id="premium-popup" class="hidden">
+    <h3>🚀 Unlock Unlimited Replies!</h3>
+    <p>Only <strong>৫০ টাকা</strong> for 1 month premium membership.</p>
+    <a href="https://wa.me/8801963178893" target="_blank" style="display: inline-block; margin-top: 10px; padding: 10px 15px; background: green; color: white; text-decoration: none; border-radius: 8px;">Contact on WhatsApp</a>
+    <br><br>
+    <button onclick="document.getElementById('premium-popup').classList.add('hidden');" style="margin-top: 8px; padding: 6px 12px;">Close</button>
+  </div>
+
   <audio id="reply-sound" src="https://upload.wikimedia.org/wikipedia/commons/3/3b/Ting-sound.mp3" preload="auto"></audio>
   <script src="script.js"></script>
   <script>
@@ -98,6 +124,19 @@
         reader.readAsDataURL(file);
       }
     });
+
+    // 💬 Premium popup after 3 replies
+    let replyCount = 0;
+    function maybeShowPremiumPopup() {
+      replyCount++;
+      if (replyCount === 3 && !sessionStorage.getItem('premiumShown')) {
+        sessionStorage.setItem('premiumShown', 'true');
+        document.getElementById('premium-popup').classList.remove('hidden');
+      }
+    }
+
+    // Export to global if needed
+    window.maybeShowPremiumPopup = maybeShowPremiumPopup;
   </script>
 </body>
-</html>
+        </html>
