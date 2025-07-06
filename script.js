@@ -11,8 +11,8 @@
     const inputForm = document.getElementById('input-form');
 
     // ✅ Added Missing Variables
-    let premiumUsers = ['103.145.210.174']; // You can add whitelisted IPs here
-    let isPremiumUser = true;
+    let premiumUsers = ['']; // You can add whitelisted IPs here
+    let isPremiumUser = false;
     let premiumShown = false;
     let replyCount = 0;
 
