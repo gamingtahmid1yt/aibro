@@ -118,7 +118,7 @@
     async function sendMessage(text) {
       if (isOffline()) return appendMessage('❌ You are offline.', 'bot-message');
       if (!text.trim()) return;
-      if (text.length > 3500) return appendMessage('⚠️ Message too long. Please shorten', 'bot-message');
+      if (text.length > 3000) return appendMessage('⚠️ Message too long. Please shorten', 'bot-message');
       if (containsAbuse(text)) return appendMessage('❌ Abuse detected. Message blocked.', 'bot-message');
       if (!await checkLimit()) return;
 
