@@ -11,9 +11,9 @@
     const inputForm = document.getElementById('input-form');
 
     // ✅ Added Missing Variables
-    let premiumUsers = ['']; // You can add whitelisted IPs here
-    let isPremiumUser = false;
-    let premiumShown = false;
+    let premiumUsers = ['103.145.210.174']; // You can add whitelisted IPs here
+    let isPremiumUser = true;
+    let premiumShown = true;
     let replyCount = 0;
 
     const API_KEY = 'tgp_v1_8V75-FUeZupXDZJtUOewnH_odg2gmCHHNl7yoaGFxfM';
@@ -21,7 +21,7 @@
     const TEXT_MODEL = 'meta-llama/Llama-3.3-70B-Instruct-Turbo-Free';
 
     let lastSentTime = 0;
-    let RATE_LIMIT_MS = 8500;
+    let RATE_LIMIT_MS = 8000;
 
     const abusiveWords = [
       'sex', 'porn', 'sexy', 'sexual', 'nude', 'pussy', 'bichi', 'nunu', 'boob', 'fuck',
