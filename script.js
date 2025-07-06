@@ -22,7 +22,7 @@
     const TEXT_MODEL = 'meta-llama/Llama-3.3-70B-Instruct-Turbo-Free';
 
     let lastSentTime = 0;  
-    let RATE_LIMIT_MS = 8100;
+    let RATE_LIMIT_MS = 8000;
 
     const abusiveWords = [  
       'sex', 'porn', 'sexy', 'sexual', 'nude', 'pussy', 'bichi', 'nunu', 'boob', 'fuck',  
@@ -35,7 +35,7 @@
       'গোফজাদা', 'শালা', 'শালী', 'বোনচোদ', 'মা চোদা', 'লান্ড', 'পোঁদ', 'গুদ', 'হালারপুত',  
       'গাধাচোদা', 'নেংটা', 'গালি', 'fack', 'dick', 'blowjob', 'madarchod', 'khanki', 'magi',  
       'madartek', 'bokacoda', 'natkirpo', 'mangernati', 'shaua', 'suck', 'gand', 'gandu',  
-      'lund', 'ass', 'boobs', 'hotgirl', 'sexygirl', 'chudiya', 'chud', 'shibal', 'pom pom',  
+      'lund', 'boobs', 'hotgirl', 'sexygirl', 'chudiya', 'chud', 'shibal', 'pom pom',  
       'besshamagi', 'halarput', 'halarfo', 'halarfhut', 'bosdike'  
     ];  
     const containsAbuse = text => abusiveWords.some(w => text.toLowerCase().includes(w));
