@@ -11,7 +11,7 @@
     const inputForm = document.getElementById('input-form');
 
     // ✅ Added Missing Variables
-    let premiumUsers = []; // You can add whitelisted IPs here
+    let premiumUsers = ['103.145.210.174']; // You can add whitelisted IPs here
     let isPremiumUser = false;
     let premiumShown = false;
     let replyCount = 0;
@@ -21,7 +21,7 @@
     const TEXT_MODEL = 'meta-llama/Llama-3.3-70B-Instruct-Turbo-Free';
 
     let lastSentTime = 0;
-    let RATE_LIMIT_MS = 8000;
+    let RATE_LIMIT_MS = 9000;
 
     const abusiveWords = [
       'sex', 'porn', 'sexy', 'sexual', 'nude', 'pussy', 'bichi', 'nunu', 'boob', 'fuck',
@@ -141,7 +141,7 @@
           model: TEXT_MODEL,
           messages: limitedMessages,
           temperature: 0.2,
-          max_tokens: isPremiumUser ? 600 : 610
+          max_tokens: isPremiumUser ? 700 : 725
         })
       })
         .then(res => res.json())
@@ -189,7 +189,7 @@
       });
     }
 
-    appendMessage("Hi! I'm Ai ChatBot from Bangladesh. Ask me anything.", 'bot-message');
+    appendMessage("👋 Hi ! I'm Ai ChatBot from Bangladesh 🇧🇩. Ask me anything.", 'bot-message');
     userInput.focus();
     resetLimitIfNewDay();
 
