@@ -167,7 +167,7 @@
           typingDiv.remove();
           userInput.disabled = false;
           sendBtn.disabled = false;
-          const reply = data.choices?.[0]?.message?.content || '❌ No reply. Please try again.';
+          const reply = data.choices?.[0]?.message?.content || '⚠️ Ai is busy or connecion problem. Please try again.';
           messages.push({ role: 'assistant', content: reply });
           appendMessage(reply, 'bot-message');
         })
