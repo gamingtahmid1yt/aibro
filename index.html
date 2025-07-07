@@ -30,6 +30,38 @@
       box-sizing: border-box;
     }
 
+    #top-box {
+      background: #1a1a1a;
+      padding: 15px;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    body.light-mode #top-box {
+      background: #e6e6e6;
+      color: #000;
+    }
+
+    #clear-btn {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      padding: 8px 12px;
+      font-size: 14px;
+      background: red;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      z-index: 999;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
     #chat-box {
       flex: 1;
       background: #111;
@@ -85,7 +117,7 @@
       border-radius: 6px;
     }
 
-    #send-btn, #clear-btn {
+    #send-btn {
       padding: 12px 15px;
       font-size: 16px;
       border: none;
@@ -151,19 +183,34 @@
       #chat-box {
         font-size: 14px;
       }
+
+      #clear-btn {
+        top: 10px;
+        left: 10px;
+        font-size: 12px;
+        padding: 6px 10px;
+      }
+
+      h1 {
+        font-size: 20px;
+      }
     }
   </style>
 </head>
 <body>
   <button id="theme-switch" title="Toggle Dark/Light">🌙</button>
+  <button id="clear-btn">Clear</button>
 
   <div id="app-container">
+    <div id="top-box">
+      <h1>AI ChatBot 🇧🇩</h1>
+    </div>
+
     <div id="chat-box"></div>
 
     <form id="input-form">
       <input id="user-input" type="text" placeholder="Type a message..." autocomplete="off" />
       <button type="submit" id="send-btn">Send</button>
-      <button type="button" id="clear-btn">Clear</button>
     </form>
 
     <div id="wiki-preview"></div>
@@ -197,6 +244,11 @@
     themeBtn.addEventListener('click', () => {
       const light = document.body.classList.toggle('light-mode');
       themeBtn.textContent = light ? '☀️' : '🌙';
+    });
+
+    // Clear chat
+    document.getElementById('clear-btn').addEventListener('click', () => {
+      document.getElementById('chat-box').innerHTML = '';
     });
   </script>
 </body>
