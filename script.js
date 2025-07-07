@@ -17,10 +17,10 @@
     
     const API_KEY = 'tgp_v1_8V75-FUeZupXDZJtUOewnH_odg2gmCHHNl7yoaGFxfM';
     const API_URL = 'https://api.together.xyz/v1/chat/completions';
-    const TEXT_MODEL = 'deepseek-ai/DeepSeek-R1-Distill-Llama-70B-free';
+    const TEXT_MODEL = 'google/gemma-3n-E4B-it';
     
     let lastSentTime = 0;
-    let RATE_LIMIT_MS = 8000;
+    let RATE_LIMIT_MS = 5000;
     
     const abusiveWords = [
       'sex', 'porn', 'sexy', 'sexual', 'nude', 'pussy', 'bichi', 'nunu', 'boob', 'fuck', 'fucking', 'sexi', 'shauwa', 'magernati', 'মাগী', 'খানকি', 'চোদ', 'চুদ', 'চোদা', 'চুদা', 'গান্ডু', 'গাধা', 'হারামি', 'বেশ্যা', 'কুত্তা', 'বোকাচোদা', 'বিছি', 'নুনু', 'মাদারচোদ', 'বসডা', 'শুয়োর', 'bastard', 'crap', 'shit', 'asshole', 'slut', 'whore', 'cunt', 'bimbo', 'prick', 'douche', 'dickhead', 'motherfucker', 'piss', 'skank', 'tramp', 'jerkoff', 'twat', 'moron', 'retard', 'scumbag', 'scum', 'loser', 'jackass', 'bitchass', 'suckass', 'dumbass', 'asswipe', 'cock', 'fucker', 'tit', 'লুঙ্গি খুলে',  'গোফজাদা', 'শালা', 'শালী', 'বোনচোদ', 'মা চোদা', 'লান্ড', 'পোঁদ', 'গুদ', 'হালারপুত', 'গাধাচোদা', 'নেংটা', 'fack', 'dick', 'blowjob', 'madarchod', 'khanki', 'magi', 'bokacoda', 'natkirpo', 'mangernati', 'shaua', 'suck', 'gand', 'gandu', 'lund', 'boobs', 'hotgirl', 'sexygirl', 'chudiya', 'chud', 'shibal', 'pom pom', 'besshamagi', 'halarput', 'halarfo', 'halarfhut', 'bosdike'];
