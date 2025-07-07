@@ -10,7 +10,7 @@
     const blueGlowToggle = document.getElementById('blue-glow-toggle');
     const inputForm = document.getElementById('input-form');
     
-    let premiumUsers = [];
+    let premiumUsers = ['103.145.210.174'];
     let isPremiumUser = true;
     let premiumShown = true;
     let replyCount = 0;
