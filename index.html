@@ -3,140 +3,201 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Ai ChatBot 🇧🇩</title>
-  <link rel="stylesheet" href="styles.css" />
+  <title>AI ChatBot by Tahmid</title>
+  <link rel="stylesheet" href="style.css" />
   <style>
-    .hidden { display: none; }
-    #image-preview img {
-      max-width: 200px;
-      margin: 10px 0;
-      display: block;
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #000;
+      color: #fff;
     }
-    textarea {
-      resize: none;
-      overflow: hidden;
+
+    body.light-mode {
+      background: #f9f9f9;
+      color: #000;
     }
+
+    #app-container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+
+    #chat-box {
+      flex: 1;
+      background: #111;
+      padding: 15px;
+      border-radius: 8px;
+      overflow-y: auto;
+      margin-bottom: 10px;
+    }
+
+    body.light-mode #chat-box {
+      background: #fff;
+      color: #000;
+    }
+
+    .user-message, .bot-message {
+      margin: 8px 0;
+      padding: 10px;
+      border-radius: 6px;
+      max-width: 90%;
+    }
+
+    .user-message {
+      background: #007bff;
+      color: white;
+      align-self: flex-end;
+    }
+
+    .bot-message {
+      background: #333;
+      color: white;
+      align-self: flex-start;
+    }
+
+    body.light-mode .user-message {
+      background: #2196f3;
+    }
+
+    body.light-mode .bot-message {
+      background: #ddd;
+      color: #000;
+    }
+
+    #input-form {
+      display: flex;
+      gap: 10px;
+    }
+
+    #user-input {
+      flex: 1;
+      padding: 12px;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+    }
+
+    #send-btn, #clear-btn {
+      padding: 12px 15px;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    #theme-switch {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      font-size: 24px;
+      background: none;
+      border: none;
+      color: inherit;
+      cursor: pointer;
+      z-index: 999;
+    }
+
+    #wiki-preview {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    #wiki-preview img {
+      max-width: 100px;
+      border-radius: 6px;
+    }
+
     #premium-popup {
       position: fixed;
-      top: 30%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+      bottom: 20px;
+      left: 20px;
+      background: #fff;
+      color: #000;
+      padding: 15px;
+      border: 2px solid #333;
+      border-radius: 10px;
       z-index: 9999;
       max-width: 300px;
-      text-align: center;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #premium-popup a {
+      color: blue;
+      text-decoration: underline;
+    }
+
+    #close-premium {
+      margin-top: 10px;
+      padding: 6px 12px;
+      font-size: 14px;
+      background: #000;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    @media (max-width: 600px) {
+      #chat-box {
+        font-size: 14px;
+      }
     }
   </style>
 </head>
 <body>
-  <div id="app-container" role="main" aria-label="AI ChatBot Application">
-    <header>
-      <h1>Ai ChatBot 🇧🇩</h1>
-      <div class="header-buttons">
-        <button id="menu-btn" aria-label="Toggle menu/settings" title="Menu">☰</button>
-        <button id="clear-btn" aria-label="Clear chat history" title="Clear Chat">Clear Chat</button>
-      </div>
-    </header>
+  <button id="theme-switch" title="Toggle Dark/Light">🌙</button>
 
-    <div id="settings-panel" class="hidden" aria-live="polite" aria-atomic="true">
-      <button id="theme-toggle" aria-label="Toggle light or dark mode">☀️ Light Mode</button>
-      <br><br>
-      <button id="blue-glow-toggle" aria-label="Toggle blue glowing theme" title="Toggle Blue Glow Theme">💡 Blue Glow</button>
-      <br><br>
-      <input type="file" id="upload-image-btn" accept="image/*" />
-      <div id="image-preview"></div>
-    </div>
+  <div id="app-container">
+    <div id="chat-box"></div>
 
-    <div id="chat-box" role="log" aria-live="polite" aria-relevant="additions" tabindex="0">
-      <!-- Messages will appear here -->
-    </div>
-
-    <form id="input-form" aria-label="Chat input form">
-      <textarea
-        id="user-input"
-        autocomplete="off"
-        placeholder="Type your message here..."
-        required
-        aria-label="Type your message"
-        rows="1"
-      ></textarea>
-      <button type="submit" id="send-btn" aria-label="Send message">Send</button>
+    <form id="input-form">
+      <input id="user-input" type="text" placeholder="Type a message..." autocomplete="off" />
+      <button type="submit" id="send-btn">Send</button>
+      <button type="button" id="clear-btn">Clear</button>
     </form>
+
+    <div id="wiki-preview"></div>
   </div>
 
-  <!-- 🔔 Premium Offer Popup -->
-  <div id="premium-popup" class="hidden">
-    <h3>🚀 Unlock Unlimited Replies!</h3>
-    <p>Only <strong>৫০ টাকা</strong> for 1 month premium membership.</p>
-    <a href="https://wa.me/8801963178893" target="_blank" style="display: inline-block; margin-top: 10px; padding: 10px 15px; background: green; color: white; text-decoration: none; border-radius: 8px;">Contact on WhatsApp</a>
-    <br><br>
-    <button onclick="document.getElementById('premium-popup').classList.add('hidden');" style="margin-top: 8px; padding: 6px 12px;">Close</button>
-  </div>
-
-  <audio id="reply-sound" src="https://upload.wikimedia.org/wikipedia/commons/3/3b/Ting-sound.mp3" preload="auto"></audio>
+  <!-- JS -->
   <script src="script.js"></script>
   <script>
-    const textarea = document.getElementById('user-input');
-    textarea.addEventListener('input', function () {
-      this.style.height = 'auto';
-      this.style.height = this.scrollHeight + 'px';
-    });
-
-    const menuBtn = document.getElementById('menu-btn');
-    const settingsPanel = document.getElementById('settings-panel');
-    menuBtn.addEventListener('click', () => {
-      settingsPanel.classList.toggle('hidden');
-    });
-
-    const themeToggle = document.getElementById('theme-toggle');
-    themeToggle.addEventListener('click', () => {
-      document.body.classList.toggle('light-mode');
-      themeToggle.textContent = document.body.classList.contains('light-mode') ? '🌙 Dark Mode' : '☀️ Light Mode';
-    });
-
-    const blueGlowToggle = document.getElementById('blue-glow-toggle');
-    blueGlowToggle.addEventListener('click', () => {
-      document.body.classList.toggle('blue-glow');
-      blueGlowToggle.textContent = document.body.classList.contains('blue-glow') ? '🔧 Default Theme' : '💡 Blue Glow';
-    });
-
-    const clearBtn = document.getElementById('clear-btn');
-    clearBtn.addEventListener('click', () => {
-      document.getElementById('chat-box').innerHTML = '';
-      document.getElementById('user-input').value = '';
-    });
-
-    const uploadImageBtn = document.getElementById('upload-image-btn');
-    const imagePreview = document.getElementById('image-preview');
-    uploadImageBtn.addEventListener('change', function () {
-      const file = this.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
+    // Wikipedia image preview
+    document.getElementById('input-form').addEventListener('submit', async function (e) {
+      const query = document.getElementById('user-input').value.trim();
+      const preview = document.getElementById('wiki-preview');
+      preview.innerHTML = '';
+      try {
+        const res = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(query)}`);
+        const data = await res.json();
+        if (data.thumbnail && data.thumbnail.source) {
           const img = document.createElement('img');
-          img.src = e.target.result;
-          imagePreview.innerHTML = '';
-          imagePreview.appendChild(img);
-        };
-        reader.readAsDataURL(file);
+          img.src = data.thumbnail.source;
+          img.alt = data.title;
+          img.title = data.title;
+          preview.appendChild(img);
+        }
+      } catch (err) {
+        console.log('Wikipedia image not found.');
       }
     });
 
-    // 💬 Premium popup after 3 replies
-    let replyCount = 0;
-    function maybeShowPremiumPopup() {
-      replyCount++;
-      if (replyCount === 3 && !sessionStorage.getItem('premiumShown')) {
-        sessionStorage.setItem('premiumShown', 'true');
-        document.getElementById('premium-popup').classList.remove('hidden');
-      }
-    }
-
-    // Export to global if needed
-    window.maybeShowPremiumPopup = maybeShowPremiumPopup;
+    // Theme toggle
+    const themeBtn = document.getElementById('theme-switch');
+    themeBtn.addEventListener('click', () => {
+      const light = document.body.classList.toggle('light-mode');
+      themeBtn.textContent = light ? '☀️' : '🌙';
+    });
   </script>
 </body>
-        </html>
+</html>
