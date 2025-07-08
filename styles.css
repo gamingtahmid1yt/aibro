@@ -787,4 +787,48 @@ body.light-mode .bot-message {
   color: white;
 }
 
-/* Login/Register Block
+/* Login/Register Block */
+#login-register-block {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #111;
+  padding: 30px;
+  border-radius: 12px;
+  text-align: center;
+  max-width: 320px;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+  z-index: 100000;
+}
+
+#login-register-block button {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  font-size: 18px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  background: #007bff;
+  color: white;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  #chat-box {
+    font-size: 14px;
+  }
+  #clear-btn {
+    top: 10px;
+    left: 10px;
+    font-size: 12px;
+    padding: 6px 10px;
+  }
+  h1 {
+    font-size: 20px;
+  }
+  #account-panel {
+    width: 240px;
+  }
+}
