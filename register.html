@@ -2,98 +2,111 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Register | AiBro</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Register - AI ChatBot</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: #000;
       color: #fff;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
+      margin: 0;
     }
-    .container {
+    .register-container {
       background: #111;
       padding: 30px;
-      border-radius: 10px;
-      width: 100%;
-      max-width: 400px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(255,255,255,0.1);
+      width: 90%;
+      max-width: 360px;
     }
     h2 {
-      margin-bottom: 20px;
       text-align: center;
+      margin-bottom: 20px;
     }
-    input {
+    input[type="text"], input[type="password"] {
       width: 100%;
       padding: 12px;
       margin: 10px 0;
       border: none;
-      border-radius: 6px;
+      border-radius: 8px;
+      font-size: 16px;
     }
     button {
       width: 100%;
       padding: 12px;
-      background: #28a745;
-      color: white;
+      margin-top: 10px;
+      font-size: 18px;
       border: none;
-      border-radius: 6px;
-      font-size: 16px;
+      border-radius: 8px;
+      background: #007bff;
+      color: white;
       cursor: pointer;
+    }
+    label {
+      display: flex;
+      align-items: center;
+      margin-top: 8px;
+      font-size: 14px;
     }
     .error {
       color: red;
       font-size: 14px;
-      margin-top: -5px;
-    }
-    a {
-      color: #00f;
-      text-decoration: underline;
-      display: block;
       text-align: center;
       margin-top: 10px;
+    }
+    a {
+      display: block;
+      text-align: center;
+      margin-top: 15px;
+      color: #00f;
+      text-decoration: underline;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2>Register Account</h2>
-    <input type="text" id="username" placeholder="Username (max 12 characters)" maxlength="12" />
-    <input type="password" id="password" placeholder="Password (min 4 characters)" />
-    <div class="error" id="error"></div>
+  <div class="register-container">
+    <h2>Create Account</h2>
+    <input type="text" id="username" placeholder="Username" required />
+    <input type="password" id="password" placeholder="Password" required />
+    
+    <label><input type="checkbox" id="premium" /> I am a Premium User</label>
+    
     <button onclick="register()">Register</button>
+    <p class="error" id="error-msg"></p>
     <a href="login.html">Already have an account? Login</a>
   </div>
 
   <script>
     function register() {
       const username = document.getElementById('username').value.trim();
-      const password = document.getElementById('password').value;
-      const error = document.getElementById('error');
+      const password = document.getElementById('password').value.trim();
+      const isPremium = document.getElementById('premium').checked;
+      const errorMsg = document.getElementById('error-msg');
 
-      if (!username || username.length > 12) {
-        error.textContent = "Username must be 1–12 characters.";
-        return;
-      }
-      if (!password || password.length < 4) {
-        error.textContent = "Password must be at least 4 characters.";
+      if (!username || !password) {
+        errorMsg.textContent = 'Please fill all fields';
         return;
       }
 
-      const users = JSON.parse(localStorage.getItem("users") || "[]");
+      let users = JSON.parse(localStorage.getItem('users') || '[]');
 
-      if (users.find(u => u.username === username)) {
-        error.textContent = "Username already exists.";
+      if (users.some(u => u.username === username)) {
+        errorMsg.textContent = 'Username already exists';
         return;
       }
 
-      users.push({ username, password, type: "free" });
-      localStorage.setItem("users", JSON.stringify(users));
-      alert("✅ Registered successfully! Please log in.");
-      window.location.href = "login.html";
+      const newUser = { username, password, isPremium };
+      users.push(newUser);
+      localStorage.setItem('users', JSON.stringify(users));
+
+      errorMsg.textContent = '';
+      alert('Account created successfully! Please login.');
+      window.location.href = 'login.html'; // ✅ Auto redirect to login
     }
   </script>
 </body>
-  </html>
+</html>
