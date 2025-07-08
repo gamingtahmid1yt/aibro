@@ -10,18 +10,15 @@
       background: #111;
       color: white;
       padding: 20px;
+      margin: 0;
     }
-    h1 {
+    h1, h3 {
       text-align: center;
-      margin-bottom: 10px;
-    }
-    h3 {
-      text-align: center;
-      margin-bottom: 30px;
+      margin-bottom: 20px;
     }
     button {
       padding: 8px 12px;
-      margin: 4px;
+      margin: 6px;
       font-size: 14px;
       border: none;
       border-radius: 6px;
@@ -64,9 +61,58 @@
       background: #3498db;
       color: white;
     }
+    #password-screen {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+    #password-screen div {
+      background: #111;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #444;
+      text-align: center;
+      width: 90%;
+      max-width: 300px;
+    }
+    #password-screen input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 15px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: none;
+    }
+    #password-screen button {
+      margin-top: 15px;
+      width: 100%;
+      background: #007bff;
+      color: white;
+      font-size: 16px;
+    }
+    #admin-content {
+      display: none;
+    }
   </style>
 </head>
 <body>
+
+<div id="password-screen">
+  <div>
+    <h2>🔒 Admin Access</h2>
+    <p>Enter admin password to continue</p>
+    <input type="password" id="admin-pass" placeholder="Enter password" />
+    <button onclick="checkPassword()">Unlock</button>
+    <p id="pass-error" style="color:red; margin-top:10px;"></p>
+  </div>
+</div>
+
+<div id="admin-content">
   <h1>👑 Admin Panel</h1>
   <h3>🌐 Server Status: <span id="server-status-text">Checking...</span></h3>
   <button id="toggle-server-btn">Toggle Server</button>
@@ -82,27 +128,48 @@
     </thead>
     <tbody id="user-table"></tbody>
   </table>
+</div>
 
-  <script>
-    const serverStatusText = document.getElementById('server-status-text');
-    const toggleServerBtn = document.getElementById('toggle-server-btn');
+<script>
+  const PASS = "siyam944";
+
+  function checkPassword() {
+    const input = document.getElementById("admin-pass").value;
+    const error = document.getElementById("pass-error");
+    if (input === PASS) {
+      sessionStorage.setItem("admin_access", "true");
+      document.getElementById("password-screen").style.display = "none";
+      document.getElementById("admin-content").style.display = "block";
+      loadAdminPanel();
+    } else {
+      error.textContent = "❌ Incorrect password!";
+    }
+  }
+
+  if (sessionStorage.getItem("admin_access") === "true") {
+    document.getElementById("password-screen").style.display = "none";
+    document.getElementById("admin-content").style.display = "block";
+    loadAdminPanel();
+  }
+
+  function loadAdminPanel() {
     const userTable = document.getElementById('user-table');
+    const toggleBtn = document.getElementById('toggle-server-btn');
+    const statusText = document.getElementById('server-status-text');
 
-    // === Server status toggle ===
     function updateServerUI() {
       const isOn = localStorage.getItem('server_status') !== 'off';
-      serverStatusText.innerText = isOn ? '🟢 Online' : '🔴 Offline';
-      toggleServerBtn.textContent = isOn ? '🔴 Turn OFF Server' : '🟢 Turn ON Server';
+      statusText.innerText = isOn ? '🟢 Online' : '🔴 Offline';
+      toggleBtn.textContent = isOn ? '🔴 Turn OFF Server' : '🟢 Turn ON Server';
     }
 
-    toggleServerBtn.onclick = () => {
+    toggleBtn.onclick = () => {
       const current = localStorage.getItem('server_status');
-      const next = current === 'off' ? 'on' : 'off';
-      localStorage.setItem('server_status', next);
+      const nextStatus = current === 'off' ? 'on' : 'off';
+      localStorage.setItem('server_status', nextStatus);
       updateServerUI();
     };
 
-    // === Load users into table ===
     function loadUsers() {
       const users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
       userTable.innerHTML = '';
@@ -111,82 +178,49 @@
         const status = user.type === 'premium' ? '🌟 Premium' : 'Free';
         const blocked = user.blocked ? '🚫 Yes' : '✅ No';
 
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${user.username}</td>
-          <td>${status}</td>
-          <td>${blocked}</td>
-          <td>
-            <button class="${user.blocked ? 'unblock-btn' : 'block-btn'}" onclick="toggleBlock(${index})">
-              ${user.blocked ? 'Unblock' : 'Block'}
-            </button>
-            <button class="premium-btn" onclick="makePremium(${index})">Premium</button>
-            <button class="free-btn" onclick="makeFree(${index})">Free</button>
-          </td>
+        const row = `
+          <tr>
+            <td>${user.username}</td>
+            <td>${status}</td>
+            <td>${blocked}</td>
+            <td>
+              <button class="${user.blocked ? 'unblock-btn' : 'block-btn'}" onclick="toggleBlock(${index})">
+                ${user.blocked ? 'Unblock' : 'Block'}
+              </button>
+              <button class="premium-btn" onclick="makePremium(${index})">Give Premium</button>
+              <button class="free-btn" onclick="makeFree(${index})">Give Free</button>
+            </td>
+          </tr>
         `;
-        userTable.appendChild(tr);
+        userTable.insertAdjacentHTML('beforeend', row);
       });
     }
 
-    // === Update user data ===
-    function saveUsers(users) {
-      localStorage.setItem('registeredUsers', JSON.stringify(users));
-    }
-
-    function toggleBlock(index) {
+    window.toggleBlock = function(index) {
       const users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
       users[index].blocked = !users[index].blocked;
-
-      const current = localStorage.getItem('loggedInUser');
-      if (current) {
-        let currentUser = JSON.parse(current);
-        if (currentUser.username === users[index].username) {
-          currentUser.isBlocked = users[index].blocked;
-          localStorage.setItem('loggedInUser', JSON.stringify(currentUser));
-        }
-      }
-
-      saveUsers(users);
+      localStorage.setItem('registeredUsers', JSON.stringify(users));
       loadUsers();
     }
 
-    function makePremium(index) {
+    window.makePremium = function(index) {
       const users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
       users[index].type = 'premium';
-
-      const current = localStorage.getItem('loggedInUser');
-      if (current) {
-        let currentUser = JSON.parse(current);
-        if (currentUser.username === users[index].username) {
-          currentUser.isPremium = true;
-          localStorage.setItem('loggedInUser', JSON.stringify(currentUser));
-        }
-      }
-
-      saveUsers(users);
+      localStorage.setItem('registeredUsers', JSON.stringify(users));
       loadUsers();
     }
 
-    function makeFree(index) {
+    window.makeFree = function(index) {
       const users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
       users[index].type = 'free';
-
-      const current = localStorage.getItem('loggedInUser');
-      if (current) {
-        let currentUser = JSON.parse(current);
-        if (currentUser.username === users[index].username) {
-          currentUser.isPremium = false;
-          localStorage.setItem('loggedInUser', JSON.stringify(currentUser));
-        }
-      }
-
-      saveUsers(users);
+      localStorage.setItem('registeredUsers', JSON.stringify(users));
       loadUsers();
     }
 
-    // === Init ===
     updateServerUI();
     loadUsers();
-  </script>
+  }
+</script>
+
 </body>
 </html>
