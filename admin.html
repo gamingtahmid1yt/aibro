@@ -13,10 +13,11 @@
     }
     h1 {
       text-align: center;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
     }
     h3 {
       text-align: center;
+      margin-bottom: 20px;
     }
     button {
       padding: 8px 12px;
@@ -87,7 +88,7 @@
     const toggleBtn = document.getElementById('toggle-server-btn');
     const statusText = document.getElementById('server-status-text');
 
-    // ==== Server Status Functions ====
+    // ====== Server Status ======
     function updateServerUI() {
       const isOn = localStorage.getItem('server_status') !== 'off';
       statusText.innerText = isOn ? '🟢 Online' : '🔴 Offline';
@@ -96,22 +97,22 @@
 
     toggleBtn.onclick = () => {
       const current = localStorage.getItem('server_status');
-      const nextStatus = current === 'off' ? 'on' : 'off';
-      localStorage.setItem('server_status', nextStatus);
+      const next = current === 'off' ? 'on' : 'off';
+      localStorage.setItem('server_status', next);
       updateServerUI();
     };
 
-    // ==== User Management ====
+    // ====== Load Users ======
     function loadUsers() {
       const users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
       userTable.innerHTML = '';
 
       users.forEach((user, index) => {
-        const tr = document.createElement('tr');
         const status = user.type === 'premium' ? '🌟 Premium' : 'Free';
         const blocked = user.blocked ? '🚫 Yes' : '✅ No';
 
-        tr.innerHTML = `
+        const row = document.createElement('tr');
+        row.innerHTML = `
           <td>${user.username}</td>
           <td>${status}</td>
           <td>${blocked}</td>
@@ -123,7 +124,7 @@
             <button class="free-btn" onclick="makeFree(${index})">Give Free</button>
           </td>
         `;
-        userTable.appendChild(tr);
+        userTable.appendChild(row);
       });
     }
 
@@ -182,9 +183,17 @@
       loadUsers();
     }
 
-    // === Init ===
+    // ====== INIT ======
     updateServerUI();
     loadUsers();
+
+    // Optional: Live reload when tab becomes active
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden) {
+        updateServerUI();
+        loadUsers();
+      }
+    });
   </script>
 </body>
 </html>
