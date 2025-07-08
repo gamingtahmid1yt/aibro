@@ -1,238 +1,385 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>AI ChatBot by Tahmid</title>
-  <style>
-    html, body {
-      margin: 0; padding: 0; height: 100%;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #000; color: #fff;
-      overflow-x: hidden;
-    }
-    body.light-mode {
-      background: #f9f9f9; color: #000;
-    }
-    #app-container {
-      display: flex; flex-direction: column; height: 100%;
-      max-width: 1000px; margin: 0 auto; padding: 10px; box-sizing: border-box;
-    }
-    #top-box {
-      background: #1a1a1a; padding: 15px; margin-bottom: 10px; border-radius: 10px;
-      text-align: center;
-      position: relative;
-      z-index: 20;
-    }
-    body.light-mode #top-box {
-      background: #e6e6e6; color: #000;
-    }
-    #clear-btn {
-      position: absolute; top: 15px; left: 15px;
-      padding: 8px 12px; font-size: 14px;
-      background: red; color: white;
-      border: none; border-radius: 6px; cursor: pointer;
-      z-index: 999;
-    }
-    #menu-btn {
-      position: absolute; top: 15px; right: 15px;
-      padding: 8px 12px; font-size: 14px;
-      background: #007bff; color: white;
-      border: none; border-radius: 6px; cursor: pointer;
-      z-index: 999;
-    }
-    h1 {
-      margin: 0; font-size: 24px;
-    }
-    #chat-box {
-      flex: 1; background: #111; padding: 15px;
-      border-radius: 8px; overflow-y: auto; margin-bottom: 10px;
-      display: flex; flex-direction: column;
-    }
-    body.light-mode #chat-box {
-      background: #fff; color: #000;
-    }
-    .user-message, .bot-message {
-      margin: 8px 0; padding: 10px; border-radius: 6px; max-width: 90%;
-      word-wrap: break-word;
-    }
-    .user-message {
-      background: #007bff; color: white; align-self: flex-end;
-    }
-    .bot-message {
-      background: #333; color: white; align-self: flex-start;
-    }
-    body.light-mode .user-message {
-      background: #2196f3;
-    }
-    body.light-mode .bot-message {
-      background: #ddd; color: #000;
-    }
-    #input-form {
-      display: flex; gap: 10px;
-    }
-    #user-input {
-      flex: 1; padding: 12px; font-size: 16px;
-      border: none; border-radius: 6px;
-    }
-    #send-btn {
-      padding: 12px 15px; font-size: 16px;
-      border: none; border-radius: 6px; cursor: pointer;
-      background: #007bff; color: white;
-    }
-    #theme-switch {
-      position: fixed; top: 10px; right: 10px; font-size: 24px;
-      background: none; border: none; color: inherit; cursor: pointer;
-      z-index: 999;
-    }
-    #wiki-preview {
-      display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;
-    }
-    #wiki-preview img {
-      max-width: 100px; border-radius: 6px;
-    }
+<!DOCTYPE html>  <html lang="en">  
+<head>  
+  <meta charset="UTF-8" />  
+  <meta name="viewport" content="width=device-width, initial-scale=1" />  
+  <title>AI ChatBot by Tahmid</title>  
+  <style>  
+    html, body {  
+      margin: 0; padding: 0; height: 100%;  
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;  
+      background: #000; color: #fff;  
+      overflow-x: hidden;  
+    }  
+    body.light-mode {  
+      background: #f9f9f9; color: #000;  
+    }  
+    #app-container {  
+      display: flex; flex-direction: column; height: 100%;  
+      max-width: 1000px; margin: 0 auto; padding: 10px; box-sizing: border-box;  
+    }  
+    #top-box {  
+      background: #1a1a1a; padding: 15px; margin-bottom: 10px; border-radius: 10px;  
+      text-align: center;  
+      position: relative;  
+      z-index: 20;  
+    }  
+    body.light-mode #top-box {  
+      background: #e6e6e6; color: #000;  
+    }  
+    #clear-btn {  
+      position: absolute; top: 15px; left: 15px;  
+      padding: 8px 12px; font-size: 14px;  
+      background: red; color: white;  
+      border: none; border-radius: 6px; cursor: pointer;  
+      z-index: 999;  
+    }  
+    #menu-btn {  
+      position: absolute; top: 15px; right: 15px;  
+      padding: 8px 12px; font-size: 14px;  
+      background: #007bff; color: white;  
+      border: none; border-radius: 6px; cursor: pointer;  
+      z-index: 999;  
+    }  
+    h1 {  
+      margin: 0; font-size: 24px;  
+    }  
+    #chat-box {  
+      flex: 1; background: #111; padding: 15px;  
+      border-radius: 8px; overflow-y: auto; margin-bottom: 10px;  
+      display: flex; flex-direction: column;  
+    }  
+    body.light-mode #chat-box {  
+      background: #fff; color: #000;  
+    }  
+    .user-message, .bot-message {  
+      margin: 8px 0; padding: 10px; border-radius: 6px; max-width: 90%;  
+      word-wrap: break-word;  
+    }  
+    .user-message {  
+      background: #007bff; color: white; align-self: flex-end;  
+    }  
+    .bot-message {  
+      background: #333; color: white; align-self: flex-start;  
+    }  
+    body.light-mode .user-message {  
+      background: #2196f3;  
+    }  
+    body.light-mode .bot-message {  
+      background: #ddd; color: #000;  
+    }  
+    #input-form {  
+      display: flex; gap: 10px;  
+    }  
+    #user-input {  
+      flex: 1; padding: 12px; font-size: 16px;  
+      border: none; border-radius: 6px;  
+    }  
+    #send-btn {  
+      padding: 12px 15px; font-size: 16px;  
+      border: none; border-radius: 6px; cursor: pointer;  
+      background: #007bff; color: white;  
+    }  
+    #theme-switch {  
+      position: fixed; top: 10px; right: 10px; font-size: 24px;  
+      background: none; border: none; color: inherit; cursor: pointer;  
+      z-index: 999;  
+    }  
+    #wiki-preview {  
+      display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;  
+    }  
+    #wiki-preview img {  
+      max-width: 100px; border-radius: 6px;  
+    }  /* Account Panel Styles */  
+#account-panel {  
+  position: fixed;  
+  top: 0; left: -280px;  
+  width: 280px; height: 100%;  
+  background: #222;  
+  box-shadow: 3px 0 8px rgba(0,0,0,0.5);  
+  color: white;  
+  padding: 20px;  
+  box-sizing: border-box;  
+  transition: left 0.3s ease;  
+  z-index: 10000;  
+  display: flex;  
+  flex-direction: column;  
+  justify-content: space-between;  
+}  
+#account-panel.show {  
+  left: 0;  
+}  
+#account-panel h2 {  
+  margin-top: 0;  
+  margin-bottom: 10px;  
+  font-weight: 700;  
+  font-size: 22px;  
+  border-bottom: 1px solid #555;  
+  padding-bottom: 10px;  
+}  
+#user-info {  
+  margin-bottom: 20px;  
+}  
+#user-info p {  
+  margin: 6px 0;  
+  font-size: 16px;  
+}  
+.tag {  
+  display: inline-block;  
+  padding: 3px 8px;  
+  border-radius: 12px;  
+  font-weight: bold;  
+  font-size: 14px;  
+  margin-left: 8px;  
+}  
+.tag.free {  
+  background: #555;  
+  color: #eee;  
+}  
+.tag.premium {  
+  background: gold;  
+  color: #000;  
+}  
+#account-buttons button {  
+  width: 100%;  
+  padding: 12px;  
+  font-size: 16px;  
+  margin: 6px 0;  
+  border: none;  
+  border-radius: 8px;  
+  cursor: pointer;  
+}  
+#logout-btn {  
+  background: #d9534f;  
+  color: white;  
+}  
+#admin-panel-btn {  
+  background: #5bc0de;  
+  color: white;  
+}  
+#login-register-block {  
+  position: fixed;  
+  top: 50%; left: 50%;  
+  transform: translate(-50%, -50%);  
+  background: #111;  
+  padding: 30px;  
+  border-radius: 12px;  
+  text-align: center;  
+  max-width: 320px;  
+  box-shadow: 0 0 20px rgba(255,255,255,0.2);  
+  z-index: 100000;  
+}  
+#login-register-block button {  
+  width: 100%;  
+  padding: 12px;  
+  margin: 10px 0;  
+  font-size: 18px;  
+  border: none;  
+  border-radius: 8px;  
+  cursor: pointer;  
+  background: #007bff;  
+  color: white;  
+}  
 
-    #account-panel {
-      position: fixed;
-      top: 0; left: -280px;
-      width: 280px; height: 100%;
-      background: #222;
-      box-shadow: 3px 0 8px rgba(0,0,0,0.5);
-      color: white;
-      padding: 20px;
-      box-sizing: border-box;
-      transition: left 0.3s ease;
-      z-index: 10000;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-    #account-panel.show {
-      left: 0;
-    }
-    #account-panel h2 {
-      margin-top: 0;
-      margin-bottom: 10px;
-      font-weight: 700;
-      font-size: 22px;
-      border-bottom: 1px solid #555;
-      padding-bottom: 10px;
-    }
-    #user-info {
-      margin-bottom: 20px;
-    }
-    #user-info p {
-      margin: 6px 0;
-      font-size: 16px;
-    }
-    .tag {
-      display: inline-block;
-      padding: 3px 8px;
-      border-radius: 12px;
-      font-weight: bold;
-      font-size: 14px;
-      margin-left: 8px;
-    }
-    .tag.free {
-      background: #555;
-      color: #eee;
-    }
-    .tag.premium {
-      background: gold;
-      color: #000;
-    }
-    #account-buttons button {
-      width: 100%;
-      padding: 12px;
-      font-size: 16px;
-      margin: 6px 0;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    #logout-btn {
-      background: #d9534f;
-      color: white;
-    }
-    #admin-panel-btn {
-      background: #5bc0de;
-      color: white;
-    }
-    #login-register-block {
-      position: fixed;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      background: #111;
-      padding: 30px;
-      border-radius: 12px;
-      text-align: center;
-      max-width: 320px;
-      box-shadow: 0 0 20px rgba(255,255,255,0.2);
-      z-index: 100000;
-    }
-    #login-register-block button {
-      width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      font-size: 18px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      background: #007bff;
-      color: white;
-    }
+/* Responsive */  
+@media (max-width: 600px) {  
+  #chat-box { font-size: 14px; }  
+  #clear-btn {  
+    top: 10px; left: 10px; font-size: 12px; padding: 6px 10px;  
+  }  
+  h1 { font-size: 20px; }  
+  #account-panel {  
+    width: 240px;  
+  }  
+}
 
-    @media (max-width: 600px) {
-      #chat-box { font-size: 14px; }
-      #clear-btn {
-        top: 10px; left: 10px; font-size: 12px; padding: 6px 10px;
-      }
-      h1 { font-size: 20px; }
-      #account-panel {
-        width: 240px;
-      }
-    }
-  </style>
-</head>
-<body>
-  <button id="theme-switch" title="Toggle Dark/Light">🌙</button>
-  <button id="clear-btn">Clear</button>
-  <button id="menu-btn" title="Account Panel">☰</button>
+  </style>  
+</head>  
+<body>  
+  <button id="theme-switch" title="Toggle Dark/Light">🌙</button>  
+  <button id="clear-btn">Clear</button>  
+  <button id="menu-btn" title="Account Panel">☰</button>    <div id="account-panel">  
+    <h2>Account</h2>  
+    <div id="user-info">  
+      <p><strong>Username:</strong> <span id="account-username"></span></p>  
+      <p><strong>Status:</strong> <span id="account-status" class="tag"></span></p>  
+    </div>  
+    <div id="account-buttons">  
+      <button id="admin-panel-btn" style="display:none;">Admin Panel</button>  
+      <button id="logout-btn">Logout</button>  
+    </div>  
+  </div>    <div id="app-container" style="display:none;">  
+    <div id="top-box">  
+      <h1>AI ChatBot 🇧🇩</h1>  
+    </div>  <div id="chat-box"></div>  
 
-  <div id="account-panel">
-    <h2>Account</h2>
-    <div id="user-info">
-      <p><strong>Username:</strong> <span id="account-username"></span></p>
-      <p><strong>Status:</strong> <span id="account-status" class="tag"></span></p>
-    </div>
-    <div id="account-buttons">
-      <button id="admin-panel-btn" style="display:none;">Admin Panel</button>
-      <button id="logout-btn">Logout</button>
-    </div>
-  </div>
+<form id="input-form">  
+  <input id="user-input" type="text" placeholder="Type a message..." autocomplete="off" />  
+  <button type="submit" id="send-btn">Send</button>  
+</form>  
 
-  <div id="app-container" style="display:none;">
-    <div id="top-box">
-      <h1>AI ChatBot 🇧🇩</h1>
-    </div>
+<div id="wiki-preview"></div>
 
-    <div id="chat-box"></div>
-
-    <form id="input-form">
-      <input id="user-input" type="text" placeholder="Type a message..." autocomplete="off" />
-      <button type="submit" id="send-btn">Send</button>
-    </form>
-
-    <div id="wiki-preview"></div>
-  </div>
-
-  <div id="login-register-block" style="display:none;">
-    <h2>Please Login or Register</h2>
-    <button id="login-btn">Login</button>
-    <button id="register-btn">Register</button>
-  </div>
-
-  <!-- 💡 ChatBot Logic Script -->
-  <script src="script.js"></script>
-</body>
-</html>
+  </div>    <div id="login-register-block" style="display:none;">  
+    <h2>Please Login or Register</h2>  
+    <button id="login-btn">Login</button>  
+    <button id="register-btn">Register</button>  
+  </div>    <script>  
+    (function(){  
+      // Elements  
+      const themeBtn = document.getElementById('theme-switch');  
+      const clearBtn = document.getElementById('clear-btn');  
+      const menuBtn = document.getElementById('menu-btn');  
+      const accountPanel = document.getElementById('account-panel');  
+      const logoutBtn = document.getElementById('logout-btn');  
+      const adminPanelBtn = document.getElementById('admin-panel-btn');  
+      const loginRegisterBlock = document.getElementById('login-register-block');  
+      const appContainer = document.getElementById('app-container');  
+      const accountUsername = document.getElementById('account-username');  
+      const accountStatus = document.getElementById('account-status');  
+      const loginBtn = document.getElementById('login-btn');  
+      const registerBtn = document.getElementById('register-btn');  
+  
+      // User session  
+      let currentUser = null;  
+  
+      // Check if logged in  
+      function getLoggedInUser() {  
+        const userStr = localStorage.getItem('loggedInUser');  
+        if (!userStr) return null;  
+        try {  
+          return JSON.parse(userStr);  
+        } catch {  
+          return null;  
+        }  
+      }  
+  
+      function showAccountPanel() {  
+        if (!currentUser) return;  
+        accountUsername.textContent = currentUser.username;  
+        if(currentUser.isPremium){  
+          accountStatus.textContent = 'Premium User';  
+          accountStatus.className = 'tag premium';  
+        } else {  
+          accountStatus.textContent = 'Free User';  
+          accountStatus.className = 'tag free';  
+        }  
+        // Show admin panel button only if user is admin  
+        if(currentUser.username.toLowerCase() === 'tahmid') {  
+          adminPanelBtn.style.display = 'block';  
+        } else {  
+          adminPanelBtn.style.display = 'none';  
+        }  
+        accountPanel.classList.add('show');  
+      }  
+  
+      function hideAccountPanel() {  
+        accountPanel.classList.remove('show');  
+      }  
+  
+      function logout() {  
+        localStorage.removeItem('loggedInUser');  
+        location.reload();  
+      }  
+  
+      // Show login/register block  
+      function showLoginRegisterBlock() {  
+        loginRegisterBlock.style.display = 'block';  
+        appContainer.style.display = 'none';  
+      }  
+      function hideLoginRegisterBlock() {  
+        loginRegisterBlock.style.display = 'none';  
+        appContainer.style.display = 'flex';  
+      }  
+  
+      // Event Listeners  
+      menuBtn.addEventListener('click', () => {  
+        if(accountPanel.classList.contains('show')){  
+          hideAccountPanel();  
+        } else {  
+          showAccountPanel();  
+        }  
+      });  
+  
+      logoutBtn.addEventListener('click', () => {  
+        logout();  
+      });  
+  
+      adminPanelBtn.addEventListener('click', () => {  
+        window.location.href = 'admin.html';  
+      });  
+  
+      loginBtn.addEventListener('click', () => {  
+        window.location.href = 'login.html';  
+      });  
+  
+      registerBtn.addEventListener('click', () => {  
+        window.location.href = 'register.html';  
+      });  
+  
+      // Theme toggle  
+      themeBtn.addEventListener('click', () => {  
+        const light = document.body.classList.toggle('light-mode');  
+        themeBtn.textContent = light ? '☀️' : '🌙';  
+      });  
+  
+      // Check login on load  
+      currentUser = getLoggedInUser();  
+      if (!currentUser) {  
+        // Show login/register  
+        showLoginRegisterBlock();  
+      } else {  
+        // Show chatbot  
+        hideLoginRegisterBlock();  
+      }  
+  
+      // --- Your existing chatbot JS code here ---  
+      // Paste your entire chatbot JS here (the big one with Together API, messages, etc)  
+      // For brevity, you can insert your full chatbot script below or link it externally.  
+  
+      // Example placeholder:  
+      const chatBox = document.getElementById('chat-box');  
+      const userInput = document.getElementById('user-input');  
+      const sendBtn = document.getElementById('send-btn');  
+      const inputForm = document.getElementById('input-form');  
+  
+      // Append message helper  
+      function appendMessage(text, className) {  
+        const div = document.createElement('div');  
+        div.className = className;  
+        const span = document.createElement('span');  
+        span.textContent = text;  
+        div.appendChild(span);  
+  
+        if (className === 'bot-message') {  
+          const copyBtn = document.createElement('button');  
+          copyBtn.textContent = '📋 Copy';  
+          copyBtn.style = 'margin-left:10px;font-size:12px;cursor:pointer';  
+          copyBtn.onclick = () => {  
+            navigator.clipboard.writeText(span.textContent).then(() => {  
+              copyBtn.textContent = '✅ Copied';  
+              setTimeout(() => (copyBtn.textContent = '📋 Copy'), 2000);  
+            });  
+          };  
+          div.appendChild(copyBtn);  
+        }  
+  
+        chatBox.appendChild(div);  
+        chatBox.scrollTop = chatBox.scrollHeight;  
+      }  
+  
+      // Here you add the full logic of your chatbot: Together API calls, limit checks, abuse filter, premium logic etc.  
+      // To keep this example short, add your entire chatbot JS code here or import it as an external script.  
+  
+      inputForm.addEventListener('submit', e => {  
+        e.preventDefault();  
+        const text = userInput.value.trim();  
+        if (!text) return;  
+        appendMessage(text, 'user-message');  
+        userInput.value = '';  
+        // TODO: Call API and append bot reply here  
+        appendMessage('🤖 This is a placeholder bot reply.', 'bot-message');  
+      });  
+  
+    })();  
+  </script>  </body>  
+  </html>
