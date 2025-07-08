@@ -1,17 +1,4 @@
 (() => { document.addEventListener('DOMContentLoaded', () => { 
-  const securePassword = '@tahmid944#'; // change to your own password
-
-if (!sessionStorage.getItem('authorized')) {
-  const input = prompt('🔒 Enter Admin Password to continue:');
-  if (input !== securePassword) {
-    alert('❌ Incorrect password. Access denied.');
-    window.location.href = 'https://google.com';
-    throw new Error('Unauthorized access blocked.');
-  } else {
-    sessionStorage.setItem('authorized', 'true');
-  }
-}
-  
   const serverStatus = localStorage.getItem('server_status');
   if (serverStatus === 'off') {
     document.body.innerHTML = `
