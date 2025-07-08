@@ -1,4 +1,15 @@
 (() => { document.addEventListener('DOMContentLoaded', () => { 
+  const serverStatus = localStorage.getItem('server_status');
+  if (serverStatus === 'off') {
+    document.body.innerHTML = `
+      <div style="text-align:center; padding:40px;">
+        <h1>🔒 Server is currently closed</h1>
+        <p>Please try again later.</p>
+      </div>
+    `;
+    return;
+  }
+  
   const chatBox = document.getElementById('chat-box'); 
   const userInput = document.getElementById('user-input'); 
   const sendBtn = document.getElementById('send-btn'); 
@@ -57,7 +68,7 @@ function showAccountPanel() {
   accountUsername.textContent = currentUser.username;
   accountStatus.textContent = currentUser.isPremium ? 'Premium User' : 'Free User';
   accountStatus.className = currentUser.isPremium ? 'tag premium' : 'tag free';
-  adminBtn.style.display = currentUser.username.toLowerCase() === 'tahmid', 'developer' ? 'block' : 'none';
+  adminBtn.style.display = currentUser.username.toLowerCase() === 'tahmid' ? 'block' : 'none';
   accountPanel.classList.add('show');
 }
 
