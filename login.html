@@ -83,16 +83,26 @@
       }
 
       const users = JSON.parse(localStorage.getItem('users') || '[]');
-      const user = users.find(u => u.username === username && u.password === password);
+      const foundUser = users.find(u => u.username === username && u.password === password);
 
-      if (!user) {
+      if (!foundUser) {
         errorMsg.textContent = 'Invalid username or password';
         return;
       }
 
-      localStorage.setItem('loggedInUser', JSON.stringify(user));
+      // Ensure structure includes isPremium & blocked
+      const loggedUser = {
+        username: foundUser.username,
+        password: foundUser.password,
+        isPremium: foundUser.isPremium || false,
+        blocked: foundUser.blocked || false,
+        type: foundUser.isPremium ? 'premium' : 'free',
+        isAdmin: foundUser.username.toLowerCase() === 'tahmid' // optional flag
+      };
+
+      localStorage.setItem('loggedInUser', JSON.stringify(loggedUser));
       errorMsg.textContent = '';
-      window.location.href = 'index.html'; // ✅ Auto-redirect to chatbot
+      window.location.href = 'index.html';
     }
   </script>
 </body>
