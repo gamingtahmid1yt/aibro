@@ -57,7 +57,7 @@ function showAccountPanel() {
   accountUsername.textContent = currentUser.username;
   accountStatus.textContent = currentUser.isPremium ? 'Premium User' : 'Free User';
   accountStatus.className = currentUser.isPremium ? 'tag premium' : 'tag free';
-  adminBtn.style.display = currentUser.username.toLowerCase() === 'tahmid' ? 'block' : 'none';
+  adminBtn.style.display = currentUser.username.toLowerCase() === 'tahmid', 'developer' ? 'block' : 'none';
   accountPanel.classList.add('show');
 }
 
