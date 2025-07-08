@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -13,213 +12,234 @@
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: #000;
       color: #fff;
-    }
+    }body.light-mode {
+  background: #f9f9f9;
+  color: #000;
+}
 
-    body.light-mode {
-      background: #f9f9f9;
-      color: #000;
-    }
+#app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 10px;
+  box-sizing: border-box;
+}
 
-    #app-container {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 10px;
-      box-sizing: border-box;
-    }
+#top-box {
+  background: #1a1a1a;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  text-align: center;
+}
 
-    #top-box {
-      background: #1a1a1a;
-      padding: 15px;
-      margin-bottom: 10px;
-      border-radius: 10px;
-      text-align: center;
-    }
+body.light-mode #top-box {
+  background: #e6e6e6;
+  color: #000;
+}
 
-    body.light-mode #top-box {
-      background: #e6e6e6;
-      color: #000;
-    }
+#clear-btn {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  padding: 8px 12px;
+  font-size: 14px;
+  background: red;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  z-index: 999;
+}
 
-    #clear-btn {
-      position: absolute;
-      top: 15px;
-      left: 15px;
-      padding: 8px 12px;
-      font-size: 14px;
-      background: red;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      z-index: 999;
-    }
+h1 {
+  margin: 0;
+  font-size: 24px;
+}
 
-    h1 {
-      margin: 0;
-      font-size: 24px;
-    }
+#chat-box {
+  flex: 1;
+  background: #111;
+  padding: 15px;
+  border-radius: 8px;
+  overflow-y: auto;
+  margin-bottom: 10px;
+}
 
-    #chat-box {
-      flex: 1;
-      background: #111;
-      padding: 15px;
-      border-radius: 8px;
-      overflow-y: auto;
-      margin-bottom: 10px;
-    }
+body.light-mode #chat-box {
+  background: #fff;
+  color: #000;
+}
 
-    body.light-mode #chat-box {
-      background: #fff;
-      color: #000;
-    }
+.user-message, .bot-message {
+  margin: 8px 0;
+  padding: 10px;
+  border-radius: 6px;
+  max-width: 90%;
+}
 
-    .user-message, .bot-message {
-      margin: 8px 0;
-      padding: 10px;
-      border-radius: 6px;
-      max-width: 90%;
-    }
+.user-message {
+  background: #007bff;
+  color: white;
+  align-self: flex-end;
+}
 
-    .user-message {
-      background: #007bff;
-      color: white;
-      align-self: flex-end;
-    }
+.bot-message {
+  background: #333;
+  color: white;
+  align-self: flex-start;
+}
 
-    .bot-message {
-      background: #333;
-      color: white;
-      align-self: flex-start;
-    }
+body.light-mode .user-message {
+  background: #2196f3;
+}
 
-    body.light-mode .user-message {
-      background: #2196f3;
-    }
+body.light-mode .bot-message {
+  background: #ddd;
+  color: #000;
+}
 
-    body.light-mode .bot-message {
-      background: #ddd;
-      color: #000;
-    }
+#input-form {
+  display: flex;
+  gap: 10px;
+}
 
-    #input-form {
-      display: flex;
-      gap: 10px;
-    }
+#user-input {
+  flex: 1;
+  padding: 12px;
+  font-size: 16px;
+  border: none;
+  border-radius: 6px;
+}
 
-    #user-input {
-      flex: 1;
-      padding: 12px;
-      font-size: 16px;
-      border: none;
-      border-radius: 6px;
-    }
+#send-btn {
+  padding: 12px 15px;
+  font-size: 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
 
-    #send-btn {
-      padding: 12px 15px;
-      font-size: 16px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
+#theme-switch {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  font-size: 24px;
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  z-index: 999;
+}
 
-    #theme-switch {
-      position: fixed;
-      top: 10px;
-      right: 10px;
-      font-size: 24px;
-      background: none;
-      border: none;
-      color: inherit;
-      cursor: pointer;
-      z-index: 999;
-    }
+#wiki-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
 
-    #wiki-preview {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 10px;
-    }
+#wiki-preview img {
+  max-width: 100px;
+  border-radius: 6px;
+}
 
-    #wiki-preview img {
-      max-width: 100px;
-      border-radius: 6px;
-    }
+#account-panel {
+  position: fixed;
+  top: 0;
+  left: -300px;
+  width: 260px;
+  height: 100%;
+  background: #222;
+  padding: 20px;
+  transition: 0.3s;
+  z-index: 9999;
+}
 
-    #premium-popup {
-      position: fixed;
-      bottom: 20px;
-      left: 20px;
-      background: #fff;
-      color: #000;
-      padding: 15px;
-      border: 2px solid #333;
-      border-radius: 10px;
-      z-index: 9999;
-      max-width: 300px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    }
+#account-panel.open {
+  left: 0;
+}
 
-    #premium-popup a {
-      color: blue;
-      text-decoration: underline;
-    }
+#account-panel h3 {
+  margin-top: 0;
+}
 
-    #close-premium {
-      margin-top: 10px;
-      padding: 6px 12px;
-      font-size: 14px;
-      background: #000;
-      color: #fff;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
+#admin-btn, #logout-btn {
+  margin-top: 20px;
+  display: block;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 5px;
+  background: #444;
+  color: #fff;
+  cursor: pointer;
+  width: 100%;
+}
 
-    @media (max-width: 600px) {
-      #chat-box {
-        font-size: 14px;
-      }
+#premium-popup {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  background: #fff;
+  color: #000;
+  padding: 15px;
+  border: 2px solid #333;
+  border-radius: 10px;
+  z-index: 9999;
+  max-width: 300px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
 
-      #clear-btn {
-        top: 10px;
-        left: 10px;
-        font-size: 12px;
-        padding: 6px 10px;
-      }
+#premium-popup a {
+  color: blue;
+  text-decoration: underline;
+}
 
-      h1 {
-        font-size: 20px;
-      }
-    }
+#close-premium {
+  margin-top: 10px;
+  padding: 6px 12px;
+  font-size: 14px;
+  background: #000;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
   </style>
 </head>
 <body>
   <button id="theme-switch" title="Toggle Dark/Light">🌙</button>
-  <button id="clear-btn">Clear</button>
-
-  <div id="app-container">
+  <button id="clear-btn">Clear</button>  <div id="account-panel">
+    <h3>User: <span id="account-username">Guest</span></h3>
+    <p>Status: <span id="account-status">Free</span></p>
+    <button id="admin-btn">Admin Panel</button>
+    <button id="logout-btn">Logout</button>
+  </div>  <div id="app-container">
     <div id="top-box">
       <h1>AI ChatBot 🇧🇩</h1>
-    </div>
+    </div><div id="chat-box"></div>
 
-    <div id="chat-box"></div>
+<form id="input-form">
+  <input id="user-input" type="text" placeholder="Type a message..." autocomplete="off" />
+  <button type="submit" id="send-btn">Send</button>
+</form>
 
-    <form id="input-form">
-      <input id="user-input" type="text" placeholder="Type a message..." autocomplete="off" />
-      <button type="submit" id="send-btn">Send</button>
-    </form>
+<div id="wiki-preview"></div>
 
-    <div id="wiki-preview"></div>
-  </div>
+  </div>  <!-- JS -->  <script src="script.js"></script>  <script>
+    const themeBtn = document.getElementById('theme-switch');
+    themeBtn.addEventListener('click', () => {
+      const light = document.body.classList.toggle('light-mode');
+      themeBtn.textContent = light ? '☀️' : '🌙';
+    });
 
-  <!-- JS -->
-  <script src="script.js"></script>
-  <script>
-    // Wikipedia image preview
+    document.getElementById('clear-btn').addEventListener('click', () => {
+      document.getElementById('chat-box').innerHTML = '';
+    });
+
     document.getElementById('input-form').addEventListener('submit', async function (e) {
       const query = document.getElementById('user-input').value.trim();
       const preview = document.getElementById('wiki-preview');
@@ -239,17 +259,34 @@
       }
     });
 
-    // Theme toggle
-    const themeBtn = document.getElementById('theme-switch');
-    themeBtn.addEventListener('click', () => {
-      const light = document.body.classList.toggle('light-mode');
-      themeBtn.textContent = light ? '☀️' : '🌙';
+    // Swipe gesture to open account panel
+    let startX = 0;
+    document.body.addEventListener('touchstart', e => {
+      startX = e.touches[0].clientX;
     });
 
-    // Clear chat
-    document.getElementById('clear-btn').addEventListener('click', () => {
-      document.getElementById('chat-box').innerHTML = '';
+    document.body.addEventListener('touchend', e => {
+      let endX = e.changedTouches[0].clientX;
+      if (endX - startX > 80) {
+        document.getElementById('account-panel').classList.add('open');
+      }
     });
-  </script>
-</body>
-</html>
+
+    document.getElementById('logout-btn').addEventListener('click', () => {
+      localStorage.removeItem('username');
+      localStorage.removeItem('password');
+      location.reload();
+    });
+
+    document.getElementById('admin-btn').addEventListener('click', () => {
+      const u = prompt('Admin Username:');
+      const p = prompt('Admin Password:');
+      const s = prompt('Secret Code:');
+      if (u === 'Tahmid' && p === 'siyam944' && s === '1234') {
+        window.open('admin.html', '_blank');
+      } else {
+        alert('Access Denied!');
+      }
+    });
+  </script></body>
+  </html>
