@@ -1,100 +1,99 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Login | AiBro</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login - AI ChatBot</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: #000;
       color: #fff;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
+      margin: 0;
     }
-
-    .container {
+    .login-container {
       background: #111;
       padding: 30px;
-      border-radius: 10px;
-      width: 100%;
-      max-width: 400px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(255,255,255,0.1);
+      width: 90%;
+      max-width: 360px;
     }
-
     h2 {
-      margin-bottom: 20px;
       text-align: center;
+      margin-bottom: 20px;
     }
-
     input {
       width: 100%;
       padding: 12px;
       margin: 10px 0;
       border: none;
-      border-radius: 6px;
+      border-radius: 8px;
+      font-size: 16px;
     }
-
     button {
       width: 100%;
       padding: 12px;
+      margin-top: 10px;
+      font-size: 18px;
+      border: none;
+      border-radius: 8px;
       background: #007bff;
       color: white;
-      border: none;
-      border-radius: 6px;
-      font-size: 16px;
       cursor: pointer;
     }
-
     .error {
       color: red;
       font-size: 14px;
-      margin-top: -5px;
-    }
-
-    a {
-      color: #00f;
-      text-decoration: underline;
-      display: block;
       text-align: center;
       margin-top: 10px;
+    }
+    a {
+      display: block;
+      text-align: center;
+      margin-top: 15px;
+      color: #00f;
+      text-decoration: underline;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2>Login to ChatBot</h2>
-    <input type="text" id="username" placeholder="Username" />
-    <input type="password" id="password" placeholder="Password" />
-    <div class="error" id="error"></div>
+  <div class="login-container">
+    <h2>Login</h2>
+    <input type="text" id="username" placeholder="Username" required />
+    <input type="password" id="password" placeholder="Password" required />
     <button onclick="login()">Login</button>
+    <p class="error" id="error-msg"></p>
     <a href="register.html">Don't have an account? Register</a>
   </div>
 
   <script>
     function login() {
-      const username = document.getElementById("username").value.trim();
-      const password = document.getElementById("password").value;
-      const error = document.getElementById("error");
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const errorMsg = document.getElementById('error-msg');
 
-      const users = JSON.parse(localStorage.getItem("users") || "[]");
-      const matchedUser = users.find(u => u.username === username && u.password === password);
-
-      if (matchedUser) {
-        localStorage.setItem("currentUser", JSON.stringify(matchedUser));
-        location.href = "index.html";
-      } else {
-        error.textContent = "Invalid username or password.";
+      if (!username || !password) {
+        errorMsg.textContent = 'Please fill all fields';
+        return;
       }
-    }
 
-    // Auto-redirect if already logged in
-    window.onload = () => {
-      const currentUser = JSON.parse(localStorage.getItem("currentUser") || "null");
-      if (currentUser) location.href = "index.html";
-    };
+      const users = JSON.parse(localStorage.getItem('users') || '[]');
+      const user = users.find(u => u.username === username && u.password === password);
+
+      if (!user) {
+        errorMsg.textContent = 'Invalid username or password';
+        return;
+      }
+
+      localStorage.setItem('loggedInUser', JSON.stringify(user));
+      errorMsg.textContent = '';
+      window.location.href = 'index.html'; // ✅ Auto-redirect to chatbot
+    }
   </script>
 </body>
-  </html>
+</html>
