@@ -1,8 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Admin Panel</title>
   <style>
     body {
@@ -45,182 +44,136 @@
     tr:nth-child(even) {
       background-color: #1c1c1c;
     }
-    .block-btn {
-      background: #e74c3c;
-      color: white;
-    }
-    .unblock-btn {
-      background: #27ae60;
-      color: white;
-    }
-    .premium-btn {
-      background: gold;
-      color: black;
-    }
-    .free-btn {
-      background: #3498db;
-      color: white;
-    }
-    #password-screen {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: #000;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-    }
-    #password-screen div {
-      background: #111;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px #444;
-      text-align: center;
-      width: 90%;
-      max-width: 300px;
-    }
-    #password-screen input {
-      width: 100%;
-      padding: 10px;
-      margin-top: 15px;
-      font-size: 16px;
-      border-radius: 6px;
-      border: none;
-    }
-    #password-screen button {
-      margin-top: 15px;
-      width: 100%;
-      background: #007bff;
-      color: white;
-      font-size: 16px;
-    }
-    #admin-content {
-      display: none;
-    }
+    .block-btn { background: #e74c3c; color: white; }
+    .unblock-btn { background: #27ae60; color: white; }
+    .premium-btn { background: gold; color: black; }
+    .free-btn { background: #3498db; color: white; }
+    .delete-btn { background: crimson; color: white; }
+    .online { color: #00e676; }
+    .offline { color: #e53935; }
+    #stats { margin: 20px 0; text-align: center; font-size: 16px; }
   </style>
 </head>
-<body>
+<body><h1>👑 Admin Panel</h1>
+<h3>🌐 Server Status: <span id="server-status-text">Checking...</span></h3>
+<button id="toggle-server-btn">Toggle Server</button>
+<div id="stats"></div><table>
+  <thead>
+    <tr>
+      <th>Username</th>
+      <th>Status</th>
+      <th>Premium Date</th>
+      <th>Online?</th>
+      <th>Blocked</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody id="user-table"></tbody>
+</table><h3>🔐 Admin Logs</h3>
+<ul id="log-list"></ul><script>
+  const statusText = document.getElementById('server-status-text');
+  const toggleBtn = document.getElementById('toggle-server-btn');
+  const userTable = document.getElementById('user-table');
+  const statsBox = document.getElementById('stats');
+  const logList = document.getElementById('log-list');
 
-<div id="password-screen">
-  <div>
-    <h2>🔒 Admin Access</h2>
-    <p>Enter admin password to continue</p>
-    <input type="password" id="admin-pass" placeholder="Enter password" />
-    <button onclick="checkPassword()">Unlock</button>
-    <p id="pass-error" style="color:red; margin-top:10px;"></p>
-  </div>
-</div>
-
-<div id="admin-content">
-  <h1>👑 Admin Panel</h1>
-  <h3>🌐 Server Status: <span id="server-status-text">Checking...</span></h3>
-  <button id="toggle-server-btn">Toggle Server</button>
-
-  <table>
-    <thead>
-      <tr>
-        <th>Username</th>
-        <th>Status</th>
-        <th>Blocked</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody id="user-table"></tbody>
-  </table>
-</div>
-
-<script>
-  const PASS = "siyam944";
-
-  function checkPassword() {
-    const input = document.getElementById("admin-pass").value;
-    const error = document.getElementById("pass-error");
-    if (input === PASS) {
-      sessionStorage.setItem("admin_access", "true");
-      document.getElementById("password-screen").style.display = "none";
-      document.getElementById("admin-content").style.display = "block";
-      loadAdminPanel();
-    } else {
-      error.textContent = "❌ Incorrect password!";
-    }
+  function updateServerUI() {
+    const isOn = localStorage.getItem('server_status') !== 'off';
+    statusText.innerText = isOn ? '🟢 Online' : '🔴 Offline';
+    toggleBtn.textContent = isOn ? '🔴 Turn OFF Server' : '🟢 Turn ON Server';
   }
 
-  if (sessionStorage.getItem("admin_access") === "true") {
-    document.getElementById("password-screen").style.display = "none";
-    document.getElementById("admin-content").style.display = "block";
-    loadAdminPanel();
-  }
-
-  function loadAdminPanel() {
-    const userTable = document.getElementById('user-table');
-    const toggleBtn = document.getElementById('toggle-server-btn');
-    const statusText = document.getElementById('server-status-text');
-
-    function updateServerUI() {
-      const isOn = localStorage.getItem('server_status') !== 'off';
-      statusText.innerText = isOn ? '🟢 Online' : '🔴 Offline';
-      toggleBtn.textContent = isOn ? '🔴 Turn OFF Server' : '🟢 Turn ON Server';
-    }
-
-    toggleBtn.onclick = () => {
-      const current = localStorage.getItem('server_status');
-      const nextStatus = current === 'off' ? 'on' : 'off';
-      localStorage.setItem('server_status', nextStatus);
-      updateServerUI();
-    };
-
-    function loadUsers() {
-      const users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
-      userTable.innerHTML = '';
-
-      users.forEach((user, index) => {
-        const status = user.type === 'premium' ? '🌟 Premium' : 'Free';
-        const blocked = user.blocked ? '🚫 Yes' : '✅ No';
-
-        const row = `
-          <tr>
-            <td>${user.username}</td>
-            <td>${status}</td>
-            <td>${blocked}</td>
-            <td>
-              <button class="${user.blocked ? 'unblock-btn' : 'block-btn'}" onclick="toggleBlock(${index})">
-                ${user.blocked ? 'Unblock' : 'Block'}
-              </button>
-              <button class="premium-btn" onclick="makePremium(${index})">Give Premium</button>
-              <button class="free-btn" onclick="makeFree(${index})">Give Free</button>
-            </td>
-          </tr>
-        `;
-        userTable.insertAdjacentHTML('beforeend', row);
-      });
-    }
-
-    window.toggleBlock = function(index) {
-      const users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
-      users[index].blocked = !users[index].blocked;
-      localStorage.setItem('registeredUsers', JSON.stringify(users));
-      loadUsers();
-    }
-
-    window.makePremium = function(index) {
-      const users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
-      users[index].type = 'premium';
-      localStorage.setItem('registeredUsers', JSON.stringify(users));
-      loadUsers();
-    }
-
-    window.makeFree = function(index) {
-      const users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
-      users[index].type = 'free';
-      localStorage.setItem('registeredUsers', JSON.stringify(users));
-      loadUsers();
-    }
-
+  toggleBtn.onclick = () => {
+    const current = localStorage.getItem('server_status');
+    const nextStatus = current === 'off' ? 'on' : 'off';
+    localStorage.setItem('server_status', nextStatus);
+    addLog('Toggled server status to: ' + nextStatus.toUpperCase());
     updateServerUI();
-    loadUsers();
-  }
-</script>
+  };
 
-</body>
+  function addLog(text) {
+    const logs = JSON.parse(localStorage.getItem('admin_logs') || '[]');
+    const entry = `${new Date().toLocaleString()}: ${text}`;
+    logs.unshift(entry);
+    localStorage.setItem('admin_logs', JSON.stringify(logs));
+    loadLogs();
+  }
+
+  function loadLogs() {
+    const logs = JSON.parse(localStorage.getItem('admin_logs') || '[]');
+    logList.innerHTML = logs.map(log => `<li>${log}</li>`).join('');
+  }
+
+  function loadUsers() {
+    const users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+    userTable.innerHTML = '';
+
+    users.forEach((user, index) => {
+      const status = user.type === 'premium' ? '🌟 Premium' : 'Free';
+      const blocked = user.blocked ? '🚫 Yes' : '✅ No';
+      const online = (Date.now() - (user.lastActive || 0) < 60000);
+      const row = `
+        <tr>
+          <td>${user.username}</td>
+          <td>${status}</td>
+          <td>${user.premiumSince || '-'}</td>
+          <td><span class="${online ? 'online' : 'offline'}">${online ? '🟢 Online' : '🔴 Offline'}</span></td>
+          <td>${blocked}</td>
+          <td>
+            <button class="${user.blocked ? 'unblock-btn' : 'block-btn'}" onclick="toggleBlock(${index})">
+              ${user.blocked ? 'Unblock' : 'Block'}
+            </button>
+            <button class="premium-btn" onclick="makePremium(${index})">Give Premium</button>
+            <button class="free-btn" onclick="makeFree(${index})">Give Free</button>
+            <button class="delete-btn" onclick="deleteUser(${index})">Delete</button>
+          </td>
+        </tr>`;
+      userTable.insertAdjacentHTML('beforeend', row);
+    });
+
+    statsBox.innerHTML = `👥 Total Users: ${users.length}`;
+  }
+
+  function save(users) {
+    localStorage.setItem('registeredUsers', JSON.stringify(users));
+  }
+
+  window.toggleBlock = function(index) {
+    const users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+    users[index].blocked = !users[index].blocked;
+    addLog(`${users[index].username} was ${users[index].blocked ? 'blocked' : 'unblocked'}`);
+    save(users);
+    loadUsers();
+  };
+
+  window.makePremium = function(index) {
+    const users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+    users[index].type = 'premium';
+    users[index].premiumSince = new Date().toLocaleDateString();
+    addLog(`${users[index].username} was given Premium`);
+    save(users);
+    loadUsers();
+  };
+
+  window.makeFree = function(index) {
+    const users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+    users[index].type = 'free';
+    users[index].premiumSince = '-';
+    addLog(`${users[index].username} was set to Free`);
+    save(users);
+    loadUsers();
+  };
+
+  window.deleteUser = function(index) {
+    const users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+    const deleted = users.splice(index, 1)[0];
+    addLog(`${deleted.username} was deleted`);
+    save(users);
+    loadUsers();
+  };
+
+  updateServerUI();
+  loadUsers();
+  loadLogs();
+</script></body>
 </html>
