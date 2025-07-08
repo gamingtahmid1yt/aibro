@@ -93,19 +93,31 @@
       }
 
       let users = JSON.parse(localStorage.getItem('users') || '[]');
+      let registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
 
-      if (users.some(u => u.username === username)) {
+      // Check if username exists
+      if (users.some(u => u.username.toLowerCase() === username.toLowerCase())) {
         errorMsg.textContent = 'Username already exists';
         return;
       }
 
+      // Save in users (for login)
       const newUser = { username, password, isPremium };
       users.push(newUser);
       localStorage.setItem('users', JSON.stringify(users));
 
+      // Save in registeredUsers (for admin panel)
+      const newRegistered = {
+        username,
+        type: isPremium ? 'premium' : 'free',
+        blocked: false
+      };
+      registeredUsers.push(newRegistered);
+      localStorage.setItem('registeredUsers', JSON.stringify(registeredUsers));
+
       errorMsg.textContent = '';
       alert('Account created successfully! Please login.');
-      window.location.href = 'login.html'; // ✅ Auto redirect to login
+      window.location.href = 'login.html';
     }
   </script>
 </body>
