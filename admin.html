@@ -1,141 +1,162 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Admin Panel - AI ChatBot</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Panel</title>
   <style>
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #000;
-      color: #fff;
-      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: white;
       padding: 20px;
     }
-    h2 {
+    h1 {
       text-align: center;
       margin-bottom: 20px;
     }
-    .user-list {
-      max-width: 600px;
-      margin: 0 auto;
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 40px;
     }
-    .user-card {
-      background: #111;
-      border-radius: 8px;
-      padding: 15px;
-      margin: 10px 0;
-      box-shadow: 0 0 10px rgba(255,255,255,0.05);
+    th, td {
+      border: 1px solid #444;
+      padding: 10px;
+      text-align: center;
     }
-    .user-card p {
-      margin: 6px 0;
+    th {
+      background: #222;
     }
-    .tag {
-      padding: 3px 8px;
-      border-radius: 12px;
-      font-size: 14px;
-      font-weight: bold;
-      display: inline-block;
-      margin-left: 5px;
-    }
-    .tag.free {
-      background: #555;
-      color: #fff;
-    }
-    .tag.premium {
-      background: gold;
-      color: #000;
-    }
-    .tag.blocked {
-      background: red;
-      color: #fff;
+    tr:nth-child(even) {
+      background-color: #1c1c1c;
     }
     button {
-      margin-top: 10px;
-      padding: 8px 12px;
-      font-size: 14px;
+      padding: 6px 10px;
       border: none;
       border-radius: 6px;
       cursor: pointer;
-      margin-right: 10px;
-    }
-    .delete-btn {
-      background: #d9534f;
-      color: white;
+      font-size: 14px;
     }
     .block-btn {
-      background: #5bc0de;
+      background: #e74c3c;
       color: white;
     }
-    #back-btn {
-      position: fixed;
-      top: 15px;
-      right: 15px;
-      background: #007bff;
+    .unblock-btn {
+      background: #27ae60;
       color: white;
-      padding: 10px 15px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
+    }
+    .premium-btn {
+      background: gold;
+      color: black;
+    }
+    .free-btn {
+      background: #3498db;
+      color: white;
     }
   </style>
 </head>
 <body>
-  <button id="back-btn" onclick="window.location.href='index.html'">← Back</button>
-  <h2>Admin Panel - User Management</h2>
-  <div class="user-list" id="user-list"></div>
+  <h1>👑 Admin Panel</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Username</th>
+        <th>Status</th>
+        <th>Blocked</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="user-table"></tbody>
+  </table>
 
   <script>
-    const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
-    if (!loggedInUser || loggedInUser.username.toLowerCase() !== 'tahmid') {
-      alert('Access denied. Admin only.');
-      window.location.href = 'login.html';
-    }
+    const userTable = document.getElementById('user-table');
 
-    let users = JSON.parse(localStorage.getItem('users') || '[]');
-    const userList = document.getElementById('user-list');
+    function loadUsers() {
+      const users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+      userTable.innerHTML = '';
 
-    function saveUsers() {
-      localStorage.setItem('users', JSON.stringify(users));
-    }
-
-    function renderUsers() {
-      userList.innerHTML = '';
       users.forEach((user, index) => {
-        const div = document.createElement('div');
-        div.className = 'user-card';
+        const tr = document.createElement('tr');
 
-        const tags = [];
-        if (user.isPremium) tags.push('<span class="tag premium">Premium</span>');
-        else tags.push('<span class="tag free">Free</span>');
-        if (user.isBlocked) tags.push('<span class="tag blocked">Blocked</span>');
+        const status = user.type === 'premium' ? '🌟 Premium' : 'Free';
+        const blocked = user.blocked ? '🚫 Yes' : '✅ No';
 
-        div.innerHTML = `
-          <p><strong>Username:</strong> ${user.username} ${tags.join(' ')}</p>
-          <p><strong>Password:</strong> ${user.password}</p>
-          <button class="delete-btn" onclick="deleteUser(${index})">Delete</button>
-          <button class="block-btn" onclick="toggleBlock(${index})">${user.isBlocked ? 'Unblock' : 'Block'}</button>
+        tr.innerHTML = `
+          <td>${user.username}</td>
+          <td>${status}</td>
+          <td>${blocked}</td>
+          <td>
+            <button class="${user.blocked ? 'unblock-btn' : 'block-btn'}" onclick="toggleBlock(${index})">
+              ${user.blocked ? 'Unblock' : 'Block'}
+            </button>
+            <button class="premium-btn" onclick="makePremium(${index})">Give Premium</button>
+            <button class="free-btn" onclick="makeFree(${index})">Give Free</button>
+          </td>
         `;
-        userList.appendChild(div);
+        userTable.appendChild(tr);
       });
     }
 
-    function deleteUser(index) {
-      const confirmDelete = confirm(`Delete user "${users[index].username}"?`);
-      if (confirmDelete) {
-        users.splice(index, 1);
-        saveUsers();
-        renderUsers();
-      }
+    function saveUsers(users) {
+      localStorage.setItem('registeredUsers', JSON.stringify(users));
     }
 
     function toggleBlock(index) {
-      users[index].isBlocked = !users[index].isBlocked;
-      saveUsers();
-      renderUsers();
+      const users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+      users[index].blocked = !users[index].blocked;
+
+      // Update if the current logged in user is the one being edited
+      const current = localStorage.getItem('loggedInUser');
+      if (current) {
+        const currentUser = JSON.parse(current);
+        if (currentUser.username === users[index].username) {
+          currentUser.blocked = users[index].blocked;
+          localStorage.setItem('loggedInUser', JSON.stringify(currentUser));
+        }
+      }
+
+      saveUsers(users);
+      loadUsers();
     }
 
-    renderUsers();
+    function makePremium(index) {
+      const users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+      users[index].type = 'premium';
+      saveUsers(users);
+
+      const current = localStorage.getItem('loggedInUser');
+      if (current) {
+        const currentUser = JSON.parse(current);
+        if (currentUser.username === users[index].username) {
+          currentUser.type = 'premium';
+          localStorage.setItem('loggedInUser', JSON.stringify(currentUser));
+        }
+      }
+
+      loadUsers();
+    }
+
+    function makeFree(index) {
+      const users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+      users[index].type = 'free';
+      saveUsers(users);
+
+      const current = localStorage.getItem('loggedInUser');
+      if (current) {
+        const currentUser = JSON.parse(current);
+        if (currentUser.username === users[index].username) {
+          currentUser.type = 'free';
+          localStorage.setItem('loggedInUser', JSON.stringify(currentUser));
+        }
+      }
+
+      loadUsers();
+    }
+
+    // Load users on page load
+    loadUsers();
   </script>
 </body>
 </html>
