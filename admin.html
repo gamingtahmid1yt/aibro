@@ -1,142 +1,141 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Admin Panel - Ai ChatBot</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin Panel - AI ChatBot</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: #000;
       color: #fff;
+      margin: 0;
       padding: 20px;
     }
-
-    .login-box, .admin-panel {
-      max-width: 500px;
-      margin: auto;
-      background: #111;
-      padding: 25px;
-      border-radius: 10px;
-      box-shadow: 0 0 15px rgba(255,255,255,0.1);
-    }
-
     h2 {
       text-align: center;
+      margin-bottom: 20px;
     }
-
-    input {
-      width: 100%;
-      padding: 12px;
+    .user-list {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .user-card {
+      background: #111;
+      border-radius: 8px;
+      padding: 15px;
       margin: 10px 0;
-      border-radius: 6px;
-      border: none;
+      box-shadow: 0 0 10px rgba(255,255,255,0.05);
     }
-
-    button {
-      width: 100%;
-      padding: 12px;
-      background: #007bff;
+    .user-card p {
+      margin: 6px 0;
+    }
+    .tag {
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: bold;
+      display: inline-block;
+      margin-left: 5px;
+    }
+    .tag.free {
+      background: #555;
       color: #fff;
+    }
+    .tag.premium {
+      background: gold;
+      color: #000;
+    }
+    .tag.blocked {
+      background: red;
+      color: #fff;
+    }
+    button {
+      margin-top: 10px;
+      padding: 8px 12px;
+      font-size: 14px;
       border: none;
       border-radius: 6px;
       cursor: pointer;
-      font-size: 16px;
+      margin-right: 10px;
     }
-
-    .user-tag {
-      display: inline-block;
-      padding: 2px 6px;
-      font-size: 12px;
-      border-radius: 4px;
-      margin-left: 6px;
+    .delete-btn {
+      background: #d9534f;
+      color: white;
     }
-
-    .premium { background: gold; color: #000; }
-    .free { background: #555; color: #fff; }
-
-    ul {
-      list-style: none;
-      padding: 0;
+    .block-btn {
+      background: #5bc0de;
+      color: white;
     }
-
-    li {
-      background: #222;
-      margin: 8px 0;
-      padding: 10px;
-      border-radius: 6px;
-    }
-
-    .error {
-      color: red;
-      font-size: 14px;
-    }
-
-    .logout-btn {
-      margin-top: 20px;
-      background: red;
+    #back-btn {
+      position: fixed;
+      top: 15px;
+      right: 15px;
+      background: #007bff;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
-
-  <div id="login-section" class="login-box">
-    <h2>Admin Login</h2>
-    <input type="text" id="admin-user" placeholder="Username" />
-    <input type="password" id="admin-pass" placeholder="Password" />
-    <input type="text" id="admin-code" placeholder="Secret Code" />
-    <div class="error" id="login-error"></div>
-    <button onclick="adminLogin()">Login</button>
-  </div>
-
-  <div id="admin-panel" class="admin-panel" style="display:none;">
-    <h2>👑 Admin Panel</h2>
-    <p>Total Registered Users:</p>
-    <ul id="user-list"></ul>
-    <button class="logout-btn" onclick="logout()">Logout</button>
-  </div>
+  <button id="back-btn" onclick="window.location.href='index.html'">← Back</button>
+  <h2>Admin Panel - User Management</h2>
+  <div class="user-list" id="user-list"></div>
 
   <script>
-    const ADMIN_USERNAME = "Tahmid";
-    const ADMIN_PASSWORD = "siyam944";
-    const SECRET_CODE = "1234";
+    const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+    if (!loggedInUser || loggedInUser.username.toLowerCase() !== 'tahmid') {
+      alert('Access denied. Admin only.');
+      window.location.href = 'login.html';
+    }
 
-    function adminLogin() {
-      const user = document.getElementById("admin-user").value.trim();
-      const pass = document.getElementById("admin-pass").value;
-      const code = document.getElementById("admin-code").value.trim();
-      const error = document.getElementById("login-error");
+    let users = JSON.parse(localStorage.getItem('users') || '[]');
+    const userList = document.getElementById('user-list');
 
-      if (user === ADMIN_USERNAME && pass === ADMIN_PASSWORD && code === SECRET_CODE) {
-        localStorage.setItem("adminLoggedIn", "true");
-        showAdminPanel();
-      } else {
-        error.textContent = "❌ Incorrect credentials.";
+    function saveUsers() {
+      localStorage.setItem('users', JSON.stringify(users));
+    }
+
+    function renderUsers() {
+      userList.innerHTML = '';
+      users.forEach((user, index) => {
+        const div = document.createElement('div');
+        div.className = 'user-card';
+
+        const tags = [];
+        if (user.isPremium) tags.push('<span class="tag premium">Premium</span>');
+        else tags.push('<span class="tag free">Free</span>');
+        if (user.isBlocked) tags.push('<span class="tag blocked">Blocked</span>');
+
+        div.innerHTML = `
+          <p><strong>Username:</strong> ${user.username} ${tags.join(' ')}</p>
+          <p><strong>Password:</strong> ${user.password}</p>
+          <button class="delete-btn" onclick="deleteUser(${index})">Delete</button>
+          <button class="block-btn" onclick="toggleBlock(${index})">${user.isBlocked ? 'Unblock' : 'Block'}</button>
+        `;
+        userList.appendChild(div);
+      });
+    }
+
+    function deleteUser(index) {
+      const confirmDelete = confirm(`Delete user "${users[index].username}"?`);
+      if (confirmDelete) {
+        users.splice(index, 1);
+        saveUsers();
+        renderUsers();
       }
     }
 
-    function showAdminPanel() {
-      document.getElementById("login-section").style.display = "none";
-      document.getElementById("admin-panel").style.display = "block";
-      const userList = document.getElementById("user-list");
-      const users = JSON.parse(localStorage.getItem("users") || "[]");
-
-      userList.innerHTML = users.map(user => {
-        const tag = user.isPremium ? '<span class="user-tag premium">Premium</span>' : '<span class="user-tag free">Free</span>';
-        return `<li><strong>${user.username}</strong> ${tag}</li>`;
-      }).join("");
+    function toggleBlock(index) {
+      users[index].isBlocked = !users[index].isBlocked;
+      saveUsers();
+      renderUsers();
     }
 
-    function logout() {
-      localStorage.removeItem("adminLoggedIn");
-      location.reload();
-    }
-
-    window.onload = () => {
-      if (localStorage.getItem("adminLoggedIn") === "true") {
-        showAdminPanel();
-      }
-    };
+    renderUsers();
   </script>
 </body>
 </html>
