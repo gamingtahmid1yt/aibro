@@ -15,6 +15,22 @@
       text-align: center;
       margin-bottom: 20px;
     }
+    h3 {
+      text-align: center;
+    }
+    button {
+      padding: 8px 12px;
+      margin: 6px;
+      font-size: 14px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    #toggle-server-btn {
+      display: block;
+      margin: 10px auto 30px;
+      font-weight: bold;
+    }
     table {
       width: 100%;
       border-collapse: collapse;
@@ -30,13 +46,6 @@
     }
     tr:nth-child(even) {
       background-color: #1c1c1c;
-    }
-    button {
-      padding: 6px 10px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 14px;
     }
     .block-btn {
       background: #e74c3c;
@@ -58,6 +67,9 @@
 </head>
 <body>
   <h1>👑 Admin Panel</h1>
+  <h3>🌐 Server Status: <span id="server-status-text">Checking...</span></h3>
+  <button id="toggle-server-btn">Toggle Server</button>
+
   <table>
     <thead>
       <tr>
@@ -72,14 +84,30 @@
 
   <script>
     const userTable = document.getElementById('user-table');
+    const toggleBtn = document.getElementById('toggle-server-btn');
+    const statusText = document.getElementById('server-status-text');
 
+    // ==== Server Status Functions ====
+    function updateServerUI() {
+      const isOn = localStorage.getItem('server_status') !== 'off';
+      statusText.innerText = isOn ? '🟢 Online' : '🔴 Offline';
+      toggleBtn.textContent = isOn ? '🔴 Turn OFF Server' : '🟢 Turn ON Server';
+    }
+
+    toggleBtn.onclick = () => {
+      const current = localStorage.getItem('server_status');
+      const nextStatus = current === 'off' ? 'on' : 'off';
+      localStorage.setItem('server_status', nextStatus);
+      updateServerUI();
+    };
+
+    // ==== User Management ====
     function loadUsers() {
       const users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
       userTable.innerHTML = '';
 
       users.forEach((user, index) => {
         const tr = document.createElement('tr');
-
         const status = user.type === 'premium' ? '🌟 Premium' : 'Free';
         const blocked = user.blocked ? '🚫 Yes' : '✅ No';
 
@@ -107,7 +135,6 @@
       const users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
       users[index].blocked = !users[index].blocked;
 
-      // Update if the current logged in user is the one being edited
       const current = localStorage.getItem('loggedInUser');
       if (current) {
         const currentUser = JSON.parse(current);
@@ -124,7 +151,6 @@
     function makePremium(index) {
       const users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
       users[index].type = 'premium';
-      saveUsers(users);
 
       const current = localStorage.getItem('loggedInUser');
       if (current) {
@@ -135,13 +161,13 @@
         }
       }
 
+      saveUsers(users);
       loadUsers();
     }
 
     function makeFree(index) {
       const users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
       users[index].type = 'free';
-      saveUsers(users);
 
       const current = localStorage.getItem('loggedInUser');
       if (current) {
@@ -152,10 +178,12 @@
         }
       }
 
+      saveUsers(users);
       loadUsers();
     }
 
-    // Load users on page load
+    // === Init ===
+    updateServerUI();
     loadUsers();
   </script>
 </body>
