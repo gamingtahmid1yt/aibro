@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login | AiBro</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #000;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background: #111;
+      padding: 30px;
+      border-radius: 10px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 6px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .error {
+      color: red;
+      font-size: 14px;
+      margin-top: -5px;
+    }
+
+    a {
+      color: #00f;
+      text-decoration: underline;
+      display: block;
+      text-align: center;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Login to ChatBot</h2>
+    <input type="text" id="username" placeholder="Username" />
+    <input type="password" id="password" placeholder="Password" />
+    <div class="error" id="error"></div>
+    <button onclick="login()">Login</button>
+    <a href="register.html">Don't have an account? Register</a>
+  </div>
+
+  <script>
+    function login() {
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value;
+      const error = document.getElementById("error");
+
+      const users = JSON.parse(localStorage.getItem("users") || "[]");
+      const matchedUser = users.find(u => u.username === username && u.password === password);
+
+      if (matchedUser) {
+        localStorage.setItem("currentUser", JSON.stringify(matchedUser));
+        location.href = "index.html";
+      } else {
+        error.textContent = "Invalid username or password.";
+      }
+    }
+
+    // Auto-redirect if already logged in
+    window.onload = () => {
+      const currentUser = JSON.parse(localStorage.getItem("currentUser") || "null");
+      if (currentUser) location.href = "index.html";
+    };
+  </script>
+</body>
+  </html>
