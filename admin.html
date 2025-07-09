@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -15,18 +16,25 @@
       text-align: center;
       margin-bottom: 20px;
     }
-    button {
+    button, input {
       padding: 8px 12px;
       margin: 6px;
       font-size: 14px;
       border: none;
       border-radius: 6px;
-      cursor: pointer;
     }
     #toggle-server-btn {
       display: block;
-      margin: 10px auto 30px;
+      margin: 10px auto;
       font-weight: bold;
+      cursor: pointer;
+    }
+    #search-box {
+      display: block;
+      margin: 20px auto 30px;
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
     }
     table {
       width: 100%;
@@ -44,20 +52,28 @@
     tr:nth-child(even) {
       background-color: #1c1c1c;
     }
-    .block-btn { background: #e74c3c; color: white; }
-    .unblock-btn { background: #27ae60; color: white; }
-    .premium-btn { background: gold; color: black; }
-    .free-btn { background: #3498db; color: white; }
-    .delete-btn { background: crimson; color: white; }
+    .block-btn { background: #e74c3c; color: white; cursor: pointer; }
+    .unblock-btn { background: #27ae60; color: white; cursor: pointer; }
+    .premium-btn { background: gold; color: black; cursor: pointer; }
+    .free-btn { background: #3498db; color: white; cursor: pointer; }
+    .delete-btn { background: crimson; color: white; cursor: pointer; }
     .online { color: #00e676; }
     .offline { color: #e53935; }
     #stats { margin: 20px 0; text-align: center; font-size: 16px; }
+    ul { padding-left: 20px; }
   </style>
 </head>
-<body><h1>👑 Admin Panel</h1>
+<body>
+
+<h1>👑 Admin Panel</h1>
 <h3>🌐 Server Status: <span id="server-status-text">Checking...</span></h3>
 <button id="toggle-server-btn">Toggle Server</button>
-<div id="stats"></div><table>
+
+<input type="text" id="search-box" placeholder="🔍 Search username..." />
+
+<div id="stats"></div>
+
+<table>
   <thead>
     <tr>
       <th>Username</th>
@@ -69,111 +85,112 @@
     </tr>
   </thead>
   <tbody id="user-table"></tbody>
-</table><h3>🔐 Admin Logs</h3>
-<ul id="log-list"></ul><script>
+</table>
+
+<h3>📜 Admin Logs</h3>
+<ul id="log-list"></ul>
+
+<script>
+  const sheetUrl = "https://script.google.com/macros/s/AKfycbxEFdOMXCOrQs6y0vtHP5rnjp-q7wC8YnUQuDGLLmiWGEl5tDGHRPH8hAq1v9vupP7OlQ/exec";
+  const serverKey = "server_status";
+  const logKey = "admin_logs";
+
   const statusText = document.getElementById('server-status-text');
   const toggleBtn = document.getElementById('toggle-server-btn');
   const userTable = document.getElementById('user-table');
   const statsBox = document.getElementById('stats');
   const logList = document.getElementById('log-list');
+  const searchBox = document.getElementById('search-box');
 
   function updateServerUI() {
-    const isOn = localStorage.getItem('server_status') !== 'off';
+    const isOn = localStorage.getItem(serverKey) !== 'off';
     statusText.innerText = isOn ? '🟢 Online' : '🔴 Offline';
     toggleBtn.textContent = isOn ? '🔴 Turn OFF Server' : '🟢 Turn ON Server';
   }
 
   toggleBtn.onclick = () => {
-    const current = localStorage.getItem('server_status');
+    const current = localStorage.getItem(serverKey);
     const nextStatus = current === 'off' ? 'on' : 'off';
-    localStorage.setItem('server_status', nextStatus);
-    addLog('Toggled server status to: ' + nextStatus.toUpperCase());
+    localStorage.setItem(serverKey, nextStatus);
+    addLog('Server toggled to: ' + nextStatus.toUpperCase());
     updateServerUI();
   };
 
   function addLog(text) {
-    const logs = JSON.parse(localStorage.getItem('admin_logs') || '[]');
+    const logs = JSON.parse(localStorage.getItem(logKey) || '[]');
     const entry = `${new Date().toLocaleString()}: ${text}`;
     logs.unshift(entry);
-    localStorage.setItem('admin_logs', JSON.stringify(logs));
+    localStorage.setItem(logKey, JSON.stringify(logs));
     loadLogs();
   }
 
   function loadLogs() {
-    const logs = JSON.parse(localStorage.getItem('admin_logs') || '[]');
+    const logs = JSON.parse(localStorage.getItem(logKey) || '[]');
     logList.innerHTML = logs.map(log => `<li>${log}</li>`).join('');
   }
 
-  function loadUsers() {
-    const users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
-    userTable.innerHTML = '';
+  function loadUsers(search = "") {
+    fetch(sheetUrl + "?action=getUsers")
+      .then(res => res.json())
+      .then(data => {
+        userTable.innerHTML = "";
+        let users = data.users || [];
+        if (search) {
+          users = users.filter(user =>
+            user.username.toLowerCase().includes(search.toLowerCase())
+          );
+        }
 
-    users.forEach((user, index) => {
-      const status = user.type === 'premium' ? '🌟 Premium' : 'Free';
-      const blocked = user.blocked ? '🚫 Yes' : '✅ No';
-      const online = (Date.now() - (user.lastActive || 0) < 60000);
-      const row = `
-        <tr>
-          <td>${user.username}</td>
-          <td>${status}</td>
-          <td>${user.premiumSince || '-'}</td>
-          <td><span class="${online ? 'online' : 'offline'}">${online ? '🟢 Online' : '🔴 Offline'}</span></td>
-          <td>${blocked}</td>
-          <td>
-            <button class="${user.blocked ? 'unblock-btn' : 'block-btn'}" onclick="toggleBlock(${index})">
-              ${user.blocked ? 'Unblock' : 'Block'}
-            </button>
-            <button class="premium-btn" onclick="makePremium(${index})">Give Premium</button>
-            <button class="free-btn" onclick="makeFree(${index})">Give Free</button>
-            <button class="delete-btn" onclick="deleteUser(${index})">Delete</button>
-          </td>
-        </tr>`;
-      userTable.insertAdjacentHTML('beforeend', row);
-    });
-
-    statsBox.innerHTML = `👥 Total Users: ${users.length}`;
+        statsBox.innerHTML = `👥 Total Users: ${users.length}`;
+        users.forEach((user, index) => {
+          const status = user.type === 'premium' ? '🌟 Premium' : 'Free';
+          const blocked = user.blocked === 'true' ? '🚫 Yes' : '✅ No';
+          const online = Date.now() - parseInt(user.lastActive || 0) < 60000;
+          const row = `
+            <tr>
+              <td>${user.username}</td>
+              <td>${status}</td>
+              <td>${user.premiumSince || '-'}</td>
+              <td><span class="${online ? 'online' : 'offline'}">${online ? '🟢 Online' : '🔴 Offline'}</span></td>
+              <td>${blocked}</td>
+              <td>
+                <button class="${user.blocked === 'true' ? 'unblock-btn' : 'block-btn'}" onclick="updateUser('${user.username}', 'block', '${user.blocked === 'true' ? 'false' : 'true'}')">
+                  ${user.blocked === 'true' ? 'Unblock' : 'Block'}
+                </button>
+                <button class="premium-btn" onclick="updateUser('${user.username}', 'type', 'premium')">Give Premium</button>
+                <button class="free-btn" onclick="updateUser('${user.username}', 'type', 'free')">Give Free</button>
+                <button class="delete-btn" onclick="updateUser('${user.username}', 'delete', '1')">Delete</button>
+              </td>
+            </tr>
+          `;
+          userTable.insertAdjacentHTML('beforeend', row);
+        });
+      });
   }
 
-  function save(users) {
-    localStorage.setItem('registeredUsers', JSON.stringify(users));
+  function updateUser(username, field, value) {
+    const form = new FormData();
+    form.append("action", "updateUser");
+    form.append("username", username);
+    form.append("field", field);
+    form.append("value", value);
+    fetch(sheetUrl, { method: "POST", body: form })
+      .then(res => res.text())
+      .then(() => {
+        addLog(`${username} → ${field} set to "${value}"`);
+        loadUsers(searchBox.value);
+      });
   }
 
-  window.toggleBlock = function(index) {
-    const users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
-    users[index].blocked = !users[index].blocked;
-    addLog(`${users[index].username} was ${users[index].blocked ? 'blocked' : 'unblocked'}`);
-    save(users);
-    loadUsers();
-  };
-
-  window.makePremium = function(index) {
-    const users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
-    users[index].type = 'premium';
-    users[index].premiumSince = new Date().toLocaleDateString();
-    addLog(`${users[index].username} was given Premium`);
-    save(users);
-    loadUsers();
-  };
-
-  window.makeFree = function(index) {
-    const users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
-    users[index].type = 'free';
-    users[index].premiumSince = '-';
-    addLog(`${users[index].username} was set to Free`);
-    save(users);
-    loadUsers();
-  };
-
-  window.deleteUser = function(index) {
-    const users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
-    const deleted = users.splice(index, 1)[0];
-    addLog(`${deleted.username} was deleted`);
-    save(users);
-    loadUsers();
-  };
+  searchBox.addEventListener("input", () => {
+    loadUsers(searchBox.value);
+  });
 
   updateServerUI();
-  loadUsers();
   loadLogs();
-</script></body>
+  loadUsers();
+
+  setInterval(() => loadUsers(searchBox.value), 30000); // Auto-refresh every 30s
+</script>
+</body>
 </html>
