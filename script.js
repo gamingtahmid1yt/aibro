@@ -45,7 +45,7 @@ const messages = [{
 // --- Premium & User Tracking ---
 let isPremiumUser = false;
 let replyCount = 0;
-let currentIP = '';
+let currentIP = '000.000.000';
 
 async function detectIP() {
   try {
