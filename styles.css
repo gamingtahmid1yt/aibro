@@ -37,7 +37,7 @@ body.light-mode #chat-box { background: #fff; color: #000; }
 
 body.light-mode .bot-message { background: #ddd; color: #000; }
 
-body.light-mode .user-message { background: #2196f3; }
+body.light-mode .user-message { background: #2196f3; color: #fff; }
 
 /* Typing Indicator */ .bot-message.typing { font-style: italic; opacity: 0.6; animation: typingFade 1.2s infinite; user-select: none; }
 
@@ -74,3 +74,5 @@ h1 { font-size: 20px; }
 @media (min-width: 768px) { #app-container { width: 550px; height: 700px; } }
 
 @media (min-width: 1024px) { #app-container { width: 600px; height: 720px; } }
+
+                                            
