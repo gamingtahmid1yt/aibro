@@ -72,6 +72,8 @@
   </div>
 
   <script>
+    const sheetURL = "https://script.google.com/macros/s/AKfycbxEFdOMXCOrQs6y0vtHP5rnjp-q7wC8YnUQuDGLLmiWGEl5tDGHRPH8hAq1v9vupP7OlQ/exec";
+
     function login() {
       const username = document.getElementById('username').value.trim();
       const password = document.getElementById('password').value.trim();
@@ -82,27 +84,52 @@
         return;
       }
 
-      const users = JSON.parse(localStorage.getItem('users') || '[]');
-      const foundUser = users.find(u => u.username === username && u.password === password);
+      // Fetch user list from Google Sheet
+      fetch(sheetURL + "?action=getUsers")
+        .then(res => res.json())
+        .then(data => {
+          const users = data.users || [];
+          const matchedUser = users.find(u =>
+            u.username.toLowerCase() === username.toLowerCase() &&
+            u.password === password
+          );
 
-      if (!foundUser) {
-        errorMsg.textContent = 'Invalid username or password';
-        return;
-      }
+          if (!matchedUser) {
+            errorMsg.textContent = "Invalid username or password";
+            return;
+          }
 
-      // Ensure structure includes isPremium & blocked
-      const loggedUser = {
-        username: foundUser.username,
-        password: foundUser.password,
-        isPremium: foundUser.isPremium || false,
-        blocked: foundUser.blocked || false,
-        type: foundUser.isPremium ? 'premium' : 'free',
-        isAdmin: foundUser.username.toLowerCase() === 'tahmid' // optional flag
-      };
+          if (matchedUser.blocked === "true") {
+            errorMsg.textContent = "You are blocked by admin.";
+            return;
+          }
 
-      localStorage.setItem('loggedInUser', JSON.stringify(loggedUser));
-      errorMsg.textContent = '';
-      window.location.href = 'index.html';
+          // Login success
+          const userData = {
+            username: matchedUser.username,
+            password: matchedUser.password,
+            type: matchedUser.type || "free",
+            isPremium: matchedUser.type === "premium",
+            blocked: matchedUser.blocked === "true",
+            isAdmin: matchedUser.username.toLowerCase() === "tahmid"
+          };
+
+          localStorage.setItem("loggedInUser", JSON.stringify(userData));
+
+          // Optional: update last active timestamp
+          const form = new FormData();
+          form.append("action", "updateUser");
+          form.append("username", matchedUser.username);
+          form.append("field", "lastActive");
+          form.append("value", Date.now().toString());
+          fetch(sheetURL, { method: "POST", body: form });
+
+          errorMsg.textContent = "";
+          window.location.href = "index.html";
+        })
+        .catch(() => {
+          errorMsg.textContent = "Server connection failed.";
+        });
     }
   </script>
 </body>
