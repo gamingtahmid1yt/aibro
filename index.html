@@ -10,23 +10,9 @@
   <!-- Header Buttons -->
   <button id="clear-btn">Clear</button>
   <button id="theme-switch" title="Toggle Dark/Light">🌙</button>
-  <button id="menu-btn" title="Account Panel">☰</button>
-
-  <!-- Account Panel -->
-  <div id="account-panel">
-    <h2>Account</h2>
-    <div id="user-info">
-      <p><strong>Username:</strong> <span id="account-username"></span></p>
-      <p><strong>Status:</strong> <span id="account-status" class="tag"></span></p>
-    </div>
-    <div id="account-buttons">
-      <button id="admin-panel-btn" style="display:none;">Admin Panel</button>
-      <button id="logout-btn">Logout</button>
-    </div>
-  </div>
 
   <!-- Chat UI -->
-  <div id="app-container" style="display:none;">
+  <div id="app-container">
     <div id="top-box">
       <h1>AI ChatBot 🇧🇩</h1>
     </div>
@@ -41,28 +27,7 @@
     <div id="wiki-preview"></div>
   </div>
 
-  <!-- Login/Register Block -->
-  <div id="login-register-block" style="display:none;">
-    <p style="color:#f0ad4e; font-size:14px; margin-bottom:10px;">
-      ⚠️ Don't use your real password
-    </p>
-    <h2>Please Login or Register</h2>
-    <button id="login-btn">Login</button>
-    <button id="register-btn">Register</button>
-    <button onclick="window.location.href='https://wa.me/8801963178893'" style="margin-top:10px;">📩 Contact Us</button>
-  </div>
-
   <!-- JavaScript -->
   <script src="script.js"></script>
-  <script>
-    // Hide account panel when clicking outside
-    document.addEventListener("click", function (e) {
-      const panel = document.getElementById("account-panel");
-      const menuBtn = document.getElementById("menu-btn");
-      if (!panel.contains(e.target) && e.target !== menuBtn) {
-        panel.style.display = "none";
-      }
-    });
-  </script>
 </body>
 </html>
