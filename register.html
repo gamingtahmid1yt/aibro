@@ -46,12 +46,6 @@
       color: white;
       cursor: pointer;
     }
-    label {
-      display: flex;
-      align-items: center;
-      margin-top: 8px;
-      font-size: 14px;
-    }
     .error {
       color: red;
       font-size: 14px;
@@ -73,18 +67,17 @@
     <input type="text" id="username" placeholder="Username" required />
     <input type="password" id="password" placeholder="Password" required />
     
-    <label><input type="checkbox" id="premium" /> I am a Premium User</label>
-    
     <button onclick="register()">Register</button>
     <p class="error" id="error-msg"></p>
     <a href="login.html">Already have an account? Login</a>
   </div>
 
   <script>
+    const sheetURL = "https://script.google.com/macros/s/AKfycbxEFdOMXCOrQs6y0vtHP5rnjp-q7wC8YnUQuDGLLmiWGEl5tDGHRPH8hAq1v9vupP7OlQ/exec";
+
     function register() {
       const username = document.getElementById('username').value.trim();
       const password = document.getElementById('password').value.trim();
-      const isPremium = document.getElementById('premium').checked;
       const errorMsg = document.getElementById('error-msg');
 
       if (!username || !password) {
@@ -92,32 +85,38 @@
         return;
       }
 
-      let users = JSON.parse(localStorage.getItem('users') || '[]');
-      let registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
-
-      // Check if username exists
+      // Check localStorage to prevent duplicate
+      const users = JSON.parse(localStorage.getItem('users') || '[]');
       if (users.some(u => u.username.toLowerCase() === username.toLowerCase())) {
         errorMsg.textContent = 'Username already exists';
         return;
       }
 
-      // Save in users (for login)
-      const newUser = { username, password, isPremium };
+      // Save locally
+      const newUser = { username, password };
       users.push(newUser);
       localStorage.setItem('users', JSON.stringify(users));
 
-      // Save in registeredUsers (for admin panel)
-      const newRegistered = {
-        username,
-        type: isPremium ? 'premium' : 'free',
-        blocked: false
-      };
-      registeredUsers.push(newRegistered);
-      localStorage.setItem('registeredUsers', JSON.stringify(registeredUsers));
+      // Send to Google Sheets
+      const form = new FormData();
+      form.append("action", "register");
+      form.append("username", username);
+      form.append("password", password);
+      form.append("type", "free");
+      form.append("blocked", "false");
 
-      errorMsg.textContent = '';
-      alert('Account created successfully! Please login.');
-      window.location.href = 'login.html';
+      fetch(sheetURL, {
+        method: "POST",
+        body: form
+      })
+      .then(res => res.text())
+      .then(() => {
+        alert("✅ Account created successfully!");
+        window.location.href = "login.html";
+      })
+      .catch(() => {
+        errorMsg.textContent = "❌ Failed to connect to server.";
+      });
     }
   </script>
 </body>
