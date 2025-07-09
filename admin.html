@@ -69,18 +69,17 @@
 <h3>🌐 Server Status: <span id="server-status-text">Checking...</span></h3>
 <button id="toggle-server-btn">Toggle Server</button>
 
-<input type="text" id="search-box" placeholder="🔍 Search username..." />
+<input type="text" id="search-box" placeholder="🔍 Search IP..." />
 
 <div id="stats"></div>
 
 <table>
   <thead>
     <tr>
-      <th>Username</th>
+      <th>IP Address</th>
       <th>Status</th>
-      <th>Premium Date</th>
-      <th>Online?</th>
-      <th>Blocked</th>
+      <th>Last Active</th>
+      <th>Blocked?</th>
       <th>Actions</th>
     </tr>
   </thead>
@@ -91,9 +90,9 @@
 <ul id="log-list"></ul>
 
 <script>
-  const sheetUrl = "https://script.google.com/macros/s/AKfycbxKLs7Ae9axa2o5pjC82pIPiBYDIGHWVRRrW1hZASp3ji5AaCap2dDsBQxIAGDjfjk/exec";
   const serverKey = "server_status";
   const logKey = "admin_logs";
+  const userMapKey = "user_map";
 
   const statusText = document.getElementById('server-status-text');
   const toggleBtn = document.getElementById('toggle-server-btn');
@@ -101,6 +100,27 @@
   const statsBox = document.getElementById('stats');
   const logList = document.getElementById('log-list');
   const searchBox = document.getElementById('search-box');
+
+  function getUserMap() {
+    return JSON.parse(localStorage.getItem(userMapKey) || '{}');
+  }
+
+  function saveUserMap(map) {
+    localStorage.setItem(userMapKey, JSON.stringify(map));
+  }
+
+  function addLog(text) {
+    const logs = JSON.parse(localStorage.getItem(logKey) || '[]');
+    const entry = `${new Date().toLocaleString()}: ${text}`;
+    logs.unshift(entry);
+    localStorage.setItem(logKey, JSON.stringify(logs));
+    loadLogs();
+  }
+
+  function loadLogs() {
+    const logs = JSON.parse(localStorage.getItem(logKey) || '[]');
+    logList.innerHTML = logs.map(log => `<li>${log}</li>`).join('');
+  }
 
   function updateServerUI() {
     const isOn = localStorage.getItem(serverKey) !== 'off';
@@ -116,81 +136,63 @@
     updateServerUI();
   };
 
-  function addLog(text) {
-    const logs = JSON.parse(localStorage.getItem(logKey) || '[]');
-    const entry = `${new Date().toLocaleString()}: ${text}`;
-    logs.unshift(entry);
-    localStorage.setItem(logKey, JSON.stringify(logs));
-    loadLogs();
-  }
-
-  function loadLogs() {
-    const logs = JSON.parse(localStorage.getItem(logKey) || '[]');
-    logList.innerHTML = logs.map(log => `<li>${log}</li>`).join('');
-  }
-
   function loadUsers(search = "") {
-    fetch(sheetUrl + "?action=getUsers")
-      .then(res => res.json())
-      .then(data => {
-        userTable.innerHTML = "";
-        let users = data.users || [];
-        if (search) {
-          users = users.filter(user =>
-            user.username.toLowerCase().includes(search.toLowerCase())
-          );
-        }
+    const map = getUserMap();
+    const keys = Object.keys(map);
+    userTable.innerHTML = "";
 
-        statsBox.innerHTML = `👥 Total Users: ${users.length}`;
-        users.forEach((user, index) => {
-          const status = user.type === 'premium' ? '🌟 Premium' : 'Free';
-          const blocked = user.blocked === 'true' ? '🚫 Yes' : '✅ No';
-          const online = Date.now() - parseInt(user.lastActive || 0) < 60000;
-          const row = `
-            <tr>
-              <td>${user.username}</td>
-              <td>${status}</td>
-              <td>${user.premiumSince || '-'}</td>
-              <td><span class="${online ? 'online' : 'offline'}">${online ? '🟢 Online' : '🔴 Offline'}</span></td>
-              <td>${blocked}</td>
-              <td>
-                <button class="${user.blocked === 'true' ? 'unblock-btn' : 'block-btn'}" onclick="updateUser('${user.username}', 'block', '${user.blocked === 'true' ? 'false' : 'true'}')">
-                  ${user.blocked === 'true' ? 'Unblock' : 'Block'}
-                </button>
-                <button class="premium-btn" onclick="updateUser('${user.username}', 'type', 'premium')">Give Premium</button>
-                <button class="free-btn" onclick="updateUser('${user.username}', 'type', 'free')">Give Free</button>
-                <button class="delete-btn" onclick="updateUser('${user.username}', 'delete', '1')">Delete</button>
-              </td>
-            </tr>
-          `;
-          userTable.insertAdjacentHTML('beforeend', row);
-        });
-      });
+    const filtered = search ? keys.filter(ip => ip.includes(search)) : keys;
+    statsBox.textContent = `👥 Tracked IPs: ${filtered.length}`;
+
+    filtered.forEach(ip => {
+      const user = map[ip];
+      const lastActive = new Date(user.lastActive || 0).toLocaleString();
+      const row = `
+        <tr>
+          <td>${ip}</td>
+          <td>${user.type === 'premium' ? '🌟 Premium' : 'Free'}</td>
+          <td>${lastActive}</td>
+          <td>${user.blocked ? '🚫 Yes' : '✅ No'}</td>
+          <td>
+            <button class="${user.blocked ? 'unblock-btn' : 'block-btn'}" onclick="updateUser('${ip}', 'blocked', ${!user.blocked})">
+              ${user.blocked ? 'Unblock' : 'Block'}
+            </button>
+            <button class="premium-btn" onclick="updateUser('${ip}', 'type', 'premium')">Give Premium</button>
+            <button class="free-btn" onclick="updateUser('${ip}', 'type', 'free')">Make Free</button>
+            <button class="delete-btn" onclick="removeUser('${ip}')">Delete</button>
+          </td>
+        </tr>
+      `;
+      userTable.insertAdjacentHTML('beforeend', row);
+    });
   }
 
-  function updateUser(username, field, value) {
-    const form = new FormData();
-    form.append("action", "updateUser");
-    form.append("username", username);
-    form.append("field", field);
-    form.append("value", value);
-    fetch(sheetUrl, { method: "POST", body: form })
-      .then(res => res.text())
-      .then(() => {
-        addLog(`${username} → ${field} set to "${value}"`);
-        loadUsers(searchBox.value);
-      });
-  }
-
-  searchBox.addEventListener("input", () => {
+  function updateUser(ip, field, value) {
+    const map = getUserMap();
+    if (!map[ip]) return;
+    map[ip][field] = value;
+    map[ip].lastActive = Date.now();
+    saveUserMap(map);
+    addLog(`${ip} → ${field} = ${value}`);
     loadUsers(searchBox.value);
-  });
+  }
+
+  function removeUser(ip) {
+    const map = getUserMap();
+    delete map[ip];
+    saveUserMap(map);
+    addLog(`${ip} → removed from system`);
+    loadUsers(searchBox.value);
+  }
+
+  searchBox.addEventListener("input", () => loadUsers(searchBox.value));
 
   updateServerUI();
   loadLogs();
   loadUsers();
 
-  setInterval(() => loadUsers(searchBox.value), 30000); // Auto-refresh every 30s
+  setInterval(() => loadUsers(searchBox.value), 30000); // Auto-refresh
 </script>
+
 </body>
 </html>
