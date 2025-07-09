@@ -9,8 +9,8 @@
       font-family: Arial, sans-serif;
       background: #111;
       color: white;
-      padding: 20px;
       margin: 0;
+      padding: 20px;
     }
     h1, h3 {
       text-align: center;
@@ -31,7 +31,7 @@
     }
     #search-box {
       display: block;
-      margin: 20px auto 30px;
+      margin: 20px auto;
       width: 100%;
       max-width: 400px;
       text-align: center;
@@ -52,11 +52,11 @@
     tr:nth-child(even) {
       background-color: #1c1c1c;
     }
-    .block-btn { background: #e74c3c; color: white; cursor: pointer; }
-    .unblock-btn { background: #27ae60; color: white; cursor: pointer; }
-    .premium-btn { background: gold; color: black; cursor: pointer; }
-    .free-btn { background: #3498db; color: white; cursor: pointer; }
-    .delete-btn { background: crimson; color: white; cursor: pointer; }
+    .block-btn { background: #e74c3c; color: white; }
+    .unblock-btn { background: #27ae60; color: white; }
+    .premium-btn { background: gold; color: black; }
+    .free-btn { background: #3498db; color: white; }
+    .delete-btn { background: crimson; color: white; }
     .online { color: #00e676; }
     .offline { color: #e53935; }
     #stats { margin: 20px 0; text-align: center; font-size: 16px; }
@@ -69,16 +69,16 @@
 <h3>🌐 Server Status: <span id="server-status-text">Checking...</span></h3>
 <button id="toggle-server-btn">Toggle Server</button>
 
-<input type="text" id="search-box" placeholder="🔍 Search IP..." />
+<input type="text" id="search-box" placeholder="🔍 Search IP or Username..." />
 
 <div id="stats"></div>
 
 <table>
   <thead>
     <tr>
-      <th>IP Address</th>
+      <th>IP</th>
+      <th>Username</th>
       <th>Status</th>
-      <th>Last Active</th>
       <th>Blocked?</th>
       <th>Actions</th>
     </tr>
@@ -90,24 +90,31 @@
 <ul id="log-list"></ul>
 
 <script>
-  const serverKey = "server_status";
-  const logKey = "admin_logs";
-  const userMapKey = "user_map";
+  const serverKey = 'server_status';
+  const logKey = 'admin_logs';
+  const userStoreKey = 'ip_users';
 
-  const statusText = document.getElementById('server-status-text');
-  const toggleBtn = document.getElementById('toggle-server-btn');
+  const serverStatusText = document.getElementById('server-status-text');
+  const toggleServerBtn = document.getElementById('toggle-server-btn');
   const userTable = document.getElementById('user-table');
-  const statsBox = document.getElementById('stats');
   const logList = document.getElementById('log-list');
   const searchBox = document.getElementById('search-box');
+  const statsBox = document.getElementById('stats');
 
-  function getUserMap() {
-    return JSON.parse(localStorage.getItem(userMapKey) || '{}');
+  // Update server status UI
+  function updateServerUI() {
+    const isOn = localStorage.getItem(serverKey) !== 'off';
+    serverStatusText.innerText = isOn ? '🟢 Online' : '🔴 Offline';
+    toggleServerBtn.textContent = isOn ? '🔴 Turn OFF Server' : '🟢 Turn ON Server';
   }
 
-  function saveUserMap(map) {
-    localStorage.setItem(userMapKey, JSON.stringify(map));
-  }
+  toggleServerBtn.onclick = () => {
+    const current = localStorage.getItem(serverKey);
+    const newStatus = current === 'off' ? 'on' : 'off';
+    localStorage.setItem(serverKey, newStatus);
+    addLog('Server toggled to: ' + newStatus.toUpperCase());
+    updateServerUI();
+  };
 
   function addLog(text) {
     const logs = JSON.parse(localStorage.getItem(logKey) || '[]');
@@ -122,44 +129,35 @@
     logList.innerHTML = logs.map(log => `<li>${log}</li>`).join('');
   }
 
-  function updateServerUI() {
-    const isOn = localStorage.getItem(serverKey) !== 'off';
-    statusText.innerText = isOn ? '🟢 Online' : '🔴 Offline';
-    toggleBtn.textContent = isOn ? '🔴 Turn OFF Server' : '🟢 Turn ON Server';
-  }
+  function loadUsers(filter = '') {
+    const users = JSON.parse(localStorage.getItem(userStoreKey) || '{}');
+    const entries = Object.entries(users);
+    let filtered = entries;
 
-  toggleBtn.onclick = () => {
-    const current = localStorage.getItem(serverKey);
-    const nextStatus = current === 'off' ? 'on' : 'off';
-    localStorage.setItem(serverKey, nextStatus);
-    addLog('Server toggled to: ' + nextStatus.toUpperCase());
-    updateServerUI();
-  };
+    if (filter.trim()) {
+      filtered = entries.filter(([ip, user]) => 
+        ip.includes(filter.trim()) || 
+        (user.username && user.username.toLowerCase().includes(filter.toLowerCase()))
+      );
+    }
 
-  function loadUsers(search = "") {
-    const map = getUserMap();
-    const keys = Object.keys(map);
-    userTable.innerHTML = "";
+    statsBox.innerHTML = `👥 Total Users: ${entries.length}`;
+    userTable.innerHTML = '';
 
-    const filtered = search ? keys.filter(ip => ip.includes(search)) : keys;
-    statsBox.textContent = `👥 Tracked IPs: ${filtered.length}`;
-
-    filtered.forEach(ip => {
-      const user = map[ip];
-      const lastActive = new Date(user.lastActive || 0).toLocaleString();
+    filtered.forEach(([ip, user]) => {
       const row = `
         <tr>
           <td>${ip}</td>
-          <td>${user.type === 'premium' ? '🌟 Premium' : 'Free'}</td>
-          <td>${lastActive}</td>
+          <td>${user.username || '-'}</td>
+          <td>${user.isPremium ? '🌟 Premium' : 'Free'}</td>
           <td>${user.blocked ? '🚫 Yes' : '✅ No'}</td>
           <td>
-            <button class="${user.blocked ? 'unblock-btn' : 'block-btn'}" onclick="updateUser('${ip}', 'blocked', ${!user.blocked})">
+            <button class="${user.blocked ? 'unblock-btn' : 'block-btn'}" onclick="toggleBlock('${ip}')">
               ${user.blocked ? 'Unblock' : 'Block'}
             </button>
-            <button class="premium-btn" onclick="updateUser('${ip}', 'type', 'premium')">Give Premium</button>
-            <button class="free-btn" onclick="updateUser('${ip}', 'type', 'free')">Make Free</button>
-            <button class="delete-btn" onclick="removeUser('${ip}')">Delete</button>
+            <button class="premium-btn" onclick="setPremium('${ip}', true)">Give Premium</button>
+            <button class="free-btn" onclick="setPremium('${ip}', false)">Remove Premium</button>
+            <button class="delete-btn" onclick="deleteUser('${ip}')">Delete</button>
           </td>
         </tr>
       `;
@@ -167,31 +165,51 @@
     });
   }
 
-  function updateUser(ip, field, value) {
-    const map = getUserMap();
-    if (!map[ip]) return;
-    map[ip][field] = value;
-    map[ip].lastActive = Date.now();
-    saveUserMap(map);
-    addLog(`${ip} → ${field} = ${value}`);
-    loadUsers(searchBox.value);
+  function getUserStore() {
+    return JSON.parse(localStorage.getItem(userStoreKey) || '{}');
   }
 
-  function removeUser(ip) {
-    const map = getUserMap();
-    delete map[ip];
-    saveUserMap(map);
-    addLog(`${ip} → removed from system`);
-    loadUsers(searchBox.value);
+  function saveUserStore(data) {
+    localStorage.setItem(userStoreKey, JSON.stringify(data));
   }
 
-  searchBox.addEventListener("input", () => loadUsers(searchBox.value));
+  function toggleBlock(ip) {
+    const data = getUserStore();
+    if (data[ip]) {
+      data[ip].blocked = !data[ip].blocked;
+      saveUserStore(data);
+      addLog(`${ip} → Blocked set to "${data[ip].blocked}"`);
+      loadUsers(searchBox.value);
+    }
+  }
+
+  function setPremium(ip, value) {
+    const data = getUserStore();
+    if (data[ip]) {
+      data[ip].isPremium = value;
+      saveUserStore(data);
+      addLog(`${ip} → Premium set to "${value}"`);
+      loadUsers(searchBox.value);
+    }
+  }
+
+  function deleteUser(ip) {
+    const data = getUserStore();
+    if (data[ip]) {
+      delete data[ip];
+      saveUserStore(data);
+      addLog(`User with IP ${ip} deleted`);
+      loadUsers(searchBox.value);
+    }
+  }
+
+  searchBox.addEventListener('input', () => loadUsers(searchBox.value));
 
   updateServerUI();
   loadLogs();
   loadUsers();
 
-  setInterval(() => loadUsers(searchBox.value), 30000); // Auto-refresh
+  setInterval(() => loadUsers(searchBox.value), 30000); // auto-refresh
 </script>
 
 </body>
