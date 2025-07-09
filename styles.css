@@ -589,20 +589,6 @@ body.light-mode #top-box {
   z-index: 999;
 }
 
-#menu-btn {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  padding: 8px 12px;
-  font-size: 14px;
-  background: #007bff;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  z-index: 999;
-}
-
 /* Headings */
 h1 {
   margin: 0;
@@ -707,38 +693,6 @@ body.light-mode .bot-message {
   border-radius: 6px;
 }
 
-/* Account Panel Styles */
-#account-panel {
-  position: fixed;
-  top: 0;
-  left: -280px;
-  width: 280px;
-  height: 100%;
-  background: #222;
-  box-shadow: 3px 0 8px rgba(0, 0, 0, 0.5);
-  color: white;
-  padding: 20px;
-  box-sizing: border-box;
-  transition: left 0.3s ease;
-  z-index: 10000;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-#account-panel.show {
-  left: 0;
-}
-
-#account-panel h2 {
-  margin-top: 0;
-  margin-bottom: 10px;
-  font-weight: 700;
-  font-size: 22px;
-  border-bottom: 1px solid #555;
-  padding-bottom: 10px;
-}
-
 #user-info {
   margin-bottom: 20px;
 }
@@ -767,53 +721,6 @@ body.light-mode .bot-message {
   color: #000;
 }
 
-#account-buttons button {
-  width: 100%;
-  padding: 12px;
-  font-size: 16px;
-  margin: 6px 0;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-#logout-btn {
-  background: #d9534f;
-  color: white;
-}
-
-#admin-panel-btn {
-  background: #5bc0de;
-  color: white;
-}
-
-/* Login/Register Block */
-#login-register-block {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: #111;
-  padding: 30px;
-  border-radius: 12px;
-  text-align: center;
-  max-width: 320px;
-  box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
-  z-index: 100000;
-}
-
-#login-register-block button {
-  width: 100%;
-  padding: 12px;
-  margin: 10px 0;
-  font-size: 18px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  background: #007bff;
-  color: white;
-}
-
 /* Responsive */
 @media (max-width: 600px) {
   #chat-box {
@@ -828,7 +735,3 @@ body.light-mode .bot-message {
   h1 {
     font-size: 20px;
   }
-  #account-panel {
-    width: 240px;
-  }
-}
