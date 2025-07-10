@@ -109,7 +109,7 @@ body.light-mode .user-message {
 .bot-message.typing {
   font-style: italic;
   opacity: 0.6;
-  animation: typingFade 1.2s infinite;
+  animation: typingFade 1.6s infinite;
   user-select: none;
 }
 
@@ -168,7 +168,7 @@ body.light-mode #user-input {
 #theme-switch {
   background: none;
   border: none;
-  font-size: 18px;
+  font-size: 20px;
   cursor: pointer;
   color: yellow;
   margin-left: 10px;
@@ -213,17 +213,6 @@ body.light-mode #theme-switch {
 
 #scroll-to-bottom:hover {
   background: #0056b3;
-}
-
-/* AI Switch Button */
-#ai-switch-btn {
-  background: #007bff;
-  color: white;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 6px;
-  font-size: 14px;
-  cursor: pointer;
 }
 
 /* Wikipedia Preview */
