@@ -251,7 +251,7 @@
 
     // --- Init Chat ---
     resetLimitIfNewDay();
-    appendMessage("👋 Hi! I'm Bangladeshi AI ChatBot. Ask me anything! If you are facing any problem contact on WhatsApp 01963178893 (Message only).", 'bot-message');
+    appendMessage("👋 Hi! I'm Bangladeshi AI ChatBot. Ask me anything! If you are facing any problem contact on WhatsApp 01963178893.", 'bot-message');
     userInput.focus();
   });
 })();
