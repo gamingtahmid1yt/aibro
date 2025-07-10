@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -63,36 +62,27 @@
     ul { padding-left: 20px; }
   </style>
 </head>
-<body>
-
-<h1>👑 Admin Panel</h1>
+<body><h1>👑 Admin Panel</h1>
 <h3>🌐 Server Status: <span id="server-status-text">Checking...</span></h3>
-<button id="toggle-server-btn">Toggle Server</button>
-
-<input type="text" id="search-box" placeholder="🔍 Search IP or Username..." />
-
-<div id="stats"></div>
-
-<table>
+<button id="toggle-server-btn">Toggle Server</button><input type="text" id="search-box" placeholder="🔍 Search IP or Username..." /><div id="stats"></div><table>
   <thead>
     <tr>
       <th>IP</th>
       <th>Username</th>
       <th>Status</th>
       <th>Blocked?</th>
+      <th>Replies Used</th>
       <th>Actions</th>
     </tr>
   </thead>
   <tbody id="user-table"></tbody>
-</table>
-
-<h3>📜 Admin Logs</h3>
-<ul id="log-list"></ul>
-
-<script>
+</table><h3>📜 Admin Logs</h3>
+<ul id="log-list"></ul><script>
   const serverKey = 'server_status';
   const logKey = 'admin_logs';
-  const userStoreKey = 'ip_users';
+  const userStoreKey = 'ip_user_data';
+  const replyLimitKey = 'reply_limit';
+  const replyDateKey = 'limit_date';
 
   const serverStatusText = document.getElementById('server-status-text');
   const toggleServerBtn = document.getElementById('toggle-server-btn');
@@ -101,7 +91,6 @@
   const searchBox = document.getElementById('search-box');
   const statsBox = document.getElementById('stats');
 
-  // Update server status UI
   function updateServerUI() {
     const isOn = localStorage.getItem(serverKey) !== 'off';
     serverStatusText.innerText = isOn ? '🟢 Online' : '🔴 Offline';
@@ -145,12 +134,14 @@
     userTable.innerHTML = '';
 
     filtered.forEach(([ip, user]) => {
+      const replyUsed = user.replyCount || localStorage.getItem(replyLimitKey) || 0;
       const row = `
         <tr>
           <td>${ip}</td>
           <td>${user.username || '-'}</td>
           <td>${user.isPremium ? '🌟 Premium' : 'Free'}</td>
           <td>${user.blocked ? '🚫 Yes' : '✅ No'}</td>
+          <td>${replyUsed}</td>
           <td>
             <button class="${user.blocked ? 'unblock-btn' : 'block-btn'}" onclick="toggleBlock('${ip}')">
               ${user.blocked ? 'Unblock' : 'Block'}
@@ -209,8 +200,6 @@
   loadLogs();
   loadUsers();
 
-  setInterval(() => loadUsers(searchBox.value), 30000); // auto-refresh
-</script>
-
-</body>
+  setInterval(() => loadUsers(searchBox.value), 30000);
+</script></body>
 </html>
