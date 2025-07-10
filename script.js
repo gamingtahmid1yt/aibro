@@ -1,4 +1,9 @@
-(() => { document.addEventListener('DOMContentLoaded', async () => { // --- Ensure Elements Exist --- const checkDOM = () => { const requiredIds = ['chat-box', 'user-input', 'send-btn', 'clear-btn', 'theme-switch', 'input-form']; for (let id of requiredIds) { if (!document.getElementById(id)) { location.reload(); return false; } } return true; }; if (!checkDOM()) return;
+(() => { document.addEventListener('DOMContentLoaded', async () => 
+  { // --- Ensure Elements Exist --- 
+    const checkDOM = () => 
+      { const requiredIds = ['chat-box', 'user-input', 'send-btn', 'clear-btn', 'theme-switch', 'input-form']; for (let id of requiredIds) 
+      { if (!document.getElementById(id)) 
+      { location.reload(); return false; } } return true; }; if (!checkDOM()) return;
 
 // --- Server ON/OFF ---
 if (localStorage.getItem('server_status') === 'off') {
