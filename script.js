@@ -48,8 +48,8 @@
 
     // --- Theme Toggle ---
     themeToggle.onclick = () => {
-      const dark = document.body.classList.toggle('dark-mode');
-      themeToggle.textContent = dark ? '🌙' : '☀️';
+      const light = document.body.classList.toggle('light-mode');
+      themeToggle.textContent = light ? '☀️' : '🌙';
     };
 
     // --- Clear Button ---
