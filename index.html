@@ -3,20 +3,122 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>AI ChatBot by Tahmid</title>
+  <title>AI ChatBot 🇧🇩 - by Tahmid</title>
   <link rel="stylesheet" href="styles.css" />
+  <style>
+    body {
+      margin: 0;
+      background: #111;
+      color: #fff;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    #app-container {
+      padding-top: 80px;
+    }
+    #top-box {
+      position: sticky;
+      top: 0;
+      background: #222;
+      padding: 15px 10px 10px 10px;
+      text-align: center;
+      z-index: 999;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.6);
+      border-bottom: 1px solid #333;
+    }
+    #top-box h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+    #switch-ai {
+      margin-top: 10px;
+      padding: 6px 14px;
+      border: none;
+      border-radius: 8px;
+      background-color: #0a84ff;
+      color: #fff;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    #clear-btn, #theme-switch {
+      position: fixed;
+      top: 10px;
+      z-index: 9999;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    #clear-btn {
+      left: 10px;
+      background: red;
+      color: white;
+    }
+    #theme-switch {
+      right: 10px;
+      background: #333;
+      color: #fff;
+    }
+    #chat-box {
+      padding: 15px;
+      min-height: 60vh;
+    }
+    #input-form {
+      display: flex;
+      padding: 10px;
+      background: #000;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      box-sizing: border-box;
+      border-top: 1px solid #444;
+    }
+    #user-input {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+    #send-btn {
+      padding: 10px 16px;
+      margin-left: 8px;
+      background: #0a84ff;
+      border: none;
+      border-radius: 6px;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    #scroll-to-bottom {
+      position: fixed;
+      bottom: 60px;
+      right: 10px;
+      background: #444;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 10px;
+      display: none;
+      z-index: 999;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
+
   <!-- Header Buttons -->
   <button id="clear-btn">Clear</button>
   <button id="theme-switch" title="Toggle Dark/Light">🌙</button>
 
-  <!-- Chat UI Container -->
-  <div id="app-container">
-    <div id="top-box">
-      <h1>AI ChatBot 🇧🇩</h1>
-    </div>
+  <!-- Sticky Header / Top Box -->
+  <div id="top-box">
+    <h1>AI ChatBot 🇧🇩</h1>
+    <button id="switch-ai">Switch to Smart AI</button>
+  </div>
 
+  <!-- Main Chat Area -->
+  <div id="app-container">
     <div id="chat-box"></div>
 
     <form id="input-form">
@@ -24,14 +126,14 @@
       <button type="submit" id="send-btn">Send</button>
     </form>
 
-    <!-- Wikipedia Image Preview Section -->
+    <!-- Wikipedia Image Preview -->
     <div id="wiki-preview"></div>
   </div>
 
-  <!-- Scroll to Bottom Button -->
+  <!-- Scroll Button -->
   <button id="scroll-to-bottom" title="Scroll to bottom">⇩</button>
 
-  <!-- Script -->
+  <!-- Main Script -->
   <script src="script.js"></script>
 </body>
-</html>
+  </html>
