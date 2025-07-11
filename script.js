@@ -3,24 +3,23 @@
 document.body.classList.add('light-mode');
 document.getElementById('theme-switch').textContent = '☀️';
 
-let serverStatus = 'on';
-try {
-  const res = await fetch('https://gamingtahmid1yt.github.io/chatbot-server/server.json');
-  const json = await res.json();
-  serverStatus = json.status;
-} catch (e) {
-  console.warn('⚠️ Failed to fetch server status, assuming ON');
-  serverStatus = 'on';
-}
+setInterval(async () => {
+  try {
+    const res = await fetch('https://gamingtahmid1yt.github.io/chatbot-server/server.json?v=' + Date.now());
+    const data = await res.json();
 
-if (serverStatus === 'off') {
-  document.body.innerHTML = `
-    <div style="text-align:center;padding:40px;">
-      <h1>🔒 Server is currently closed</h1>
-      <p>Please refresh and try again later. Contact 01963178893 for more information.</p>
-    </div>`;
-  return;
-}
+    if (data.status === 'off') {
+      document.body.innerHTML = `
+        <div style="text-align:center; padding:40px;">
+          <h1>🔒 Server is currently closed</h1>
+          <p>Contact on WhatsApp 01963178893 for more information.</p>
+        </div>`;
+    }
+  } catch (err) {
+    console.warn('⚠️ Server status check failed. Check your connection or refresh website.', err);
+  }
+}, 10000);
+
 
 const chatBox = document.getElementById('chat-box');
 const userInput = document.getElementById('user-input');
