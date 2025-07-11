@@ -25,8 +25,13 @@ const chatBox = document.getElementById('chat-box');
 const userInput = document.getElementById('user-input');
 const sendBtn = document.getElementById('send-btn');
 const clearBtn = document.getElementById('clear-btn');
-const themeToggle = document.getElementById('theme-switch');
 const inputForm = document.getElementById('input-form');
+const themeToggle = document.getElementById('theme-switch');
+
+themeToggle.onclick = () => {
+  const isLight = document.body.classList.toggle('light-mode');
+  themeToggle.textContent = isLight ? '☀️' : '🌙';
+};
 
 const abusiveWords = ['sex','porn','sexy','nude','pussy','bichi','boob','fuck','fucking','sexi','shauwa','magernati','মাগী','খানকি','চোদ','চুদ','চোদা','চুদা','বোকাচোদা','নুনু','মাদারচোদ','শুয়োর','bastard','dickhead','motherfucker','bitchass','suckass','dumbass','asswipe','cock','fucker','বোন চোদ','মা চোদ','পোঁদ','গুদ','হালারপুত','গাধাচোদা','fack','dick','blowjob','madarchod','khanki','magi','bokacoda','natkirpo','mangernati','shaua','suck','gand','gandu','lund','boobs','sexygirl','chudiya','chud','shibal','pom pom','besshamagi','halarput','halarfhut','bosdike'];
 const containsAbuse = text => abusiveWords.some(w => text.toLowerCase().includes(w));
