@@ -3,7 +3,6 @@
 document.body.classList.add('light-mode');
 document.getElementById('theme-switch').textContent = '☀️';
 
-// --- GLOBAL SERVER STATUS from GitHub ---
 let serverStatus = 'on';
 try {
   const res = await fetch('https://gamingtahmid1yt.github.io/chatbot-server/server.json');
@@ -268,7 +267,7 @@ Mir Mahfuzur Rahman Mugdho (মীর মাহফুজুর রহমান �
 };
 
 resetLimitIfNewDay();
-appendMessage("👋 Hi! I'm Bangladeshi AI ChatBot. Ask me anything! If you are facing any problem please contact on WhatsApp 01963178893.", 'bot-message');
+appendMessage("👋 Hi! I'm Bangladeshi AI ChatBot. Ask me anything! If you are facing any problem please refresh the website or contact on WhatsApp 01963178893.", 'bot-message');
 userInput.focus();
 
 }); })();
