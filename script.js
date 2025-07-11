@@ -82,6 +82,7 @@ Sayed posed no apparent physical threat to the police.
 Sayed’s death certificate states he was ‘brought dead’ to the hospital.
 He was just 25 years old.
 The video of Sayed’s brutal killing sparked outrage and became a symbol of the violence directed at protesters in Bangladesh since 15 July 2024.
+July slogan called Tumi ke ami ke razakar razakar, ke boleche ke boleche shoirachar shoirachar (তুমি কে আমি কে রাজাকার রাজাকার, কে বলেছে কে বলেছে স্বৈরাচার স্বৈরাচার).
 What happened to the protesters? 
 By 18th July, 32 deaths were reported as the authorities continued to attack the protesters. The highest number of deaths reported in a single day was 75 – on 19 July. The Government proposed a discussion, but the protesters rejected it in the face of a mounting death toll.
 Not only protesters, but journalists and bystanders too were assaulted and killed during the crackdown.
@@ -101,6 +102,9 @@ Blanket shutdowns impact people’s safety, security, mobility and livelihoods w
 Callous violence
 Further in multiple videos from 18 July, the unconscious body of Shykh Aashhabul Yamin, a student at the Military Institute of Science and Technology, was seen on top of an Armoured Personnel Carrier (APC) driving down the Dhaka-Aricha Highway. In three videos verified by Amnesty International, officers can be seen violently yanking Yamin’s body down off the APC, causing Yamin’s head to hit the pavement as his body fell. Eventually other officers can be seen dragging his body over the road’s median barriers, and eventually driving away leaving Yamin’s body on the road. News reports claim that Yamin died later that day from his injuries. None of the 12 officers visible attempted to provide medical aid to Yamin.  Section 5(c) of the United Nations Basic Principle on the Use of Force and Firearms by Law Enforcement Officials requires law enforcement officials to ensure that assistance and medical aid are rendered to any injured or affected persons at the earliest possible moment.
 This incident illustrated the callous disregard for the right to life and the abject failure by law enforcement officials to uphold their obligations under domestic and international human rights law.
+Mir Mugdho death
+Mir Mahfuzur Rahman Mugdho (মীর মাহফুজুর রহমান মুগ্ধ; 9 October 1998 – 18 July 2024) was a Bangladeshi student, freelancer, and activist in the 2024 quota reform movement, who was shot dead while distributing food, water and biscuits during the protest. His death is widely recognised as a pivotal point in the July Revolution. 
+(Paani lagbe paani) was the Mughdo’s last words as he was distributing water bottles to the protesters amid violent clashes on that day. Mughdo's final words are now ringing in the ears of every citizen.
       `    }];
     
     // --- Admin Access ---
