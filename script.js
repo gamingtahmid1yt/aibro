@@ -3,22 +3,8 @@
 document.body.classList.add('light-mode');
 document.getElementById('theme-switch').textContent = '☀️';
 
-let serverStatus = 'on';
-try {
-  const res = await fetch('https://gamingtahmid1yt.github.io/chatbot-server/server.json');
-  const json = await res.json();
-  serverStatus = json.status;
-} catch (e) {
-  console.warn('⚠️ Failed to fetch server status, assuming ON');
-  serverStatus = 'on';
-}
-
-if (serverStatus === 'off') {
-  document.body.innerHTML = `
-    <div style="text-align:center;padding:40px;">
-      <h1>🔒 Server is currently closed</h1>
-      <p>Please refresh and try again later. Contact 01963178893 for more information.</p>
-    </div>`;
+if (localStorage.getItem('server_status') === 'off') {
+  document.body.innerHTML = `<div style="text-align:center;padding:40px;"><h1>🔒 Server is currently closed</h1><p>Please refresh and try again later. Contact 01963178893 for more info.</p></div>`;
   return;
 }
 
@@ -29,7 +15,7 @@ const clearBtn = document.getElementById('clear-btn');
 const themeToggle = document.getElementById('theme-switch');
 const inputForm = document.getElementById('input-form');
 
-const abusiveWords = ['sex','porn','sexy','nude','pussy','bichi','nunu','boob','fuck','fucking','sexi','shauwa','magernati','মাগী','খানকি','চোদ','চুদ','চোদা','চুদা','গান্ডু','গাধা','হারামি','বেশ্যা','বোকাচোদা','বিছি','নুনু','মাদারচোদ','বসডা','শুয়োর','bastard','crap','shit','dickhead','motherfucker','skank','tramp','jerkoff','twat','moron','retard','scumbag','scum','jackass','bitchass','suckass','dumbass','asswipe','cock','fucker','tit','বোনচোদ','মা চোদ','লান্ড','পোঁদ','গুদ','হালারপুত','গাধাচোদা','নেংটা','গালি','fack','dick','blowjob','madarchod','khanki','magi','bokacoda','natkirpo','mangernati','shaua','suck','gand','gandu','lund','boobs','hotgirl','sexygirl','chudiya','chud','shibal','pom pom','besshamagi','halarput','halarfhut','bosdike'];
+const abusiveWords = ['sex','porn','sexy','nude','pussy','bichi','boob','fuck','fucking','sexi','shauwa','magernati','মাগী','খানকি','চোদ','চুদ','চোদা','চুদা','বোকাচোদা','নুনু','মাদারচোদ','শুয়োর','bastard','dickhead','motherfucker','bitchass','suckass','dumbass','asswipe','cock','fucker','বোন চোদ','মা চোদ','পোঁদ','গুদ','হালারপুত','গাধাচোদা','fack','dick','blowjob','madarchod','khanki','magi','bokacoda','natkirpo','mangernati','shaua','suck','gand','gandu','lund','boobs','sexygirl','chudiya','chud','shibal','pom pom','besshamagi','halarput','halarfhut','bosdike'];
 const containsAbuse = text => abusiveWords.some(w => text.toLowerCase().includes(w));
 
 const messages = [{
@@ -45,11 +31,11 @@ At least two police officers discharged 12-gauge shotguns directly towards him f
 Sayed clutched his chest on impact as officers fired at least two more times using birdshot,  ammunition that is designed for hunting which is extremely dangerous, inherently inaccurate and thus unlawful for use in the policing of protests.
 Sayed posed no apparent physical threat to the police.
 Sayed’s death certificate states he was ‘brought dead’ to the hospital.
-He was just 25 years old.
+Abu sayed was just 25 years old.
 The video of Sayed’s brutal killing sparked outrage and became a symbol of the violence directed at protesters in Bangladesh since 15 July 2024.
 July slogan called Tumi ke ami ke razakar razakar, ke boleche ke boleche shoirachar shoirachar (তুমি কে আমি কে রাজাকার রাজাকার, কে বলেছে কে বলেছে স্বৈরাচার স্বৈরাচার).
 What happened to the protesters? 
-By 18th July, 32 deaths were reported as the authorities continued to attack the protesters. The highest number of deaths reported in a single day was 75 – on 19 July. The Government proposed a discussion, but the protesters rejected it in the face of a mounting death toll.
+In 18th July, 32 deaths were reported as the authorities continued to attack the protesters. The highest number of deaths reported in a single day was 75 – on 19 July. The Government proposed a discussion, but the protesters rejected it in the face of a mounting death toll.
 Not only protesters, but journalists and bystanders too were assaulted and killed during the crackdown.
 Then the entire country went offline when the government imposed a communication blackout, leaving the world to guess what was happening. In the days to follow, the notorious Rapid Action Battalion (RAB), the Border Guard Bangladesh (BGB), and the Army were deployed across the country and a “shoot at sight” curfew was imposed.
 Five days later, internet restrictions were partially lifted. More than 200 people had been killed in less than 10 days and thousands more injured. Few countries have witnessed such a death toll in such a short duration of time. According to media reports, at least 2,500 people have also been arbitrarily arrested and around 61,000 protesters named as accused persons in cases.
@@ -102,12 +88,12 @@ localStorage.setItem('ip_user_data', JSON.stringify(ipData));
 
 const isPremiumUser = ipData[userIP].premium;
 if (ipData[userIP].blocked) {
-  appendMessage('🚫 You are blocked. Contact admin.', 'bot-message');
+  appendMessage('🚫 You are blocked. Contact admin on WhatsApp 01963178893 for more information.', 'bot-message');
   userInput.disabled = sendBtn.disabled = true;
   return;
 }
 
-const RATE_LIMIT_MS = isPremiumUser ? 2000 : 7500;
+const RATE_LIMIT_MS = isPremiumUser ? 6000 : 9000;
 const limitKey = 'reply_limit';
 const dateKey = 'limit_date';
 const dailyLimit = isPremiumUser ? Infinity : 30;
@@ -143,11 +129,11 @@ function createTyping() {
   const iv = setInterval(() => {
     d = (d + 1) % 4;
     div.firstChild.textContent = 'Typing' + '.'.repeat(d);
-  }, 400);
+  }, 200);
   return { div, iv };
 }
 
-const API_KEY = 'tgp_v1_8V75-FUeZupXDZJtUOewnH_odg2gmCHHNl7yoaGFxfM';
+const API_KEY = 'tgp_v1_ZF0NGC-IMK2s0BIvxLnWO5eQNZW3ZE7zoq-PfvWuZGQ';
 const API_URL = 'https://api.together.xyz/v1/chat/completions';
 const TEXT_MODEL = 'meta-llama/Llama-3.3-70B-Instruct-Turbo-Free';
 
