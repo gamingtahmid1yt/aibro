@@ -128,7 +128,7 @@ if (ipData[userIP].blocked) {
   return;
 }
 
-const RATE_LIMIT_MS = isPremiumUser ? 6000 : 9000;
+const RATE_LIMIT_MS = isPremiumUser ? 6000 : 8000;
 const limitKey = 'reply_limit';
 const dateKey = 'limit_date';
 const dailyLimit = isPremiumUser ? Infinity : 30;
@@ -144,15 +144,25 @@ function resetLimitIfNewDay() {
 }
 
 function appendMessage(text, cls) {
+  const linkifiedText = text.replace(
+    /((https?:\/\/|www\.)[^\s]+)/g,
+    (match) => {
+      const url = match.startsWith('http') ? match : `https://${match}`;
+      return `<a href="${url}" target="_blank" style="color:blue;text-decoration:underline;">${match}</a>`;
+    }
+  );
+
   const div = document.createElement('div');
   div.className = cls;
-  div.innerHTML = `<span>${text}</span>`;
+  div.innerHTML = `<span>${linkifiedText}</span>`;
+
   if (cls === 'bot-message') {
     const btn = document.createElement('button');
     btn.textContent = '📋 Copy';
-    btn.onclick = () => navigator.clipboard.writeText(text).then(() => btn.textContent = '✅');
+    btn.onclick = () => navigator.clipboard.writeText(text).then(() => btn.textContent = '✅ Copied');
     div.appendChild(btn);
   }
+
   chatBox.appendChild(div);
   chatBox.scrollTop = chatBox.scrollHeight;
   return div;
@@ -195,7 +205,7 @@ inputForm.onsubmit = async ev => {
   if (!txt) return;
   userInput.value = '';
   if (containsAbuse(txt)) {
-    appendMessage('❌ Abuse detected. Message blocked.', 'bot-message');
+    appendMessage('❌ Abuse detected. Message blocked. Please be respectful.', 'bot-message');
     return;
   }
   if (!(await checkLimit())) return;
