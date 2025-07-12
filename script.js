@@ -143,22 +143,34 @@ function resetLimitIfNewDay() {
 }
 
 function appendMessage(text, cls) {
-  const linkifiedText = text.replace(
-    /((https?:\/\/|www\.)[^\s]+)/g,
-    (match) => {
-      const url = match.startsWith('http') ? match : `https://${match}`;
-      return `<a href="${url}" target="_blank" style="color:cyan;text-decoration:underline;">${match}</a>`;
+  const div = document.createElement('div');
+  div.className = cls;
+
+  // Detect and convert links (www. or ending with .com/.net/.in/.bd)
+  const linkedText = text.replace(
+    /(\b(?:https?:\/\/|www\.)[^\s]+|\b[^\s]+\.(?:com|net|bd|in)(?:\/[^\s]*)?)/gi,
+    match => {
+      let url = match;
+      if (!/^https?:\/\//i.test(url)) {
+        url = 'https://' + url;
+      }
+      return `<a href="${url}" target="_blank" style="color: #00bfff; text-decoration: underline;">${match}</a>`;
     }
   );
 
-  const div = document.createElement('div');
-  div.className = cls;
-  div.innerHTML = `<span>${linkifiedText}</span>`;
+  div.innerHTML = `<span>${linkedText}</span>`;
 
   if (cls === 'bot-message') {
     const btn = document.createElement('button');
     btn.textContent = '📋 Copy';
-    btn.onclick = () => navigator.clipboard.writeText(text).then(() => btn.textContent = '✅ Copied');
+    btn.onclick = () => {
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = '✅ Copied';
+        setTimeout(() => {
+          btn.textContent = '📋 Copy';
+        }, 1500); // reset after 1.5 seconds
+      });
+    };
     div.appendChild(btn);
   }
 
