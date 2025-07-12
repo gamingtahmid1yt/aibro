@@ -207,11 +207,11 @@ inputForm.onsubmit = async ev => {
 
   const { div, iv } = createTyping();
   const payload = {
-    model: TEXT_MODEL,
-    messages: messages.slice(-10),
-    temperature: 0.2,
-    max_tokens: isPremiumUser ? 600 : 601
-  };
+  model: TEXT_MODEL,
+  messages: [messages[0], ...messages.slice(-9)],
+  temperature: 0.2,
+  max_tokens: isPremiumUser ? 600 : 601
+};
 
   try {
     const res = await fetch(API_URL, {
