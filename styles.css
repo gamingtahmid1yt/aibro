@@ -109,7 +109,7 @@ body.light-mode .user-message {
 .bot-message.typing {
   font-style: italic;
   opacity: 0.6;
-  animation: typingFade 0.7s infinite;
+  animation: typingFade 0.5s infinite;
   user-select: none;
 }
 
