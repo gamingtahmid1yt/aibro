@@ -1,64 +1,7 @@
-(() => {
-  document.addEventListener('DOMContentLoaded', async () => {
-    const checkDOM = () => {
-  const requiredIds = ['chat-box', 'user-input', 'send-btn', 'clear-btn', 'theme-switch', 'input-form', 'image-upload'];
-  for (let id of requiredIds) {
-    if (!document.getElementById(id)) {
-      console.warn(`❌ Missing element: ${id}`);
-      setTimeout(() => location.reload(), 1000); // wait 1 second before reloading
-      return false;
-    }
-  }
-  return true;
-};
-    if (!checkDOM()) return;
+(() => { document.addEventListener('DOMContentLoaded', async () => { const checkDOM = () => { const requiredIds = ['chat-box','user-input','send-btn','clear-btn','theme-switch','input-form']; for (let id of requiredIds) { if (!document.getElementById(id)) { location.reload(); return false; } } return true; }; if (!checkDOM()) return;
 
-    document.body.classList.add('light-mode');
-    document.getElementById('theme-switch').textContent = '☀️';
-
-    document.getElementById('image-upload').addEventListener('change', function (e) {
-      const file = e.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = function () {
-        const base64Image = reader.result.split(',')[1];
-
-        appendMessage(`<img src="${reader.result}" style="max-width:100%; border-radius:10px;" />`, 'user-message');
-
-        fetch('https://api.tahmideditofficial.workers.dev', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            model: 'meta-llama/llama-4-scout-17b-16e-instruct',
-            messages: [
-              {
-                role: 'user',
-                content: [
-                  { type: 'text', text: "What you can see in this image?" },
-                  { type: 'image_url', image_url: { url: `data:image/jpeg;base64,${base64Image}` } }
-                ]
-              }
-            ],
-            temperature: 0.3,
-            max_tokens: 600
-          })
-        })
-          .then(res => res.json())
-          .then(data => {
-            const reply = data.choices?.[0]?.message?.content || "⚠️ No response from Ai";
-            appendMessage(reply, 'bot-message');
-          })
-          .catch(err => {
-            console.error(err);
-            appendMessage("❌ Image request failed", 'bot-message');
-          });
-      };
-      reader.readAsDataURL(file);
-    });
-
+document.body.classList.add('light-mode');
+document.getElementById('theme-switch').textContent = '☀️';
 // Server status auto-refresh every 10 seconds
 setInterval(async () => {
   try {
