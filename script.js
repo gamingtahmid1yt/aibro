@@ -1,15 +1,16 @@
 (() => {
   document.addEventListener('DOMContentLoaded', async () => {
     const checkDOM = () => {
-      const requiredIds = ['chat-box', 'user-input', 'send-btn', 'clear-btn', 'theme-switch', 'input-form', 'image-upload'];
-      for (let id of requiredIds) {
-        if (!document.getElementById(id)) {
-          location.reload();
-          return false;
-        }
-      }
-      return true;
-    };
+  const requiredIds = ['chat-box', 'user-input', 'send-btn', 'clear-btn', 'theme-switch', 'input-form', 'image-upload'];
+  for (let id of requiredIds) {
+    if (!document.getElementById(id)) {
+      console.warn(`❌ Missing element: ${id}`);
+      setTimeout(() => location.reload(), 1000); // wait 1 second before reloading
+      return false;
+    }
+  }
+  return true;
+};
     if (!checkDOM()) return;
 
     document.body.classList.add('light-mode');
@@ -74,7 +75,7 @@ setInterval(async () => {
   } catch (err) {
     console.warn('⚠️ Server status check failed. Check your connection or refresh website.', err);
   }
-}, 1);
+}, 10);
 
 const chatBox = document.getElementById('chat-box');
 const userInput = document.getElementById('user-input');
