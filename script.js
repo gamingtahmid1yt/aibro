@@ -197,7 +197,7 @@ inputForm.onsubmit = async ev => {
   model: TEXT_MODEL,
   messages: [messages[0], ...messages.slice(-3)],
   temperature: 0.3,
-  max_tokens: isPremiumUser ? 600 : 500
+  max_tokens: isPremiumUser ? 500 : 450
 };
 
   try {
