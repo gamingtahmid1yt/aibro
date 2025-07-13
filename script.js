@@ -19,7 +19,7 @@ setInterval(async () => {
   } catch (err) {
     console.warn('⚠️ Server status check failed. Check your connection or refresh website.', err);
   }
-}, 500);
+}, 100);
 
 const chatBox = document.getElementById('chat-box');
 const userInput = document.getElementById('user-input');
@@ -228,9 +228,9 @@ inputForm.onsubmit = async ev => {
   const { div, iv } = createTyping();
   const payload = {
   model: TEXT_MODEL,
-  messages: [messages[0], ...messages.slice(-9)],
-  temperature: 0.4,
-  max_tokens: isPremiumUser ? 750 : 760
+  messages: [messages[0], ...messages.slice(-5)],
+  temperature: isPremiumUser ? 0.4 : 0.3,
+  max_tokens: isPremiumUser ? 700 : 550
 };
 
   try {
