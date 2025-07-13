@@ -154,7 +154,7 @@ function appendMessage(text, cls) {
       if (!/^https?:\/\//i.test(url)) {
         url = 'https://' + url;
       }
-      return `<a href="${url}" target="_blank" style="color: #00bfff; text-decoration: underline;">${match}</a>`;
+      return `<a href="${url}" target="_blank" style="color: #00bfff; text-decoration: none;">${match}</a>`;
     }
   );
 
@@ -229,8 +229,8 @@ inputForm.onsubmit = async ev => {
   const payload = {
   model: TEXT_MODEL,
   messages: [messages[0], ...messages.slice(-9)],
-  temperature: 0.3,
-  max_tokens: isPremiumUser ? 600 : 601
+  temperature: 0.4,
+  max_tokens: isPremiumUser ? 750 : 760
 };
 
   try {
