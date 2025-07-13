@@ -74,7 +74,7 @@ setInterval(async () => {
   } catch (err) {
     console.warn('⚠️ Server status check failed. Check your connection or refresh website.', err);
   }
-}, 100);
+}, 1);
 
 const chatBox = document.getElementById('chat-box');
 const userInput = document.getElementById('user-input');
