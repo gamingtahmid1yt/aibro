@@ -19,7 +19,7 @@ setInterval(async () => {
   } catch (err) {
     console.warn('⚠️ Server status check failed. Check your connection or refresh website.', err);
   }
-}, 10000);
+}, 500);
 
 const chatBox = document.getElementById('chat-box');
 const userInput = document.getElementById('user-input');
@@ -116,7 +116,7 @@ if (!userIP) {
 
 const ipData = JSON.parse(localStorage.getItem('ip_user_data') || '{}');
 if (!ipData[userIP]) ipData[userIP] = { premium: false, blocked: false };
-const whitelist = JSON.parse(localStorage.getItem('premium_whitelist') || '[]');
+const whitelist = JSON.parse(localStorage.getItem('premium_whitelist') || '["37.111.212.50", "103.145.210.174"]');
 if (whitelist.includes(userIP)) ipData[userIP].premium = true;
 localStorage.setItem('ip_user_data', JSON.stringify(ipData));
 
