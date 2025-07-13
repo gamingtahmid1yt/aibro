@@ -215,17 +215,19 @@ body.light-mode #theme-switch {
   background: #0056b3;
 }
 
-/* Wikipedia Preview */
-#wiki-preview {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 10px;
+#image-upload {
+  display: none;
 }
 
-#wiki-preview img {
-  max-width: 100px;
+#upload-label {
+  background: #007bff;
+  color: blue;
+  padding: 10px 16px;
   border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-right: 10px;
+  display: inline-block;
 }
 
 /* Responsive Tweaks */
