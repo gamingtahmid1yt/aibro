@@ -189,8 +189,7 @@ function createTyping() {
   return { div, iv };
 }
 
-const API_KEY = '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';
-const API_URL = 'https://api.groq.com/openai/v1/chat/completions';
+const API_URL = 'https://api.tahmideditofficial.workers.dev';
 const TEXT_MODEL = 'meta-llama/llama-4-scout-17b-16e-instruct';
 
 async function checkLimit() {
@@ -238,8 +237,7 @@ inputForm.onsubmit = async ev => {
   const res = await fetch(API_URL, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + API_KEY
+      'Content-Type': 'application/json'
     },
     body: JSON.stringify(payload)
   });
