@@ -127,6 +127,9 @@
         d = (d + 1) % 4;
         div.firstChild.textContent = 'Typing' + '.'.repeat(d);
       }, 150);
+
+      clearInterval(iv);
+div.remove();
       return { div, iv };
     }
 
