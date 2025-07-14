@@ -160,7 +160,7 @@ inputForm.onsubmit = async ev => {
     model: TEXT_MODEL,
     messages: aiInputMessages,
     temperature: 0.5,
-    max_tokens: isPremiumUser ? 600 : 500
+    max_tokens: isPremiumUser ? 1000 : 900
   };
 
   try {
