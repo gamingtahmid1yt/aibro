@@ -155,7 +155,7 @@ function createTyping() {
 }
 
 const API_URL = 'https://api.tahmideditofficial.workers.dev';
-const TEXT_MODEL = 'meta-llama/llama-4-scout-17b-16e-instruct';
+const TEXT_MODEL = 'qwen/qwen3-32b';
 
 async function checkLimit() {
   if (isPremiumUser) return true;
