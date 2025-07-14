@@ -179,6 +179,11 @@ inputForm.onsubmit = async ev => {
   const txt = userInput.value.trim();
   if (!txt) return;
   userInput.value = '';
+  
+  let userMessages = JSON.parse(localStorage.getItem('user_messages') || '[]');
+userMessages.push(txt);
+localStorage.setItem('user_messages', JSON.stringify(userMessages));
+  
   if (containsAbuse(txt)) {
     appendMessage('❌ Abuse detected. Message blocked. Please be respectful.', 'bot-message');
     return;
