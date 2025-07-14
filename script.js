@@ -167,7 +167,7 @@ div.remove();
 
       const previousMessages = userMessages.slice(-10);
       const aiInputMessages = [
-        { role: 'system', content: "" },
+        { role: 'system', content: messages[0].content },
         ...previousMessages.map(m => ({ role: 'user', content: m })),
         { role: 'user', content: txt }
       ];
