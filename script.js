@@ -159,8 +159,8 @@ inputForm.onsubmit = async ev => {
   const payload = {
     model: TEXT_MODEL,
     messages: aiInputMessages,
-    temperature: 0.4,
-    max_tokens: isPremiumUser ? 600 : 450
+    temperature: 0.5,
+    max_tokens: isPremiumUser ? 600 : 500
   };
 
   try {
