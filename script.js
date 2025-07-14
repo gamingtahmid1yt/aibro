@@ -139,7 +139,7 @@ inputForm.onsubmit = async ev => {
   userMessages.push(txt);
   localStorage.setItem('user_messages', JSON.stringify(userMessages));
 
-  const previousMessages = userMessages.slice(-10);
+  const previousMessages = userMessages.slice(-5);
   const aiInputMessages = [
     { role: 'system', content: messages[0].content },
     ...previousMessages.map(m => ({ role: 'user', content: m })),
