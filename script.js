@@ -237,7 +237,7 @@ div.remove();
       } catch (err) {
         console.warn('⚠️ Server status check failed.', err);
       }
-    }, 1000); // every 5 seconds
+    }, 500); // every 5 seconds
 
     resetLimitIfNewDay();
     appendMessage("👋 Hi! I'm a Bangladeshi AI ChatBot 🇧🇩. Ask me anything!", 'bot-message');
