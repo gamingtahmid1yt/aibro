@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Settings</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f0f0f0;
+      color: #333;
+    }
+    input, button {
+      padding: 10px;
+      margin: 10px 0;
+      width: 100%;
+      font-size: 16px;
+    }
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <h2>🔧 Settings</h2>
+
+  <label for="username">🧑 Your Name:</label>
+  <input type="text" id="username" placeholder="Enter your name..." />
+
+  <button onclick="saveName()">💾 Save Name</button>
+  <button onclick="clearHistory()">🗑️ Clear Chat History</button>
+
+  <p id="status" style="margin-top: 10px;"></p>
+
+  <script>
+    // Load saved name if any
+    document.getElementById('username').value = localStorage.getItem('username') || '';
+
+    function saveName() {
+      const name = document.getElementById('username').value.trim();
+      if (!name) {
+        document.getElementById('status').textContent = '❌ Name cannot be empty.';
+        return;
+      }
+      localStorage.setItem('username', name);
+      document.getElementById('status').textContent = '✅ Name saved successfully!';
+    }
+
+    function clearHistory() {
+      localStorage.removeItem('user_messages');
+      document.getElementById('status').textContent = '🗑️ Chat history cleared!';
+    }
+  </script>
+</body>
+</html>
