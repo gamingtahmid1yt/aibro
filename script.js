@@ -199,39 +199,40 @@ inputForm.onsubmit = async ev => {
   }
 
 } else {
-  const div = appendMessage('Typing...', 'bot-message');
-  try {
-    const res = await fetch('https://api.tahmideditofficial.workers.dev', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'meta-llama/llama-4-scout-17b-16e-instruct',
-        messages: [
-          { role: 'system', content: messages[0].content },
-          ...userMessages.slice(-3).map(m => ({ role: 'user', content: m })),
-          { role: 'user', content: prompt }
-        ]
-      })
-    });
+    const div = appendMessage('Typing...', 'bot-message');
+    try {
+      const res = await fetch('https://api.tahmideditofficial.workers.dev', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'meta-llama/llama-4-scout-17b-16e-instruct',
+          messages: [
+            { role: 'system', content: messages[0].content },
+            ...userMessages.slice(-3).map(m => ({ role: 'user', content: m })),
+            { role: 'user', content: prompt }
+          ]
+        })
+      });
 
-    const data = await res.json();
-    div.remove();
-    const reply = data?.choices?.[0]?.message?.content;
+      const data = await res.json();
+      div.remove();
+      const reply = data?.choices?.[0]?.message?.content;
 
-    if (reply) {
-      appendMessage(reply, 'bot-message');
-      messages.push({ role: 'user', content: prompt });
-      messages.push({ role: 'assistant', content: reply });
-      localStorage.setItem('chat_history', JSON.stringify(messages));
-    } else {
-      appendMessage('⚠️ No response. Try again.', 'bot-message');
+      if (reply) {
+        appendMessage(reply, 'bot-message');
+        messages.push({ role: 'user', content: prompt });
+        messages.push({ role: 'assistant', content: reply });
+        localStorage.setItem('chat_history', JSON.stringify(messages));
+      } else {
+        appendMessage('⚠️ No response. Try again.', 'bot-message');
+      }
+
+    } catch (err) {
+      div.remove();
+      appendMessage('⚠️ Server error. Try again.', 'bot-message');
     }
-
-  } catch (err) {
-    div.remove();
-    appendMessage('⚠️ Server error. Try again.', 'bot-message');
   }
-          }
+};
 
 setInterval(async () => {
   try {
@@ -253,4 +254,5 @@ resetLimitIfNewDay();
 appendMessage("👋 Hi ! I'm bangladeshi Ai ChatBot 🇧🇩. Ask me anything.", 'bot-message');
 userInput.focus();
 
-}); })();
+});
+})();
