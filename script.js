@@ -148,18 +148,33 @@
           const data = await res.json();
           loadingDiv.remove();
 
-          let output = data?.output?.[0];
+          let output = data?.output;
           let imageUrl = null;
 
           if (typeof output === 'string') {
-            if (output.startsWith('data:image/')) imageUrl = output;
-            else if (output.length > 100 && !output.includes('http')) imageUrl = 'data:image/png;base64,' + output;
-            else if (output.startsWith('http')) imageUrl = output;
-          } else if (typeof output === 'object') {
-            const raw = output.image || output.url || output.src || output.base64;
-            if (raw?.startsWith('data:image/')) imageUrl = raw;
-            else if (raw?.length > 100 && !raw.includes('http')) imageUrl = 'data:image/png;base64,' + raw;
-            else if (raw?.startsWith('http')) imageUrl = raw;
+          if (output.startsWith('data:image/')) imageUrl = output;
+     else if (output.length > 100 && !output.includes('http')) imageUrl = 'data:image/png;base64,' + output;
+     else if (output.startsWith('http')) imageUrl = output;
+   } else if (Array.isArray(output)) {
+          const first = output[0];
+          if (typeof first === 'string') {
+          if (first.startsWith('http')) imageUrl = first;
+     else if (first.length > 100) imageUrl = 'data:image/png;base64,' + first;
+   } else if (typeof first === 'object') {
+          const raw = first.url || first.image_url || first.src || first.image || '';
+          if (raw.startsWith('data:image/')) imageUrl = raw;
+     else if (raw.length > 100 && !raw.includes('http')) imageUrl = 'data:image/png;base64,' + raw;
+     else if (raw.startsWith('http')) imageUrl = raw;
+    }
+   } else if (typeof output === 'object' && output !== null) {
+          const raw = output.image_url || output.url || output.images?.[0] || output.base64 || '';
+          if (raw.startsWith('data:image/')) imageUrl = raw;
+     else if (raw.length > 100 && !raw.includes('http')) imageUrl = 'data:image/png;base64,' + raw;
+     else if (raw.startsWith('http')) imageUrl = raw;
+     }
+
+          if (!imageUrl) {
+  appendMessage("📦 No image found. Raw output: " + JSON.stringify(output), 'bot-message');
           }
 
           if (imageUrl) {
