@@ -177,40 +177,47 @@ inputForm.onsubmit = async ev => {
     const data = await res.json();
     loadingDiv.remove();
 
-    console.log('Image API response:', data); // 🔍 Debugging line
-
     let imageUrl = null;
 
+    // ✅ Array type output
     if (Array.isArray(data.output)) {
       const first = data.output[0];
 
-      // ✅ Case 1: Direct string base64 image
+      // ✅ Case 1: Base64 image
       if (typeof first === 'string' && first.startsWith('data:image/')) {
         imageUrl = first;
       }
 
-      // ✅ Case 2: Object format with image key
+      // ✅ Case 2: Object with image or url key
       else if (typeof first === 'object') {
         imageUrl = first?.image || first?.url || first?.src || null;
       }
     }
 
-    // ✅ If valid image URL found
+    // ✅ Case 3: Direct string in `image` key
+    else if (typeof data.output === 'string' && data.output.startsWith('data:image/')) {
+      imageUrl = data.output;
+    }
+
+    // ✅ Case 4: Object output directly
+    else if (typeof data.output === 'object') {
+      imageUrl = data.output?.image || data.output?.url || data.output?.src || null;
+    }
+
     if (imageUrl) {
       const img = document.createElement('img');
       img.src = imageUrl;
       img.alt = "Generated Image";
       img.style = 'max-width:100%;border-radius:12px;margin-top:10px;cursor:pointer';
-
       img.onclick = () => {
         const viewer = window.open('', '_blank');
         viewer.document.write(`<img src="${img.src}" style="width:100%" />`);
       };
-
       chatBox.appendChild(img);
       chatBox.scrollTop = chatBox.scrollHeight;
     } else {
       appendMessage('❌ Could not find a valid image in the API response.', 'bot-message');
+      console.warn('Image not found in output:', data.output);
     }
 
   } catch (err) {
@@ -218,8 +225,7 @@ inputForm.onsubmit = async ev => {
     appendMessage('❌ Image generation failed. Please try again later.', 'bot-message');
     console.error('Image generation error:', err);
   }
-                                                        
-  } else {
+    } else {
   const div = appendMessage('Typing...', 'bot-message');
   try {
     const res = await fetch('https://api.tahmideditofficial.workers.dev', {
