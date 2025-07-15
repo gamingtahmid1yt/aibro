@@ -179,53 +179,48 @@ inputForm.onsubmit = async ev => {
 
     let imageUrl = null;
 
-    // ✅ Array type output
+    // 🔍 CASE 1: Base64 String
     if (Array.isArray(data.output)) {
       const first = data.output[0];
 
-      // ✅ Case 1: Base64 image
       if (typeof first === 'string' && first.startsWith('data:image/')) {
         imageUrl = first;
       }
 
-      // ✅ Case 2: Object with image or url key
+      // 🔍 CASE 2: Object with image key
       else if (typeof first === 'object') {
-        imageUrl = first?.image || first?.url || first?.src || null;
+        imageUrl = first.image || first.url || first.src || null;
       }
-    }
 
-    // ✅ Case 3: Direct string in `image` key
-    else if (typeof data.output === 'string' && data.output.startsWith('data:image/')) {
-      imageUrl = data.output;
-    }
-
-    // ✅ Case 4: Object output directly
-    else if (typeof data.output === 'object') {
-      imageUrl = data.output?.image || data.output?.url || data.output?.src || null;
+      // 🔍 CASE 3: Direct URL string (not base64)
+      else if (typeof first === 'string' && first.startsWith('http')) {
+        imageUrl = first;
+      }
     }
 
     if (imageUrl) {
       const img = document.createElement('img');
       img.src = imageUrl;
       img.alt = "Generated Image";
-      img.style = 'max-width:100%;border-radius:12px;margin-top:10px;cursor:pointer';
+      img.style = 'max-width:100%;border-radius:12px;margin-top:10px;cursor:pointer;';
+
       img.onclick = () => {
-        const viewer = window.open('', '_blank');
-        viewer.document.write(`<img src="${img.src}" style="width:100%" />`);
+        const win = window.open('', '_blank');
+        win.document.write(`<img src="${img.src}" style="width:100%;" />`);
       };
+
       chatBox.appendChild(img);
       chatBox.scrollTop = chatBox.scrollHeight;
     } else {
-      appendMessage('❌ Could not find a valid image in the API response.', 'bot-message');
-      console.warn('Image not found in output:', data.output);
+      appendMessage('❌ Could not find a valid image in the response.', 'bot-message');
     }
 
   } catch (err) {
     loadingDiv.remove();
-    appendMessage('❌ Image generation failed. Please try again later.', 'bot-message');
-    console.error('Image generation error:', err);
+    appendMessage('❌ Image generation failed. Please try again.', 'bot-message');
+    console.error('Image Error:', err);
   }
-    } else {
+      } else {
   const div = appendMessage('Typing...', 'bot-message');
   try {
     const res = await fetch('https://api.tahmideditofficial.workers.dev', {
