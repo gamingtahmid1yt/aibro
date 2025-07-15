@@ -160,7 +160,7 @@ inputForm.onsubmit = async ev => {
   lastSentTime = now;
 
   if (isImageMode) {
-  const loadingDiv = createTypingBox('Generating Image...');
+  const loadingDiv = createTypingBox('🖼️ Generating image...');
   try {
     const res = await fetch('https://api.together.xyz/v1/images/generations', {
       method: 'POST',
@@ -168,35 +168,42 @@ inputForm.onsubmit = async ev => {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer tgp_v1_n32wUwqoYnQ2iQ6PY4jv97XDYQsAR16_nLwgKpvqj7c'
       },
-      body: JSON.stringify({ model: 'black-forest-labs/FLUX.1-schnell-Free', prompt })
+      body: JSON.stringify({
+        model: 'black-forest-labs/FLUX.1-schnell-Free',
+        prompt: prompt
+      })
     });
 
     const data = await res.json();
     loadingDiv.remove();
 
-    if (!data || !Array.isArray(data.output)) {
-  appendMessage('❌ Invalid image data.', 'bot-message');
-  return;
-}
+    // ✅ নতুন অংশ শুরু
+    let imageUrl = null;
 
-const imageUrl = data.output[0]?.image || data.output[0]?.url;
+    if (Array.isArray(data.output)) {
+      const first = data.output[0];
+      imageUrl = first?.image || first?.url || first?.src || null;
+    }
 
-if (imageUrl) {
-  const img = document.createElement('img');
-  img.src = imageUrl;
-  img.style = 'max-width:100%;border-radius:12px;margin-top:10px;cursor:pointer';
-  img.onclick = () => {
-    const viewer = window.open('', '_blank');
-    viewer.document.write(`<img src="${img.src}" style="width:100%" />`);
-  };
-  chatBox.appendChild(img);
-  chatBox.scrollTop = chatBox.scrollHeight;
-} else {
-  appendMessage('❌ No image found in response.', 'bot-message');
-  }
+    if (imageUrl) {
+      const img = document.createElement('img');
+      img.src = imageUrl;
+      img.style = 'max-width:100%;border-radius:12px;margin-top:10px;cursor:pointer';
+      img.onclick = () => {
+        const viewer = window.open('', '_blank');
+        viewer.document.write(`<img src="${img.src}" style="width:100%" />`);
+      };
+      chatBox.appendChild(img);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    } else {
+      appendMessage('❌ Image URL not found in API response.', 'bot-message');
+    }
+    // ✅ নতুন অংশ শেষ
+
   } catch (err) {
     loadingDiv.remove();
-    appendMessage('❌ Image generation failed.', 'bot-message');
+    appendMessage('❌ Image generation failed. Please try again.', 'bot-message');
+  }
   }
 
 } else {
