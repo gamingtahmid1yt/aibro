@@ -174,25 +174,26 @@ inputForm.onsubmit = async ev => {
     const data = await res.json();
     loadingDiv.remove();
 
-    if (!data || !Array.isArray(data.output) || !data.output[0]?.image) {
-  appendMessage('❌ No valid image returned. Try better prompt.', 'bot-message');
+    if (!data || !Array.isArray(data.output)) {
+  appendMessage('❌ Invalid image data.', 'bot-message');
   return;
-    }
+}
 
-    if (data.output[0]?.image) {
-      const img = document.createElement('img');
-      img.src = data.output[0].image;
-      img.style = 'max-width:100%;border-radius:12px;margin-top:10px;cursor:pointer';
-      img.onclick = () => {
-        const viewer = window.open('', '_blank');
-        viewer.document.write(`<img src="${img.src}" style="width:100%" />`);
-      };
-      chatBox.appendChild(img);
-      chatBox.scrollTop = chatBox.scrollHeight;
-    } else {
-      appendMessage('❌ No image returned.', 'bot-message');
-    }
+const imageUrl = data.output[0]?.image || data.output[0]?.url;
 
+if (imageUrl) {
+  const img = document.createElement('img');
+  img.src = imageUrl;
+  img.style = 'max-width:100%;border-radius:12px;margin-top:10px;cursor:pointer';
+  img.onclick = () => {
+    const viewer = window.open('', '_blank');
+    viewer.document.write(`<img src="${img.src}" style="width:100%" />`);
+  };
+  chatBox.appendChild(img);
+  chatBox.scrollTop = chatBox.scrollHeight;
+} else {
+  appendMessage('❌ No image found in response.', 'bot-message');
+  }
   } catch (err) {
     loadingDiv.remove();
     appendMessage('❌ Image generation failed.', 'bot-message');
