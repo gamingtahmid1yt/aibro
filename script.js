@@ -156,10 +156,10 @@ inputForm.onsubmit = async ev => {
 
   appendMessage(prompt, 'user-message');
 
-  if (!(await checkLimit())) return;
-  lastSentTime = now;
+if (!(await checkLimit())) return;
+lastSentTime = now;
 
-  if (isImageMode) {
+if (isImageMode) {
   const loadingDiv = createTypingBox('🖼️ Generating image...');
   try {
     const res = await fetch('https://api.together.xyz/v1/images/generations', {
@@ -177,30 +177,39 @@ inputForm.onsubmit = async ev => {
     const data = await res.json();
     loadingDiv.remove();
 
-    const output = data.output?.[0];
+    console.log('📦 Together AI Raw Response:', data);
+
+    let output = data?.output?.[0];
     let imageUrl = null;
 
-    // 1️⃣ Base64 with prefix
+    // ✅ 1. Base64 with prefix
     if (typeof output === 'string' && output.startsWith('data:image/')) {
       imageUrl = output;
     }
 
-    // 2️⃣ Raw base64 without prefix
-    else if (typeof output === 'string' && output.length > 100) {
+    // ✅ 2. Raw base64
+    else if (typeof output === 'string' && output.length > 100 && !output.includes('http')) {
       imageUrl = 'data:image/png;base64,' + output;
     }
 
-    // 3️⃣ Object type output
-    else if (typeof output === 'object') {
-      const raw = output.image || output.url || output.src;
-      if (raw?.startsWith('data:image/')) {
+    // ✅ 3. Direct URL
+    else if (typeof output === 'string' && output.startsWith('http')) {
+      imageUrl = output;
+    }
+
+    // ✅ 4. Object type
+    else if (typeof output === 'object' && output !== null) {
+      const raw = output.image || output.url || output.src || output.base64 || '';
+      if (raw.startsWith('data:image/')) {
         imageUrl = raw;
-      } else if (raw?.length > 100) {
+      } else if (raw.length > 100 && !raw.includes('http')) {
         imageUrl = 'data:image/png;base64,' + raw;
+      } else if (raw.startsWith('http')) {
+        imageUrl = raw;
       }
     }
 
-    // 4️⃣ Show image if found
+    // ✅ 5. Show Image
     if (imageUrl) {
       const img = document.createElement('img');
       img.src = imageUrl;
@@ -216,12 +225,15 @@ inputForm.onsubmit = async ev => {
       chatBox.scrollTop = chatBox.scrollHeight;
     } else {
       appendMessage('❌ Could not find a valid image in the API response.', 'bot-message');
+      console.warn('⚠️ Unknown or unsupported image format:', output);
     }
+
   } catch (err) {
     loadingDiv.remove();
     appendMessage('❌ Image generation failed. Please try again later.', 'bot-message');
-    console.error('Image generation error:', err);
+    console.error('❌ Together AI error:', err);
   }
+
 } else {
   const div = appendMessage('Typing...', 'bot-message');
   try {
@@ -231,7 +243,7 @@ inputForm.onsubmit = async ev => {
       body: JSON.stringify({
         model: 'meta-llama/llama-4-scout-17b-16e-instruct',
         temperature: 0.7,
-        max_tokens: isPremiumUser ? 1024 : 900,
+        max_tokens: isPremiumUser ? 1000 : 900,
         messages: [
           { role: 'system', content: messages[0].content },
           ...userMessages.slice(-4).map(m => ({ role: 'user', content: m })),
@@ -252,12 +264,14 @@ inputForm.onsubmit = async ev => {
     } else {
       appendMessage('⚠️ No response. Try again.', 'bot-message');
     }
+
   } catch (err) {
     div.remove();
     appendMessage('⚠️ Server error. Try again.', 'bot-message');
+    console.error('❌ Text AI error:', err);
   }
-  }
-  
+}
+
 // ✅ Now it's safe to start setInterval
 setInterval(async () => {
   try {
