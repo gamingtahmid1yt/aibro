@@ -58,7 +58,7 @@
     const saved = JSON.parse(localStorage.getItem('chat_history') || 'null');
     if (saved) {
       messages.push(...saved);
-      saved.slice(-12).forEach(m => {
+      saved.slice(-20).forEach(m => {
         if (m.role === 'user') appendMessage(m.content, 'user-message');
         else if (m.role === 'assistant') appendMessage(m.content, 'bot-message');
       });
@@ -107,7 +107,7 @@
       resetLimitIfNewDay();
       const used = +localStorage.getItem(limitKey) || 0;
       if (used >= dailyLimit) {
-        appendMessage(`❌ Daily limit reached.`, 'bot-message');
+        appendMessage(`❌ Daily limit reached. Contact on WhatsApp 01963178893 for premium.`, 'bot-message');
         return false;
       }
       localStorage.setItem(limitKey, used + 1 + '');
@@ -220,11 +220,11 @@
             messages.push({ role: 'assistant', content: reply });
             localStorage.setItem('chat_history', JSON.stringify(messages));
           } else {
-            appendMessage('⚠️ No response.', 'bot-message');
+            appendMessage('⚠️ No response. Try again.', 'bot-message');
           }
         } catch {
           div.remove();
-          appendMessage('⚠️ Server error.', 'bot-message');
+          appendMessage('⚠️ Server error. Try again.', 'bot-message');
         }
       }
     };
