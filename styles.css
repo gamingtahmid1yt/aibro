@@ -19,6 +19,12 @@ body.light-mode {
   color: #000;
 }
 
+img {
+  max-width: 100%;
+  border-radius: 12px;
+  margin-top: 10px;
+}
+
 /* Sticky Top Box */
 #top-box {
   position: sticky;
