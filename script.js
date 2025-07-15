@@ -174,9 +174,9 @@ inputForm.onsubmit = async ev => {
     const data = await res.json();
     loadingDiv.remove();
 
-    if (!data || !data.output || !Array.isArray(data.output)) {
-      appendMessage('❌ Invalid image data.', 'bot-message');
-      return;
+    if (!data || !Array.isArray(data.output) || !data.output[0]?.image) {
+  appendMessage('❌ No valid image returned. Try better prompt.', 'bot-message');
+  return;
     }
 
     if (data.output[0]?.image) {
