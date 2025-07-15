@@ -51,7 +51,7 @@ const saved = JSON.parse(localStorage.getItem('chat_history') || 'null');
 if (saved) {
   messages.push(...saved);
 
-  saved.slice(-5).forEach(m => {
+  saved.slice(-12).forEach(m => {
     if (m.role === 'user') appendMessage(m.content, 'user-message');
     else if (m.role === 'assistant') appendMessage(m.content, 'bot-message');
   });
@@ -99,14 +99,14 @@ function resetLimitIfNewDay() {
 function appendMessage(text, cls) {
   const div = document.createElement('div');
   div.className = cls;
-  const linkedText = text.replace(/(https?:\/\/\S+|www\.\S+|\b\S+\.(com|net|org|bd|in))/gi, url => `<a href="${url}" target="_blank" style="color:#00bfff;">${url}</a>`);
+  const linkedText = text.replace(/(https?:\/\/\S+|www\.\S+|\b\S+\.(com|tv|net|org|bd|in))/gi, url => `<a href="${url}" target="_blank" style="color:#00bfff;">${url}</a>`);
   div.innerHTML = `<span>${linkedText}</span>`;
   if (cls === 'bot-message') {
     const btn = document.createElement('button');
-    btn.textContent = '📋 Copy';
+    btn.textContent = ' 📋 Copy';
     btn.onclick = () => {
       navigator.clipboard.writeText(text).then(() => {
-        btn.textContent = '✅ Copied';
+        btn.textContent = ' ✅ Copied';
         setTimeout(() => btn.textContent = '📋 Copy', 1000);
       });
     };
@@ -177,22 +177,28 @@ inputForm.onsubmit = async ev => {
     const data = await res.json();
     loadingDiv.remove();
 
-    let base64Data = null;
+    // 🧠 Try to detect base64 or URL
+    let raw = data.output?.[0];
+    let imageUrl = null;
 
-    if (Array.isArray(data.output)) {
-      const first = data.output[0];
-      if (typeof first === 'string' && first.startsWith('data:image/')) {
-        base64Data = first;
-      } else if (typeof first === 'object') {
-        base64Data = first?.image || first?.url || first?.src || null;
+    if (typeof raw === 'string') {
+      // Direct string (might be base64 or URL)
+      if (raw.startsWith('data:image/')) {
+        imageUrl = raw;
+      } else if (raw.startsWith('/9j') || raw.startsWith('iVBOR') || raw.length > 100) {
+        // Assume base64 without prefix
+        imageUrl = 'data:image/png;base64,' + raw;
+      } else if (raw.startsWith('http')) {
+        imageUrl = raw;
+      }
+    } else if (typeof raw === 'object') {
+      imageUrl = raw.image || raw.url || raw.src || null;
+      if (imageUrl && !imageUrl.startsWith('data:image/')) {
+        imageUrl = 'data:image/png;base64,' + imageUrl;
       }
     }
 
-    if (base64Data && base64Data.startsWith('data:image/')) {
-      // Convert base64 to Blob URL
-      const blob = await (await fetch(base64Data)).blob();
-      const imageUrl = URL.createObjectURL(blob);
-
+    if (imageUrl) {
       const img = document.createElement('img');
       img.src = imageUrl;
       img.alt = "Generated Image";
@@ -213,8 +219,8 @@ inputForm.onsubmit = async ev => {
     loadingDiv.remove();
     appendMessage('❌ Image generation failed. Please try again later.', 'bot-message');
     console.error('Image generation error:', err);
-   }
-  } else {
+  }
+    } else {
   const div = appendMessage('Typing...', 'bot-message');
   try {
     const res = await fetch('https://api.tahmideditofficial.workers.dev', {
