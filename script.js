@@ -176,46 +176,47 @@ inputForm.onsubmit = async ev => {
 
     const data = await res.json();
     loadingDiv.remove();
+    
+    const output = data.output?.[0];
+let imageUrl = null;
 
-    // 🧠 Try to detect base64 or URL
-    let raw = data.output?.[0];
-    let imageUrl = null;
+// 1️⃣ Base64 with prefix
+if (typeof output === 'string' && output.startsWith('data:image/')) {
+  imageUrl = output;
+}
 
-    if (typeof raw === 'string') {
-      // Direct string (might be base64 or URL)
-      if (raw.startsWith('data:image/')) {
-        imageUrl = raw;
-      } else if (raw.startsWith('/9j') || raw.startsWith('iVBOR') || raw.length > 100) {
-        // Assume base64 without prefix
-        imageUrl = 'data:image/png;base64,' + raw;
-      } else if (raw.startsWith('http')) {
-        imageUrl = raw;
-      }
-    } else if (typeof raw === 'object') {
-      imageUrl = raw.image || raw.url || raw.src || null;
-      if (imageUrl && !imageUrl.startsWith('data:image/')) {
-        imageUrl = 'data:image/png;base64,' + imageUrl;
-      }
-    }
+// 2️⃣ Raw base64 without prefix
+else if (typeof output === 'string' && output.length > 100) {
+  imageUrl = 'data:image/png;base64,' + output;
+}
 
-    if (imageUrl) {
-      const img = document.createElement('img');
-      img.src = imageUrl;
-      img.alt = "Generated Image";
-      img.style = 'max-width:100%;border-radius:12px;margin-top:10px;cursor:pointer';
+// 3️⃣ Object type output
+else if (typeof output === 'object') {
+  const raw = output.image || output.url || output.src;
+  if (raw?.startsWith('data:image/')) {
+    imageUrl = raw;
+  } else if (raw?.length > 100) {
+    imageUrl = 'data:image/png;base64,' + raw;
+  }
+}
 
-      img.onclick = () => {
-        const viewer = window.open('', '_blank');
-        viewer.document.write(`<img src="${img.src}" style="width:100%" />`);
-      };
+// 4️⃣ Show image if found
+if (imageUrl) {
+  const img = document.createElement('img');
+  img.src = imageUrl;
+  img.alt = "Generated Image";
+  img.style = 'max-width:100%;border-radius:12px;margin-top:10px;cursor:pointer';
 
-      chatBox.appendChild(img);
-      chatBox.scrollTop = chatBox.scrollHeight;
-    } else {
-      appendMessage('❌ Could not find a valid image in the API response.', 'bot-message');
-    }
+  img.onclick = () => {
+    const viewer = window.open('', '_blank');
+    viewer.document.write(`<img src="${img.src}" style="width:100%" />`);
+  };
 
-  } catch (err) {
+  chatBox.appendChild(img);
+  chatBox.scrollTop = chatBox.scrollHeight;
+} else {
+  appendMessage('❌ Could not find a valid image in the API response.', 'bot-message');
+} catch (err) {
     loadingDiv.remove();
     appendMessage('❌ Image generation failed. Please try again later.', 'bot-message');
     console.error('Image generation error:', err);
