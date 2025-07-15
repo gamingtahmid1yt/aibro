@@ -240,7 +240,7 @@
     }, 500);
 
     resetLimitIfNewDay();
-    appendMessage("👋 Hi! I'm Bangladeshi ChatBot 🇧🇩", 'bot-message');
+    appendMessage("👋 Hi! I'm Bangladeshi ChatBot 🇧🇩. Ask me anything. If you are facing any problem contact on WhatsApp 01963178893", 'bot-message');
     userInput.focus();
   });
 })();
