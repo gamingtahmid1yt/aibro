@@ -224,17 +224,19 @@ inputForm.onsubmit = async ev => {
   const div = appendMessage('Typing...', 'bot-message');
   try {
     const res = await fetch('https://api.tahmideditofficial.workers.dev', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'meta-llama/llama-4-scout-17b-16e-instruct',
-        messages: [
-          { role: 'system', content: messages[0].content },
-          ...userMessages.slice(-3).map(m => ({ role: 'user', content: m })),
-          { role: 'user', content: prompt }
-        ]
-      })
-    });
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    model: 'meta-llama/llama-4-scout-17b-16e-instruct',
+    temperature: 0.7,
+    max_tokens: isPremiumUser ? 1024 : 900,
+    messages: [
+      { role: 'system', content: messages[0].content },
+      ...userMessages.slice(-4).map(m => ({ role: 'user', content: m })),
+      { role: 'user', content: prompt }
+    ]
+  })
+});
 
     const data = await res.json();
     div.remove();
