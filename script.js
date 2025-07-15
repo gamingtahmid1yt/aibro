@@ -203,7 +203,7 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               model: 'meta-llama/llama-4-scout-17b-16e-instruct',
-              temperature: 0.4,
+              temperature: 0.2,
               max_tokens: isPremiumUser ? 1000 : 900,
               messages: [
                 { role: 'system', content: messages[0].content },
