@@ -177,34 +177,49 @@ inputForm.onsubmit = async ev => {
     const data = await res.json();
     loadingDiv.remove();
 
-    // ✅ নতুন অংশ শুরু
+    console.log('Image API response:', data); // 🔍 Debugging line
+
     let imageUrl = null;
 
     if (Array.isArray(data.output)) {
       const first = data.output[0];
-      imageUrl = first?.image || first?.url || first?.src || null;
+
+      // ✅ Case 1: Direct string base64 image
+      if (typeof first === 'string' && first.startsWith('data:image/')) {
+        imageUrl = first;
+      }
+
+      // ✅ Case 2: Object format with image key
+      else if (typeof first === 'object') {
+        imageUrl = first?.image || first?.url || first?.src || null;
+      }
     }
 
+    // ✅ If valid image URL found
     if (imageUrl) {
       const img = document.createElement('img');
       img.src = imageUrl;
+      img.alt = "Generated Image";
       img.style = 'max-width:100%;border-radius:12px;margin-top:10px;cursor:pointer';
+
       img.onclick = () => {
         const viewer = window.open('', '_blank');
         viewer.document.write(`<img src="${img.src}" style="width:100%" />`);
       };
+
       chatBox.appendChild(img);
       chatBox.scrollTop = chatBox.scrollHeight;
     } else {
-      appendMessage('❌ Image URL not found in API response.', 'bot-message');
+      appendMessage('❌ Could not find a valid image in the API response.', 'bot-message');
     }
 
   } catch (err) {
     loadingDiv.remove();
-    appendMessage('❌ Image generation failed. Please try again.', 'bot-message');
+    appendMessage('❌ Image generation failed. Please try again later.', 'bot-message');
+    console.error('Image generation error:', err);
   }
-
-} else {
+                                                        
+  } else {
   const div = appendMessage('Typing...', 'bot-message');
   try {
     const res = await fetch('https://api.tahmideditofficial.workers.dev', {
