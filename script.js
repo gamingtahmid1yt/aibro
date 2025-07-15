@@ -249,10 +249,13 @@ inputForm.onsubmit = async ev => {
     }
 
   } catch (err) {
-    div.remove();
-    appendMessage('⚠️ Server error. Try again.', 'bot-message');
-  }
-        }
+      div.remove();
+      appendMessage('⚠️ Server error. Try again.', 'bot-message');
+    }
+  } // ✅ This closes the else block
+}; // ✅ This properly closes the onsubmit function
+
+// ✅ Now it's safe to start setInterval
 setInterval(async () => {
   try {
     const res = await fetch('https://gamingtahmid1yt.github.io/chatbot-server/server.json?v=' + Date.now());
