@@ -176,68 +176,69 @@ inputForm.onsubmit = async ev => {
 
     const data = await res.json();
     loadingDiv.remove();
-    
+
     const output = data.output?.[0];
-let imageUrl = null;
+    let imageUrl = null;
 
-// 1️⃣ Base64 with prefix
-if (typeof output === 'string' && output.startsWith('data:image/')) {
-  imageUrl = output;
-}
+    // 1️⃣ Base64 with prefix
+    if (typeof output === 'string' && output.startsWith('data:image/')) {
+      imageUrl = output;
+    }
 
-// 2️⃣ Raw base64 without prefix
-else if (typeof output === 'string' && output.length > 100) {
-  imageUrl = 'data:image/png;base64,' + output;
-}
+    // 2️⃣ Raw base64 without prefix
+    else if (typeof output === 'string' && output.length > 100) {
+      imageUrl = 'data:image/png;base64,' + output;
+    }
 
-// 3️⃣ Object type output
-else if (typeof output === 'object') {
-  const raw = output.image || output.url || output.src;
-  if (raw?.startsWith('data:image/')) {
-    imageUrl = raw;
-  } else if (raw?.length > 100) {
-    imageUrl = 'data:image/png;base64,' + raw;
-  }
-}
+    // 3️⃣ Object type output
+    else if (typeof output === 'object') {
+      const raw = output.image || output.url || output.src;
+      if (raw?.startsWith('data:image/')) {
+        imageUrl = raw;
+      } else if (raw?.length > 100) {
+        imageUrl = 'data:image/png;base64,' + raw;
+      }
+    }
 
-// 4️⃣ Show image if found
-if (imageUrl) {
-  const img = document.createElement('img');
-  img.src = imageUrl;
-  img.alt = "Generated Image";
-  img.style = 'max-width:100%;border-radius:12px;margin-top:10px;cursor:pointer';
+    // 4️⃣ Show image if found
+    if (imageUrl) {
+      const img = document.createElement('img');
+      img.src = imageUrl;
+      img.alt = "Generated Image";
+      img.style = 'max-width:100%;border-radius:12px;margin-top:10px;cursor:pointer';
 
-  img.onclick = () => {
-    const viewer = window.open('', '_blank');
-    viewer.document.write(`<img src="${img.src}" style="width:100%" />`);
-  };
+      img.onclick = () => {
+        const viewer = window.open('', '_blank');
+        viewer.document.write(`<img src="${img.src}" style="width:100%" />`);
+      };
 
-  chatBox.appendChild(img);
-  chatBox.scrollTop = chatBox.scrollHeight;
-} else {
-  appendMessage('❌ Could not find a valid image in the API response.', 'bot-message');
-} catch (err) {
+      chatBox.appendChild(img);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    } else {
+      appendMessage('❌ Could not find a valid image in the API response.', 'bot-message');
+    }
+  } catch (err) {
     loadingDiv.remove();
     appendMessage('❌ Image generation failed. Please try again later.', 'bot-message');
     console.error('Image generation error:', err);
   }
-    } else {
+} else {
   const div = appendMessage('Typing...', 'bot-message');
   try {
     const res = await fetch('https://api.tahmideditofficial.workers.dev', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({
-    model: 'meta-llama/llama-4-scout-17b-16e-instruct',
-    temperature: 0.7,
-    max_tokens: isPremiumUser ? 1024 : 900,
-    messages: [
-      { role: 'system', content: messages[0].content },
-      ...userMessages.slice(-4).map(m => ({ role: 'user', content: m })),
-      { role: 'user', content: prompt }
-    ]
-  })
-});
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'meta-llama/llama-4-scout-17b-16e-instruct',
+        temperature: 0.7,
+        max_tokens: isPremiumUser ? 1024 : 900,
+        messages: [
+          { role: 'system', content: messages[0].content },
+          ...userMessages.slice(-4).map(m => ({ role: 'user', content: m })),
+          { role: 'user', content: prompt }
+        ]
+      })
+    });
 
     const data = await res.json();
     div.remove();
@@ -251,14 +252,12 @@ if (imageUrl) {
     } else {
       appendMessage('⚠️ No response. Try again.', 'bot-message');
     }
-
   } catch (err) {
-      div.remove();
-      appendMessage('⚠️ Server error. Try again.', 'bot-message');
-    }
-  } // ✅ This closes the else block
-}; // ✅ This properly closes the onsubmit function
-
+    div.remove();
+    appendMessage('⚠️ Server error. Try again.', 'bot-message');
+  }
+  }
+  
 // ✅ Now it's safe to start setInterval
 setInterval(async () => {
   try {
