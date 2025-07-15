@@ -177,50 +177,44 @@ inputForm.onsubmit = async ev => {
     const data = await res.json();
     loadingDiv.remove();
 
-    let imageUrl = null;
+    let base64Data = null;
 
-    // 🔍 CASE 1: Base64 String
     if (Array.isArray(data.output)) {
       const first = data.output[0];
-
       if (typeof first === 'string' && first.startsWith('data:image/')) {
-        imageUrl = first;
-      }
-
-      // 🔍 CASE 2: Object with image key
-      else if (typeof first === 'object') {
-        imageUrl = first.image || first.url || first.src || null;
-      }
-
-      // 🔍 CASE 3: Direct URL string (not base64)
-      else if (typeof first === 'string' && first.startsWith('http')) {
-        imageUrl = first;
+        base64Data = first;
+      } else if (typeof first === 'object') {
+        base64Data = first?.image || first?.url || first?.src || null;
       }
     }
 
-    if (imageUrl) {
+    if (base64Data && base64Data.startsWith('data:image/')) {
+      // Convert base64 to Blob URL
+      const blob = await (await fetch(base64Data)).blob();
+      const imageUrl = URL.createObjectURL(blob);
+
       const img = document.createElement('img');
       img.src = imageUrl;
       img.alt = "Generated Image";
-      img.style = 'max-width:100%;border-radius:12px;margin-top:10px;cursor:pointer;';
+      img.style = 'max-width:100%;border-radius:12px;margin-top:10px;cursor:pointer';
 
       img.onclick = () => {
-        const win = window.open('', '_blank');
-        win.document.write(`<img src="${img.src}" style="width:100%;" />`);
+        const viewer = window.open('', '_blank');
+        viewer.document.write(`<img src="${img.src}" style="width:100%" />`);
       };
 
       chatBox.appendChild(img);
       chatBox.scrollTop = chatBox.scrollHeight;
     } else {
-      appendMessage('❌ Could not find a valid image in the response.', 'bot-message');
+      appendMessage('❌ Could not find a valid image in the API response.', 'bot-message');
     }
 
   } catch (err) {
     loadingDiv.remove();
-    appendMessage('❌ Image generation failed. Please try again.', 'bot-message');
-    console.error('Image Error:', err);
-  }
-      } else {
+    appendMessage('❌ Image generation failed. Please try again later.', 'bot-message');
+    console.error('Image generation error:', err);
+   }
+  } else {
   const div = appendMessage('Typing...', 'bot-message');
   try {
     const res = await fetch('https://api.tahmideditofficial.workers.dev', {
