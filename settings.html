@@ -83,7 +83,7 @@
 
     <button onclick="saveName()">💾 Save Name</button>
     <button class="danger-btn" onclick="clearName()">❌ Clear Name</button>
-    <button class="danger-btn" onclick="clearChat()">🗑️ Clear Chat History</button>
+    <button class="danger-btn" onclick="clearChat()">🗑️ Clear Chat History & Data</button>
     <button class="back-btn" onclick="goBack()">🔙 Go back to Ai ChatBot</button>
   </div>
 
@@ -118,7 +118,7 @@
       if (!confirmClear) return;
 
       const keysToCllear = [
-        'ser_messages',
+        'user_messages',
         'chat_history',
         'mood',
         'isGF',
@@ -129,7 +129,7 @@
       ];
 
       keysToClear.forEach(key => localStorage.removeItem(key));
-      alert('🗑️ All chat history cleared successfully!');
+      alert('🗑️ All chat history & data cleared successfully!');
     }
 
     function goBack() {
