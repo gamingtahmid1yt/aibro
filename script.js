@@ -18,6 +18,7 @@
     const inputForm = document.getElementById('input-form');
     const themeToggle = document.getElementById('theme-switch');
     const aiSwitchBtn = document.getElementById('ai-switch-btn');
+    const inputFormBottom = document.getElementById('input-form');
     const uploadImageBtn = document.createElement('button');
 uploadImageBtn.textContent = '📷';
 uploadImageBtn.title = 'Upload Image';
@@ -34,42 +35,36 @@ uploadImageBtn.onclick = () => {
     const file = input.files[0];
     if (!file) return;
 
-    // Show preview using URL (no base64 yet, so GitHub doesn't flag it)
-    const imgPreview = document.createElement('img');
-    imgPreview.src = URL.createObjectURL(file);
-    imgPreview.style = 'max-width: 120px; max-height: 120px; border-radius: 10px; margin: 8px 0; display:block;';
-    chatBox.appendChild(imgPreview);
+    // Preview Image from Blob (safe)
+    const preview = document.createElement('img');
+    preview.src = URL.createObjectURL(file);
+    preview.style = 'max-width: 150px; border-radius: 10px; margin: 10px 0';
+    chatBox.appendChild(preview);
     chatBox.scrollTop = chatBox.scrollHeight;
 
     const thinking = appendMessage('🤖 Analyzing image...', 'bot-message');
 
-    const reader = new FileReader();
-    reader.onload = async () => {
-      const base64 = reader.result.split(',')[1]; // Only base64 sent to backend
+    // Send image using FormData instead of base64
+    const formData = new FormData();
+    formData.append('image', file);
+    formData.append('prompt', 'What is in this image?');
+    formData.append('model', 'meta-llama/llama-4-scout-17b-16e-instruct');
 
-      try {
-        const res = await fetch('https://api.tahmideditofficial.workers.dev/image', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            model: 'meta-llama/llama-4-scout-17b-16e-instruct',
-            image: base64,
-            prompt: 'What is in this image?'
-          })
-        });
+    try {
+      const res = await fetch('https://api.tahmideditofficial.workers.dev/image-form', {
+        method: 'POST',
+        body: formData
+      });
 
-        const data = await res.json();
-        thinking.remove();
-        const reply = data?.choices?.[0]?.message?.content;
-        if (reply) appendMessage(reply, 'bot-message');
-        else appendMessage('⚠️ Could not analyze the image. Please try again.', 'bot-message');
-      } catch (err) {
-        thinking.remove();
-        appendMessage('❌ Image analysis failed. Check your connection and try again.', 'bot-message');
-      }
-    };
-
-    reader.readAsDataURL(file);
+      const data = await res.json();
+      thinking.remove();
+      const reply = data?.choices?.[0]?.message?.content;
+      if (reply) appendMessage(reply, 'bot-message');
+      else appendMessage('⚠️ Could not analyze the image. Please try again.', 'bot-message');
+    } catch (err) {
+      thinking.remove();
+      appendMessage('❌ Image analysis failed. Check your connection and try again.', 'bot-message');
+    }
   };
 
   document.body.appendChild(input);
