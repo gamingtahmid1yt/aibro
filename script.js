@@ -70,7 +70,7 @@ const messages = [{
 const saved = JSON.parse(localStorage.getItem('chat_history') || 'null');
 if (saved) {
   messages.push(...saved);
-  saved.slice(-50).forEach(m => appendMessage(m.content, m.role === 'user' ? 'user-message' : 'bot-message'));
+  saved.slice(-20).forEach(m => appendMessage(m.content, m.role === 'user' ? 'user-message' : 'bot-message'));
 }
 
 const ipData = JSON.parse(localStorage.getItem('ip_user_data') || '{}');
@@ -114,7 +114,7 @@ function animateTyping(element, text) {
     } else {
       clearInterval(interval);
     }
-  }, 100);
+  }, 10);
 }
 
 async function checkLimit() {
