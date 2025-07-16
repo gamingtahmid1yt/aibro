@@ -22,7 +22,7 @@
 uploadImageBtn.textContent = '📷';
 uploadImageBtn.title = 'Upload Image';
 uploadImageBtn.style = 'margin-right: 8px; padding: 4px 8px; font-size: 18px; border-radius: 8px; background: #0088cc; color: white; border: none;';
-inputForm.insertBefore(uploadImageBtn, inputForm.firstChild);
+inputFormBottom.insertBefore(uploadImageBtn, inputFormBottom.firstChild);
 
 uploadImageBtn.onclick = () => {
   const input = document.createElement('input');
@@ -34,17 +34,18 @@ uploadImageBtn.onclick = () => {
     const file = input.files[0];
     if (!file) return;
 
+    // Show preview using URL (no base64 yet, so GitHub doesn't flag it)
+    const imgPreview = document.createElement('img');
+    imgPreview.src = URL.createObjectURL(file);
+    imgPreview.style = 'max-width: 120px; max-height: 120px; border-radius: 10px; margin: 8px 0; display:block;';
+    chatBox.appendChild(imgPreview);
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+    const thinking = appendMessage('🤖 Analyzing image...', 'bot-message');
+
     const reader = new FileReader();
     reader.onload = async () => {
-      const base64 = reader.result.split(',')[1];
-
-      // Image preview
-      const img = document.createElement('img');
-      img.src = reader.result;
-      img.style = 'max-width: 150px; border-radius: 10px; margin: 10px 0';
-      chatBox.appendChild(img);
-
-      const thinking = appendMessage('🤖 Analyzing image...', 'bot-message');
+      const base64 = reader.result.split(',')[1]; // Only base64 sent to backend
 
       try {
         const res = await fetch('https://api.tahmideditofficial.workers.dev/image', {
@@ -61,7 +62,7 @@ uploadImageBtn.onclick = () => {
         thinking.remove();
         const reply = data?.choices?.[0]?.message?.content;
         if (reply) appendMessage(reply, 'bot-message');
-        else appendMessage('⚠️ Could not analyze the image. Try again.', 'bot-message');
+        else appendMessage('⚠️ Could not analyze the image. Please try again.', 'bot-message');
       } catch (err) {
         thinking.remove();
         appendMessage('❌ Image analysis failed. Check your connection and try again.', 'bot-message');
