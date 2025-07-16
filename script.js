@@ -20,7 +20,7 @@
     const aiSwitchBtn = document.getElementById('ai-switch-btn');
     const uploadImageBtn = document.createElement('button');
 uploadImageBtn.textContent = '📷';
-uploadImageBtn.title = 'Upload Image';
+uploadImageBtn.title = 'Upload';
 uploadImageBtn.style = 'margin-right: 8px; padding: 4px 8px; font-size: 18px; border-radius: 8px; background: #0088cc; color: white; border: none;';
 inputForm.insertBefore(uploadImageBtn, inputForm.firstChild);
 
@@ -47,7 +47,7 @@ uploadImageBtn.onclick = () => {
       const thinking = appendMessage('🤖 Analyzing...', 'bot-message');
 
       try {
-        const res = await fetch('https://api.tahmideditofficial.workers.dev/image', {
+        const res = await fetch('https://api.tahmideditofficial.workers.dev', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
