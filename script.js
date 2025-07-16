@@ -18,62 +18,6 @@
     const inputForm = document.getElementById('input-form');
     const themeToggle = document.getElementById('theme-switch');
     const aiSwitchBtn = document.getElementById('ai-switch-btn');
-    const uploadImageBtn = document.createElement('button');
-uploadImageBtn.textContent = '📷';
-uploadImageBtn.title = 'Upload';
-uploadImageBtn.style = 'margin-right: 8px; padding: 4px 8px; font-size: 18px; border-radius: 8px; background: #0088cc; color: white; border: none;';
-inputForm.insertBefore(uploadImageBtn, inputForm.firstChild);
-
-uploadImageBtn.onclick = () => {
-  const input = document.createElement('input');
-  input.type = 'file';
-  input.accept = 'image/*';
-  input.style.display = 'none';
-
-  input.onchange = async () => {
-    const file = input.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = async () => {
-      const base64 = reader.result.split(',')[1];
-
-      // Show image preview
-      const img = document.createElement('img');
-      img.src = reader.result;
-      img.style = 'max-width: 150px; border-radius: 10px; margin: 10px 0';
-      chatBox.appendChild(img);
-
-      const thinking = appendMessage('🤖 Analyzing...', 'bot-message');
-
-      try {
-        const res = await fetch('https://api.tahmideditofficial.workers.dev', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            model: 'meta-llama/llama-4-scout-17b-16e-instruct',
-            image: base64,
-            prompt: 'What is this?'
-          })
-        });
-
-        const data = await res.json();
-        thinking.remove();
-        const reply = data?.choices?.[0]?.message?.content;
-        if (reply) appendMessage('🖼️ ' + reply, 'bot-message');
-        else appendMessage('⚠️ Could not analyze. Please try again.', 'bot-message');
-      } catch (err) {
-        thinking.remove();
-        appendMessage('❌ Analysis failed. Check your connection and try again.', 'bot-message');
-      }
-    };
-
-    reader.readAsDataURL(file);
-  };
-
-  document.body.appendChild(input);
-  input.click();
-};
     
     let isImageMode = false;
 
