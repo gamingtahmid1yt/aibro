@@ -61,10 +61,10 @@ uploadImageBtn.onclick = () => {
         thinking.remove();
         const reply = data?.choices?.[0]?.message?.content;
         if (reply) appendMessage(reply, 'bot-message');
-        else appendMessage('⚠️ Could not analyze the image.', 'bot-message');
+        else appendMessage('⚠️ Could not analyze the image. Try again.', 'bot-message');
       } catch (err) {
         thinking.remove();
-        appendMessage('❌ Image analysis failed.', 'bot-message');
+        appendMessage('❌ Image analysis failed. Check your connection and try again.', 'bot-message');
       }
     };
 
