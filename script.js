@@ -17,18 +17,7 @@
     const clearBtn = document.getElementById('clear-btn');
     const inputForm = document.getElementById('input-form');
     const themeToggle = document.getElementById('theme-switch');
-    const aiSwitchBtn = document.getElementById('ai-switch-btn');
     
-    let isImageMode = false;
-
-    if (aiSwitchBtn) {
-      aiSwitchBtn.onclick = () => {
-        isImageMode = !isImageMode;
-        aiSwitchBtn.textContent = isImageMode ? 'Switch to Message Ai' : 'Switch to Image Ai';
-        userInput.placeholder = isImageMode ? 'Type image prompt...' : 'Type a message...';
-      };
-    }
-
     themeToggle.onclick = () => {
       const isLight = document.body.classList.toggle('light-mode');
       themeToggle.textContent = isLight ? '☀️' : '🌙';
@@ -131,72 +120,7 @@
       if (!(await checkLimit())) return;
       lastSentTime = now;
 
-      if (isImageMode) {
-        const loadingDiv = createTypingBox('🖼️ Generating image...');
-        try {
-          const res = await fetch('https://api.together.xyz/v1/images/generations', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': 'Bearer tgp_v1_n32wUwqoYnQ2iQ6PY4jv97XDYQsAR16_nLwgKpvqj7c'
-            },
-            body: JSON.stringify({
-              model: 'black-forest-labs/FLUX.1-schnell-Free',
-              prompt: prompt
-            })
-          });
-
-          const data = await res.json();
-          loadingDiv.remove();
-
-          let output = data?.output;
-          let imageUrl = null;
-
-          if (typeof output === 'string') {
-          if (output.startsWith('data:image/')) imageUrl = output;
-     else if (output.length > 100 && !output.includes('http')) imageUrl = 'data:image/png;base64,' + output;
-     else if (output.startsWith('http')) imageUrl = output;
-   } else if (Array.isArray(output)) {
-          const first = output[0];
-          if (typeof first === 'string') {
-          if (first.startsWith('http')) imageUrl = first;
-     else if (first.length > 100) imageUrl = 'data:image/png;base64,' + first;
-   } else if (typeof first === 'object') {
-          const raw = first.url || first.image_url || first.src || first.image || '';
-          if (raw.startsWith('data:image/')) imageUrl = raw;
-     else if (raw.length > 100 && !raw.includes('http')) imageUrl = 'data:image/png;base64,' + raw;
-     else if (raw.startsWith('http')) imageUrl = raw;
-    }
-   } else if (typeof output === 'object' && output !== null) {
-          const raw = output.image_url || output.url || output.images?.[0] || output.base64 || '';
-          if (raw.startsWith('data:image/')) imageUrl = raw;
-     else if (raw.length > 100 && !raw.includes('http')) imageUrl = 'data:image/png;base64,' + raw;
-     else if (raw.startsWith('http')) imageUrl = raw;
-     }
-
-          if (!imageUrl) {
-  appendMessage("📦 No image found. Raw output: " + JSON.stringify(output), 'bot-message');
-          }
-
-          if (imageUrl) {
-            const img = document.createElement('img');
-            img.src = imageUrl;
-            img.alt = "Generated Image";
-            img.style = 'max-width:100%;border-radius:12px;margin-top:10px;cursor:pointer';
-            img.onclick = () => {
-              const viewer = window.open('', '_blank');
-              viewer.document.write(`<img src="${img.src}" style="width:100%" />`);
-            };
-            chatBox.appendChild(img);
-            chatBox.scrollTop = chatBox.scrollHeight;
-          } else {
-            appendMessage('❌ Could not find a valid image.', 'bot-message');
-          }
-        } catch (err) {
-          loadingDiv.remove();
-          appendMessage('❌ Image generation failed.', 'bot-message');
-        }
-      } else {
+      
         const div = appendMessage('Typing...', 'bot-message');
         try {
           const res = await fetch('https://api.tahmideditofficial.workers.dev', {
@@ -212,6 +136,7 @@
               ]
             })
           });
+          
           const data = await res.json();
           div.remove();
           const reply = data?.choices?.[0]?.message?.content;
