@@ -65,20 +65,25 @@
       background-color: #1e7e34;
     }
 
-    .icon {
-      margin-right: 6px;
+    .danger-btn {
+      background-color: #dc3545;
+    }
+
+    .danger-btn:hover {
+      background-color: #b52a37;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>🔧 Settings</h2>
+    <h2>🛠️ Settings</h2>
     
     <label for="username">👤 Your Name:</label>
     <input type="text" id="username" placeholder="Enter your name" />
 
     <button onclick="saveName()">💾 Save Name</button>
-    <button onclick="clearChat()">🗑️ Clear Chat History</button>
+    <button class="danger-btn" onclick="clearName()">❌ Clear Name</button>
+    <button class="danger-btn" onclick="clearChat()">🗑️ Clear Chat History</button>
     <button class="back-btn" onclick="goBack()">🔙 Go back to Ai ChatBot</button>
   </div>
 
@@ -102,11 +107,29 @@
       }
     }
 
+    function clearName() {
+      localStorage.removeItem('username');
+      input.value = '';
+      alert('🧹 Name cleared!');
+    }
+
     function clearChat() {
-      localStorage.removeItem('user_messages');
-      localStorage.removeItem('reply_limit');
-      localStorage.removeItem('limit_date');
-      alert('🗑️ Chat history cleared!');
+      const confirmClear = confirm("⚠️ Are you sure you want to clear all chat history? It will remove your all data.");
+      if (!confirmClear) return;
+
+      const keysToCllear = [
+        'ser_messages',
+        'chat_history',
+        'mood',
+        'isGF',
+        'typing_state',
+        'gf_or_bf_memory',
+        'chat_history_ai', // extra fallback
+        'ai_response_time'
+      ];
+
+      keysToClear.forEach(key => localStorage.removeItem(key));
+      alert('🗑️ All chat history cleared successfully!');
     }
 
     function goBack() {
