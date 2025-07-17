@@ -161,7 +161,7 @@ function appendMessage(text, cls) {
         model: 'gemma2-9b-it',
         temperature: 0.7,
         top_p: 0.95,
-        max_tokens: isPremiumUser ? 1000 : 850,
+        max_tokens: isPremiumUser ? 900 : 850,
         messages: [
           { role: 'system', content: messages[0].content },
           ...lastMessages,
