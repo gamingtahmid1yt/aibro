@@ -12,6 +12,7 @@
     }
     h2 {
       text-align: center;
+      margin-bottom: 10px;
     }
     .section {
       background: white;
@@ -41,9 +42,21 @@
     .hidden {
       display: none;
     }
+    .top-btn {
+      display: block;
+      margin: 0 auto 20px auto;
+      max-width: 500px;
+      background-color: #28a745;
+    }
+    .top-btn:hover {
+      background-color: #1e7e34;
+    }
   </style>
 </head>
 <body>
+
+  <button class="top-btn" onclick="window.location.href='https://gamingtahmid1yt.github.io/aichatbot'">🔙 Go back to ChatBot</button>
+
   <h2>Settings</h2>
 
   <div class="section">
@@ -83,6 +96,7 @@
     function showResetPopup() {
       document.getElementById("resetPopup").classList.remove("hidden");
     }
+
     function hideResetPopup() {
       document.getElementById("resetPopup").classList.add("hidden");
       document.getElementById("resetStatus").textContent = "";
@@ -104,14 +118,14 @@
       alert("Name removed.");
     }
 
-    // Load saved name
+    // Load saved name and daily limit
     window.onload = function () {
       const name = localStorage.getItem("savedName");
       if (name) {
         document.getElementById("savedName").textContent = "Saved Name: " + name;
       }
 
-      const count = localStorage.getItem("replyCount") || 0;
+      const count = parseInt(localStorage.getItem("replyCount")) || 0;
       const date = localStorage.getItem("replyDate");
       const today = new Date().toLocaleDateString();
       const limit = 30;
@@ -127,19 +141,20 @@
     };
 
     // Reset premium logic
-    const allowedIP = "000.000.000"; // Example IP to check
+    const allowedIP = "000.000.000"; // Example IP (you can change this in your real JS)
 
     function resetPremium() {
       const ip = document.getElementById("ipInput").value.trim();
+      const status = document.getElementById("resetStatus");
+
       if (ip === allowedIP) {
-        // Reset logic: clear from whitelist (simulated)
         alert("Premium has been reset for IP: " + ip);
-        document.getElementById("resetStatus").textContent = "Premium reset successfully.";
+        status.textContent = "✅ Premium reset successfully.";
       } else {
-        document.getElementById("resetStatus").innerHTML = `
-          Incorrect IP. <br>
+        status.innerHTML = `
+          ❌ Incorrect IP.<br>
           <a href="https://wa.me/8801963178893" target="_blank">
-            Click here to message the developer on WhatsApp
+            Message the developer on WhatsApp
           </a>`;
       }
     }
