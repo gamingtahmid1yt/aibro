@@ -8,7 +8,7 @@ setInterval(async () => {
       document.body.innerHTML = `
         <div style="text-align:center;padding:40px;">
           <h1>🔒 ChatBot Closed</h1>
-          <p>WhatsApp <a href="https://wa.me/8801963178893" target="_blank">01963178893</a> for details.</p>
+          <p>Contact on WhatsApp <a href="https://wa.me/8801963178893" target="_blank">01963178893</a> for details.</p>
         </div>`;
     }
   } catch {}
