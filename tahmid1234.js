@@ -98,93 +98,94 @@ function getTimestamp() {
 }
 
 function appendMessage(text, cls) {
-  const div = document.createElement('div');
-  div.className = cls;
-  div.innerHTML = `<span>${text}</span>${getTimestamp()}`;
-  chatBox.appendChild(div);
-  chatBox.scrollTop = chatBox.scrollHeight;
-  return div;
-}
-
-function animateTyping(element, text) {
-  let index = 0;
-  const interval = setInterval(() => {
-    if (index < text.length) {
-      element.querySelector('span').textContent += text[index++];
-    } else {
-      clearInterval(interval);
+      const div = document.createElement('div');
+      div.className = cls;
+      div.innerHTML = `<span>${text}</span>${getTimestamp()}`;
+      chatBox.appendChild(div);
+      chatBox.scrollTop = chatBox.scrollHeight;
+      return div;
     }
-  }, 5);
-}
 
-async function checkLimit() {
-  if (isPremiumUser) return true;
-  resetLimitIfNewDay();
-  const used = +localStorage.getItem(limitKey) || 0;
-  if (used >= dailyLimit) {
-    appendMessage(`❌ Daily limit reached. Contact WhatsApp 01963178893 for premium.`, 'bot-message');
-    return false;
-  }
-  localStorage.setItem(limitKey, used + 1 + '');
-  return true;
-}
+    function animateTyping(element, text) {
+      let index = 0;
+      const interval = setInterval(() => {
+        if (index < text.length) {
+          element.querySelector('span').textContent += text[index++];
+        } else {
+          clearInterval(interval);
+        }
+      }, 5);
+    }
 
-inputForm.onsubmit = async ev => {
-  ev.preventDefault();
-  const now = Date.now();
-  if (now - lastSentTime < RATE_LIMIT_MS) {
-    appendMessage('⚠️ You are replying too fast.', 'bot-message');
-    return;
-  }
-  lastSentTime = now;
+    async function checkLimit() {
+      if (isPremiumUser) return true;
+      resetLimitIfNewDay();
+      const used = +localStorage.getItem(limitKey) || 0;
+      if (used >= dailyLimit) {
+        appendMessage(`❌ Daily limit reached. Contact WhatsApp 01963178893 for premium.`, 'bot-message');
+        return false;
+      }
+      localStorage.setItem(limitKey, used + 1 + '');
+      return true;
+    }
 
-  const prompt = userInput.value.trim();
-  if (!prompt) return;
-  userInput.value = '';
-  appendMessage(prompt, 'user-message');
+    inputForm.onsubmit = async ev => {
+      ev.preventDefault();
+      const now = Date.now();
+      if (now - lastSentTime < RATE_LIMIT_MS) {
+        appendMessage('⚠️ You are replying too fast.', 'bot-message');
+        return;
+      }
+      lastSentTime = now;
 
-  if (!(await checkLimit())) return;
+      const prompt = userInput.value.trim();
+      if (!prompt) return;
+      userInput.value = '';
+      appendMessage(prompt, 'user-message');
 
-  const mood = getMood(prompt);
-  const isSad = mood === 'sad';
-  if (prompt.includes('girlfriend',) || prompt.includes('boyfriend')) localStorage.setItem(gfKey, 'yes');
+      if (!(await checkLimit())) return;
 
-  const typingDiv = appendMessage('<span></span>', 'bot-message');
+      const mood = getMood(prompt);
+      const isSad = mood === 'sad';
+      if (prompt.includes('girlfriend',) || prompt.includes('boyfriend')) localStorage.setItem(gfKey, 'yes');
+
+      const typingDiv = appendMessage('<span></span>', 'bot-message');
+
+      try {
+        const res = await fetch('https://api.tahmideditofficial.workers.dev', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model: 'meta-llama/llama-4-scout-17b-16e-instruct',
+            temperature: 0.3,
+            max_tokens: isPremiumUser ? 1000 : 900,
+            messages: [
+              { role: 'system', content: messages[0].content },
+              { role: 'user', content: prompt }
+            ]
+          })
+        });
+        const data = await res.json();
+        const reply = data?.choices?.[0]?.message?.content;
+        if (reply) {
+          typingDiv.querySelector('span').textContent = '';
+          animateTyping(typingDiv, reply);
+          messages.push({ role: 'user', content: prompt });
+          messages.push({ role: 'assistant', content: reply });
+          localStorage.setItem('chat_history', JSON.stringify(messages));
+        } else {
+          typingDiv.remove();
+          appendMessage('⚠️ No response. Try again.', 'bot-message');
+        }
+      } catch {
+        typingDiv.remove();
+        appendMessage('⚠️ Server error. Try again.', 'bot-message');
+      }
+    }
+
+    resetLimitIfNewDay();
+    appendMessage("👋 Hi ! I'm your smart Bangladeshi Ai ChatBot 🇧🇩. Ask me anything. 💬", 'bot-message');
+    userInput.focus();
   
-  try {
-    const res = await fetch('https://api.tahmideditofficial.workers.dev', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'meta-llama/llama-4-scout-17b-16e-instruct',
-        temperature: 0.3,
-        max_tokens: isPremiumUser ? 1000 : 900,
-        messages: [
-          { role: 'system', content: messages[0].content },
-          { role: 'user', content: prompt }
-        ]
-      })
-    });
-    const data = await res.json();
-    const reply = data?.choices?.[0]?.message?.content;
-    if (reply) {
-      typingDiv.querySelector('span').textContent = '';
-      animateTyping(typingDiv, reply);
-      messages.push({ role: 'user', content: prompt });
-      messages.push({ role: 'assistant', content: reply });
-      localStorage.setItem('chat_history', JSON.stringify(messages));
-    } else {
-      typingDiv.remove();
-      appendMessage('⚠️ No response. Try again.', 'bot-message');
-    }
-  } catch {
-    typingDiv.remove();
-    appendMessage('⚠️ Server error. Try again.', 'bot-message');
-  }
-}
-
-resetLimitIfNewDay();
-appendMessage("👋 Hi ! I'm your smart Bangladeshi chatbot 🇧🇩. Ask me anything. 💬", 'bot-message');
-userInput.focus();
-
-}); })();
+  });
+})();
