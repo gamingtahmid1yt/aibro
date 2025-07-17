@@ -78,6 +78,12 @@
   </div>
 
   <div class="section">
+    <h3>Clear Chat History & Data</h3>
+    <button onclick="clearAllData()">🧹 Clear Everything</button>
+    <p id="clearStatus"></p>
+  </div>
+
+  <div class="section">
     <h3>Contact Developer</h3>
     <button onclick="window.open('https://wa.me/8801963178893','_blank')">Message on WhatsApp</button>
   </div>
@@ -92,7 +98,6 @@
   </div>
 
   <script>
-    // Show and hide popup
     function showResetPopup() {
       document.getElementById("resetPopup").classList.remove("hidden");
     }
@@ -102,7 +107,6 @@
       document.getElementById("resetStatus").textContent = "";
     }
 
-    // Save and remove name
     function saveName() {
       const name = document.getElementById("nameInput").value;
       if (name) {
@@ -118,7 +122,6 @@
       alert("Name removed.");
     }
 
-    // Load saved name and daily limit
     window.onload = function () {
       const name = localStorage.getItem("savedName");
       if (name) {
@@ -140,14 +143,14 @@
       document.getElementById("dailyLimitText").textContent = "You have " + remaining + " replies left today.";
     };
 
-    // Reset premium logic
-    const allowedIP = "000.000.000"; // Example IP (you can change this in your real JS)
+    const allowedIP = "000.000.000"; // Change to actual IP you allow
 
     function resetPremium() {
       const ip = document.getElementById("ipInput").value.trim();
       const status = document.getElementById("resetStatus");
 
       if (ip === allowedIP) {
+        localStorage.removeItem("isPremium");
         alert("Premium has been reset for IP: " + ip);
         status.textContent = "✅ Premium reset successfully.";
       } else {
@@ -158,6 +161,16 @@
           </a>`;
       }
     }
+
+    function clearAllData() {
+      localStorage.removeItem("chatMessages");
+      localStorage.removeItem("isPremium");
+
+      document.getElementById("clearStatus").textContent = "✅ All chat history and saved data cleared!";
+      document.getElementById("savedName").textContent = "";
+      document.getElementById("dailyLimitText").textContent = "You have 30 replies daily limit. Contact below for premium..";
+      alert("All chat history and data cleared.");
+    }
   </script>
 </body>
-</html>
+    </html>
