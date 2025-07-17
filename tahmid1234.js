@@ -151,10 +151,6 @@ inputForm.onsubmit = async ev => {
 
   const typingDiv = appendMessage('<span></span>', 'bot-message');
   
-  const aiPrompt = 
-        `Device: ${deviceInfo.platform}, OS: ${deviceInfo.os}, Browser: ${deviceInfo.browser}\n` +
-        `User: ${text}`;
-  
   try {
     const res = await fetch('https://api.tahmideditofficial.workers.dev', {
       method: 'POST',
