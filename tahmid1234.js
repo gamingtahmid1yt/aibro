@@ -188,9 +188,9 @@ function appendMessage(text, cls) {
         top_p: 0.95,
         max_tokens: isPremiumUser ? 900 : 850,
         messages: [
-          { role: 'system', content: messages[0].content },
-          ...lastMessages,
-          { role: 'user', content: prompt }
+        { role: "system", content: systemPrompt },
+        ...lastMessages,
+        { role: "user", content: prompt }
         ]
       })
     });
