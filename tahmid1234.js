@@ -13,45 +13,6 @@ setInterval(async () => {
     }
   } catch {}
 }, 3000);
-
-function getDeviceInfo() {
-  const ua = navigator.userAgent;
-  const platform = navigator.platform || 'Unknown Platform';
-
-  // OS detection (6 popular OS)
-  let os = 'Unknown OS';
-  if (/windows phone/i.test(ua))    os = 'Windows Phone';
-  else if (/windows nt/i.test(ua))  os = 'Windows';
-  else if (/macintosh|mac os x/i.test(ua)) os = 'MacOS';
-  else if (/android/i.test(ua))     os = 'Android';
-  else if (/iphone|ipad|ipod/i.test(ua)) os = 'iOS';
-  else if (/cros/i.test(ua))        os = 'Chrome OS';
-  else if (/linux/i.test(ua))       os = 'Linux';
-
-  // Browser detection (9 popular browsers)
-  let browser = 'Unknown Browser';
-  if (/edge\/\d+/i.test(ua))                   browser = 'Edge';
-  else if (/edg\//i.test(ua))                  browser = 'Edge (Chromium)';
-  else if (/opr\/|opera/i.test(ua))            browser = 'Opera';
-  else if (/opera mini/i.test(ua))             browser = 'Opera Mini';
-  else if (/chrome\/\d+/i.test(ua) && !/edg\//i.test(ua) && !/opr\//i.test(ua)) browser = 'Chrome';
-  else if (/firefox\/\d+/i.test(ua))           browser = 'Firefox';
-  else if (/safari\/\d+/i.test(ua) && !/chrome\/\d+/i.test(ua)) browser = 'Safari';
-  else if (/ucbrowser/i.test(ua))              browser = 'UC Browser';
-  else if (/vivaldi/i.test(ua))                browser = 'Vivaldi';
-  else if (/brave\//i.test(ua))                browser = 'Brave';
-  else if (/samsungbrowser/i.test(ua))         browser = 'Samsung Internet';
-
-  return {
-    platform,
-    os,
-    browser
-  };
-}
-
-// Example usage:
-const info = getDeviceInfo();
-console.log(`Platform: ${info.platform}, OS: ${info.os}, Browser: ${info.browser}`);
                                                             
 const chatBox = document.getElementById('chat-box');
 const userInput = document.getElementById('user-input');
@@ -156,6 +117,45 @@ function animateTyping(element, text) {
   }, 5);
 }
 
+function getDeviceInfo() {
+  const ua = navigator.userAgent;
+  const platform = navigator.platform || 'Unknown Platform';
+
+  // OS detection (6 popular OS)
+  let os = 'Unknown OS';
+  if (/windows phone/i.test(ua))    os = 'Windows Phone';
+  else if (/windows nt/i.test(ua))  os = 'Windows';
+  else if (/macintosh|mac os x/i.test(ua)) os = 'MacOS';
+  else if (/android/i.test(ua))     os = 'Android';
+  else if (/iphone|ipad|ipod/i.test(ua)) os = 'iOS';
+  else if (/cros/i.test(ua))        os = 'Chrome OS';
+  else if (/linux/i.test(ua))       os = 'Linux';
+
+  // Browser detection (9 popular browsers)
+  let browser = 'Unknown Browser';
+  if (/edge\/\d+/i.test(ua))                   browser = 'Edge';
+  else if (/edg\//i.test(ua))                  browser = 'Edge (Chromium)';
+  else if (/opr\/|opera/i.test(ua))            browser = 'Opera';
+  else if (/opera mini/i.test(ua))             browser = 'Opera Mini';
+  else if (/chrome\/\d+/i.test(ua) && !/edg\//i.test(ua) && !/opr\//i.test(ua)) browser = 'Chrome';
+  else if (/firefox\/\d+/i.test(ua))           browser = 'Firefox';
+  else if (/safari\/\d+/i.test(ua) && !/chrome\/\d+/i.test(ua)) browser = 'Safari';
+  else if (/ucbrowser/i.test(ua))              browser = 'UC Browser';
+  else if (/vivaldi/i.test(ua))                browser = 'Vivaldi';
+  else if (/brave\//i.test(ua))                browser = 'Brave';
+  else if (/samsungbrowser/i.test(ua))         browser = 'Samsung Internet';
+
+  return {
+    platform,
+    os,
+    browser
+  };
+}
+
+// Example usage:
+const info = getDeviceInfo();
+console.log(`Platform: ${info.platform}, OS: ${info.os}, Browser: ${info.browser}`);
+
 async function checkLimit() {
   if (isPremiumUser) return true;
   resetLimitIfNewDay();
@@ -186,7 +186,7 @@ inputForm.onsubmit = async ev => {
 
   const mood = getMood(prompt);
   const isSad = mood === 'sad';
-  if (prompt.includes('girlfriend') || prompt.includes('boyfriend')) localStorage.setItem(gfKey, 'yes');
+  if (prompt.includes('girlfriend',) || prompt.includes('boyfriend')) localStorage.setItem(gfKey, 'yes');
 
   const typingDiv = appendMessage('<span></span>', 'bot-message');
   
