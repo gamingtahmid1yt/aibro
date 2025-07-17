@@ -183,16 +183,16 @@ function appendMessage(text, cls) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'gemma2-9b-it',
-        temperature: 0.7,
-        top_p: 0.95,
-        max_tokens: isPremiumUser ? 900 : 850,
-        messages: [
-        { role: "system", content: systemPrompt },
-        ...lastMessages,
-        { role: "user", content: prompt }
-        ]
-      })
+      model: 'gemma2-9b-it',
+      temperature: 0.7,
+      top_p: 0.95,
+      max_tokens: isPremiumIP ? 900 : 850,
+      messages: [
+       { role: 'system', content: messages[0].content },
+       ...lastMessages,
+       { role: 'user', content: prompt }
+       ]
+     })
     });
 
     const data = await res.json();
