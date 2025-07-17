@@ -157,7 +157,8 @@ function appendMessage(text, cls) {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             model: 'meta-llama/llama-4-scout-17b-16e-instruct',
-            temperature: 0.3,
+            temperature: 0.6,
+            top_p: 0.95,
             max_tokens: isPremiumUser ? 1000 : 900,
             messages: [
               { role: 'system', content: messages[0].content },
