@@ -143,7 +143,7 @@
       document.getElementById("dailyLimitText").textContent = "You have " + remaining + " replies left today.";
     };
 
-    const allowedIP = "000.000.000"; // Change to actual IP you allow
+    const allowedIP = "103.145.210.174"; // Change to actual IP you allow
 
     function resetPremium() {
       const ip = document.getElementById("ipInput").value.trim();
@@ -163,7 +163,7 @@
     }
 
     function clearAllData() {
-      localStorage.removeItem("chatMessages");
+      localStorage.removeItem("chat_history");
       localStorage.removeItem("isPremium");
 
       document.getElementById("clearStatus").textContent = "✅ All chat history and saved data cleared!";
