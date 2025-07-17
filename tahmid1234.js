@@ -60,6 +60,9 @@ const getMood = text => {
 
 const gfKey = 'ai_relationship';
 
+const isPremiumIP = localStorage.getItem("isPremium") === "yes";
+const userType = isPremiumIP ? "premium" : "free";
+
 const userName = localStorage.getItem('username') || '';
 
 const messages = [{
