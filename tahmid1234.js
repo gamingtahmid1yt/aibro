@@ -73,11 +73,33 @@ if (saved) {
   saved.slice(-30).forEach(m => appendMessage(m.content, m.role === 'user' ? 'user-message' : 'bot-message'));
 }
 
-const ipData = JSON.parse(localStorage.getItem('ip_user_data') || '{}');
-const userIP = 'user_' + Math.random().toString(36).slice(2);
-if (!ipData[userIP]) ipData[userIP] = { premium: false };
-localStorage.setItem('ip_user_data', JSON.stringify(ipData));
-const isPremiumUser = ipData[userIP].premium;
+const premiumIPs = ["103.145.210.174"];
+
+let isPremiumUser = false;
+
+async function detectUserIPandCheckPremium() {
+  try {
+    const cached = localStorage.getItem('user_ip');
+    let ip = cached;
+
+    if (!ip) {
+      const res = await fetch("https://api.ipify.org?format=json");
+      const data = await res.json();
+      ip = data.ip;
+      localStorage.setItem('user_ip', ip);
+    }
+
+    if (premiumIPs.includes(ip)) {
+      isPremiumUser = true;
+      console.log("✅ Premium user IP detected:", ip);
+    } else {
+      console.log("❌ Not premium IP:", ip);
+    }
+  } catch (e) {
+    console.error("IP detection failed", e);
+  }
+}
+await detectUserIPandCheckPremium();
 
 const RATE_LIMIT_MS = isPremiumUser ? 2000 : 3000;
 const limitKey = 'reply_limit';
