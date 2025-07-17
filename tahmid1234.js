@@ -139,7 +139,7 @@ function appendMessage(text, cls) {
         } else {
           clearInterval(interval);
         }
-      }, 2);
+      }, 3);
     }
 
     async function checkLimit() {
@@ -176,17 +176,17 @@ function appendMessage(text, cls) {
 
   const typingDiv = appendMessage('<span></span>', 'bot-message');
 
-  const lastMessages = messages.slice(-10); // ✅ FIXED
+  const lastMessages = messages.slice(-6);
 
   try {
     const res = await fetch('https://api.tahmideditofficial.workers.dev', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-      model: 'gemma2-9b-it',
+      model: 'meta-llama/llama-4-maverick-17b-128e-instruct',
       temperature: 0.4,
       top_p: 0.9,
-      max_tokens: isPremiumIP ? 1000 : 900,
+      max_tokens: isPremiumIP ? 1048 : 1000,
       messages: [
        { role: 'system', content: messages[0].content },
        ...lastMessages,
