@@ -160,9 +160,12 @@ function appendMessage(text, cls) {
             temperature: 0.7,
             top_p: 0.95,
             max_tokens: isPremiumUser ? 1000 : 850,
+            const lastMessages = messages.slice(-10);
+
             messages: [
-              { role: 'system', content: messages[0].content },
-              { role: 'user', content: prompt }
+           { role: 'system', content: messages[0].content },
+           ...lastMessages,
+           { role: 'user', content: prompt }
             ]
           })
         });
