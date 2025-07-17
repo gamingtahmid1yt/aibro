@@ -3,137 +3,145 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Settings - AI ChatBot</title>
+  <title>Settings - Tahmid AI ChatBot</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f4f4f4;
-      margin: 0;
-      padding: 20px;
+      margin: 20px;
+      background-color: #f4f4f4;
     }
-
-    .container {
+    h2 {
+      text-align: center;
+    }
+    .section {
+      background: white;
+      border-radius: 10px;
+      padding: 20px;
+      margin: 15px auto;
       max-width: 500px;
-      margin: 40px auto;
-      background: #fff;
-      padding: 30px;
-      border-radius: 8px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
-
-    h2 {
-      margin-bottom: 20px;
-    }
-
-    label {
-      font-weight: bold;
-      margin-bottom: 10px;
-      display: block;
-    }
-
-    input[type="text"] {
-      width: 100%;
+    input, button {
       padding: 10px;
-      font-size: 16px;
-      margin-bottom: 20px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-
-    button {
-      display: block;
       width: 100%;
-      padding: 14px;
-      font-size: 18px;
-      background-color: #007BFF;
-      color: white;
-      border: none;
       margin-top: 10px;
       border-radius: 5px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
       cursor: pointer;
     }
-
     button:hover {
       background-color: #0056b3;
     }
-
-    .back-btn {
-      background-color: #28a745;
-    }
-
-    .back-btn:hover {
-      background-color: #1e7e34;
-    }
-
-    .danger-btn {
-      background-color: #dc3545;
-    }
-
-    .danger-btn:hover {
-      background-color: #b52a37;
+    .hidden {
+      display: none;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2>🛠️ Settings</h2>
-    
-    <label for="username">👤 Your Name:</label>
-    <input type="text" id="username" placeholder="Enter your name" />
+  <h2>Settings</h2>
 
-    <button onclick="saveName()">💾 Save Name</button>
-    <button class="danger-btn" onclick="clearName()">❌ Clear Name</button>
-    <button class="danger-btn" onclick="clearChat()">🗑️ Clear Chat History & Data</button>
-    <button class="back-btn" onclick="goBack()">🔙 Go back to Ai ChatBot</button>
+  <div class="section">
+    <h3>Saved Name</h3>
+    <input type="text" id="nameInput" placeholder="Enter your name">
+    <button onclick="saveName()">Save Name</button>
+    <button onclick="removeName()">Remove Saved Name</button>
+    <p id="savedName"></p>
+  </div>
+
+  <div class="section">
+    <h3>Daily Limit</h3>
+    <p id="dailyLimitText">Loading...</p>
+  </div>
+
+  <div class="section">
+    <h3>Reset Premium</h3>
+    <button onclick="showResetPopup()">Reset Premium with IP</button>
+  </div>
+
+  <div class="section">
+    <h3>Contact Developer</h3>
+    <button onclick="window.open('https://wa.me/8801963178893','_blank')">Message on WhatsApp</button>
+  </div>
+
+  <!-- Reset Premium Popup -->
+  <div id="resetPopup" class="hidden section" style="position: fixed; top: 20%; left: 10%; right: 10%; z-index: 9999;">
+    <h3>Enter IP to Reset Premium</h3>
+    <input type="text" id="ipInput" placeholder="Enter your IP">
+    <button onclick="resetPremium()">Reset Now</button>
+    <button onclick="hideResetPopup()">Cancel</button>
+    <p id="resetStatus"></p>
   </div>
 
   <script>
-    const input = document.getElementById('username');
+    // Show and hide popup
+    function showResetPopup() {
+      document.getElementById("resetPopup").classList.remove("hidden");
+    }
+    function hideResetPopup() {
+      document.getElementById("resetPopup").classList.add("hidden");
+      document.getElementById("resetStatus").textContent = "";
+    }
 
-    window.onload = () => {
-      const savedName = localStorage.getItem('username');
-      if (savedName) {
-        input.value = savedName;
+    // Save and remove name
+    function saveName() {
+      const name = document.getElementById("nameInput").value;
+      if (name) {
+        localStorage.setItem("savedName", name);
+        document.getElementById("savedName").textContent = "Saved Name: " + name;
+        alert("Name saved!");
       }
+    }
+
+    function removeName() {
+      localStorage.removeItem("savedName");
+      document.getElementById("savedName").textContent = "";
+      alert("Name removed.");
+    }
+
+    // Load saved name
+    window.onload = function () {
+      const name = localStorage.getItem("savedName");
+      if (name) {
+        document.getElementById("savedName").textContent = "Saved Name: " + name;
+      }
+
+      const count = localStorage.getItem("replyCount") || 0;
+      const date = localStorage.getItem("replyDate");
+      const today = new Date().toLocaleDateString();
+      const limit = 30;
+      let remaining = limit - count;
+
+      if (date !== today) {
+        localStorage.setItem("replyCount", 0);
+        localStorage.setItem("replyDate", today);
+        remaining = limit;
+      }
+
+      document.getElementById("dailyLimitText").textContent = "You have " + remaining + " replies left today.";
     };
 
-    function saveName() {
-      const name = input.value.trim();
-      if (name) {
-        localStorage.setItem('username', name);
-        alert('✅ Name saved successfully!');
+    // Reset premium logic
+    const allowedIP = "000.000.000"; // Example IP to check
+
+    function resetPremium() {
+      const ip = document.getElementById("ipInput").value.trim();
+      if (ip === allowedIP) {
+        // Reset logic: clear from whitelist (simulated)
+        alert("Premium has been reset for IP: " + ip);
+        document.getElementById("resetStatus").textContent = "Premium reset successfully.";
       } else {
-        alert('⚠️ Please enter a name.');
+        document.getElementById("resetStatus").innerHTML = `
+          Incorrect IP. <br>
+          <a href="https://wa.me/8801963178893" target="_blank">
+            Click here to message the developer on WhatsApp
+          </a>`;
       }
-    }
-
-    function clearName() {
-      localStorage.removeItem('username');
-      input.value = '';
-      alert('🧹 Name cleared!');
-    }
-
-    function clearChat() {
-      const confirmClear = confirm("⚠️ Are you sure you want to clear all chat history? It will remove your all data.");
-      if (!confirmClear) return;
-
-      const keysToCllear = [
-        'user_messages',
-        'chat_history',
-        'mood',
-        'isGF',
-        'typing_state',
-        'gf_or_bf_memory',
-        'chat_history_ai', // extra fallback
-        'ai_response_time'
-      ];
-
-      keysToClear.forEach(key => localStorage.removeItem(key));
-      alert('🗑️ All chat history & data cleared successfully!');
-    }
-
-    function goBack() {
-      window.location.href = 'https://gamingtahmid1yt.github.io/aichatbot/';
     }
   </script>
 </body>
