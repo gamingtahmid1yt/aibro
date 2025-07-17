@@ -156,10 +156,10 @@ function appendMessage(text, cls) {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            model: 'meta-llama/llama-4-scout-17b-16e-instruct',
-            temperature: 0.6,
+            model: 'gemma2-9b-it',
+            temperature: 0.7,
             top_p: 0.95,
-            max_tokens: isPremiumUser ? 1000 : 900,
+            max_tokens: isPremiumUser ? 1000 : 850,
             messages: [
               { role: 'system', content: messages[0].content },
               { role: 'user', content: prompt }
