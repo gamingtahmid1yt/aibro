@@ -184,7 +184,7 @@ async function detectUserIPandCheckPremium() {
 }
 await detectUserIPandCheckPremium();
 
-const RATE_LIMIT_MS = isPremiumUser ? 3000 : 4000;
+const RATE_LIMIT_MS = isPremiumUser ? 5900 : 6000;
 const limitKey = 'reply_limit';
 const dateKey = 'limit_date';
 const dailyLimit = isPremiumUser ? Infinity : 30;
@@ -286,12 +286,12 @@ function appendMessage(text, cls) {
       localStorage.setItem('chat_history', JSON.stringify(messages));
     } else {
       typingDiv.remove();
-      appendMessage('⚠️ No response. Try again.', 'bot-message');
+      appendMessage('⚠️ No response. Try again 69 seconds later 😶.', 'bot-message');
     }
 
   } catch {
     typingDiv.remove();
-    appendMessage('⚠️ Server error. Try again.', 'bot-message');
+    appendMessage('⚠️ Server error. Try again later 😶.', 'bot-message');
   }
 };
 
