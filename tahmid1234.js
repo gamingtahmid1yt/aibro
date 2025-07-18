@@ -184,7 +184,7 @@ async function detectUserIPandCheckPremium() {
 }
 await detectUserIPandCheckPremium();
 
-const RATE_LIMIT_MS = isPremiumUser ? 2000 : 3000;
+const RATE_LIMIT_MS = isPremiumUser ? 3000 : 4000;
 const limitKey = 'reply_limit';
 const dateKey = 'limit_date';
 const dailyLimit = isPremiumUser ? Infinity : 30;
@@ -238,7 +238,7 @@ function appendMessage(text, cls) {
   ev.preventDefault();
   const now = Date.now();
   if (now - lastSentTime < RATE_LIMIT_MS) {
-    appendMessage('⚠️ You are replying too fast.', 'bot-message');
+    appendMessage('⚠️ You are replying too fast. Please wait and try again.', 'bot-message');
     return;
   }
   lastSentTime = now;
@@ -256,7 +256,7 @@ function appendMessage(text, cls) {
 
   const typingDiv = appendMessage('<span></span>', 'bot-message');
 
-  const lastMessages = messages.slice(-4);
+  const lastMessages = messages.slice(-2);
 
   try {
     const res = await fetch('https://api.tahmideditofficial.workers.dev', {
@@ -264,9 +264,9 @@ function appendMessage(text, cls) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
       model: 'llama3-70b-8192',
-      temperature: 0.7,
+      temperature: 0.6,
       top_p: 0.95,
-      max_tokens: isPremiumIP ? 1000 : 920,
+      max_tokens: isPremiumIP ? 801 : 800,
       messages: [
        { role: 'system', content: messages[0].content },
        ...lastMessages,
