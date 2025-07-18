@@ -191,8 +191,8 @@ function appendMessage(text, cls) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-      model: 'meta-llama/llama-4-maverick-17b-128e-instruct',
-      temperature: 0.4,
+      model: 'llama3-70b-8192',
+      temperature: 0.7,
       top_p: 0.9,
       max_tokens: isPremiumIP ? 1048 : 1024,
       messages: [
