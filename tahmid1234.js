@@ -12,7 +12,7 @@ setInterval(async () => {
         </div>`;
     }
   } catch {}
-}, 3000);
+}, 10000);
                                                             
 const chatBox = document.getElementById('chat-box');
 const userInput = document.getElementById('user-input');
@@ -219,7 +219,7 @@ function appendMessage(text, cls) {
         } else {
           clearInterval(interval);
         }
-      }, 3);
+      }, 2);
     }
 
     async function checkLimit() {
@@ -256,7 +256,7 @@ function appendMessage(text, cls) {
 
   const typingDiv = appendMessage('<span></span>', 'bot-message');
 
-  const lastMessages = messages.slice(-6);
+  const lastMessages = messages.slice(-4);
 
   try {
     const res = await fetch('https://api.tahmideditofficial.workers.dev', {
@@ -265,8 +265,8 @@ function appendMessage(text, cls) {
       body: JSON.stringify({
       model: 'llama3-70b-8192',
       temperature: 0.7,
-      top_p: 0.9,
-      max_tokens: isPremiumIP ? 1048 : 1024,
+      top_p: 0.95,
+      max_tokens: isPremiumIP ? 1000 : 920,
       messages: [
        { role: 'system', content: messages[0].content },
        ...lastMessages,
