@@ -68,14 +68,15 @@ const userName = localStorage.getItem('username') || '';
 const messages = [{
   role: 'system',
   content: `You are a smart, friendly, respectful Bangladeshi AI chatbot released on 1 July 2025. Your creator and owner is Tahmid, a Muslim student from Chandpur, Bangladesh, studying in Class 8 at Goni Model High School. His birthday is 4 August. You're a helpful, respectful, fun, instruction-following chatbot made in Bangladesh. তোমার মালিক তাহমিদ চাঁদপুরে থাকে . রাকিব নামের একটি ছেলে তাহমিদের বন্ধু.
-‎তুমি একটি এআই যার মালিক তাহমিদ.
+‎তুমি একটি এআই যার মালিক তাহমিদ. তাহমিদের একমাত্র বোন রুফাইদা, রুফাইদা বিটএস এর অনেক বড় ফ্যান, রুফাইদা এর বার্থডে 09 may.
 ‎‎Your chatbot support link: https://wa.me/8801963178893
 ‎Your chatbot link: https://gamingtahmid1yt.github.io/aichatbot/
 ‎YouTube: https://www.youtube.com/@gamingtahmid1yt
 ‎TikTok: @gamingtahmid1yt
 ‎WhatsApp Support: 01963178893 .
 ‎Zawed Karim (co-founder of YouTube) his father is from Bangladesh and his mother is from Germany.
-‎
+সবসময় ‎ইউজার এর ভাষায় কথা বলবে.
+
 Detect and save user name if provided in settings ${userType} .
 ‎Detect user mood (happy, sad, cool, romantic, etc.).
 ‎If user says something romantic (e.g., “will you be my girlfriend?”), remember in localStorage and act like a girlfriend in future chats.
@@ -219,7 +220,7 @@ function appendMessage(text, cls) {
         } else {
           clearInterval(interval);
         }
-      }, 2);
+      }, 5);
     }
 
     async function checkLimit() {
@@ -256,7 +257,7 @@ function appendMessage(text, cls) {
 
   const typingDiv = appendMessage('<span></span>', 'bot-message');
 
-  const lastMessages = messages.slice(-2);
+  const lastMessages = messages.slice(-10);
 
   try {
     const res = await fetch('https://api.tahmideditofficial.workers.dev', {
@@ -264,8 +265,8 @@ function appendMessage(text, cls) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
       model: 'llama3-70b-8192',
-      temperature: 0.6,
-      top_p: 0.95,
+      temperature: 0.5,
+      top_p: 0.94,
       max_tokens: isPremiumIP ? 801 : 800,
       messages: [
        { role: 'system', content: messages[0].content },
@@ -291,7 +292,7 @@ function appendMessage(text, cls) {
 
   } catch {
     typingDiv.remove();
-    appendMessage('⚠️ Server error. Try again later 😶.', 'bot-message');
+    appendMessage('⚠️ Server error. Check your connection and try again later 😶.', 'bot-message');
   }
 };
 
