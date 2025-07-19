@@ -213,14 +213,17 @@ function appendMessage(text, cls) {
     }
 
     function animateTyping(element, text) {
-      let index = 0;
-      const interval = setInterval(() => {
-        if (index < text.length) {
-          element.querySelector('span').textContent += text[index++];
-        } else {
-          clearInterval(interval);
-        }
-      }, 5);
+  let index = 0;
+  const span = element.querySelector('span');
+  if (!span) return; // Prevent error
+
+  const interval = setInterval(() => {
+    if (index < text.length) {
+      span.textContent += text[index++];
+    } else {
+      clearInterval(interval);
+    }
+  }, 10);
     }
 
     async function checkLimit() {
