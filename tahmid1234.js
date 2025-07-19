@@ -194,9 +194,9 @@ if (saved.length > 0) {
   // System ছাড়া শুধু user এবং bot messages নিই
   const filtered = saved.filter(m => m.role !== 'system');
 
-  const last40 = filtered.slice(-40);
+  const last20 = filtered.slice(-20);
 
-  for (let m of last40) {
+  for (let m of last20) {
     messages.push(m);
     appendMessage(m.content, m.role === 'user' ? 'user-message' : 'bot-message');
   }
@@ -305,7 +305,7 @@ function appendMessage(text, cls) {
 
   const typingDiv = appendMessage('<span></span>', 'bot-message');
 
-  const lastMessages = messages.slice(-10);
+  const lastMessages = messages.slice(-8);
 
   try {
     const res = await fetch('https://api.tahmideditofficial.workers.dev', {
@@ -313,8 +313,8 @@ function appendMessage(text, cls) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
       model: 'llama3-70b-8192',
-      temperature: 0.5,
-      top_p: 0.94,
+      temperature: 0.4,
+      top_p: 0.95,
       max_tokens: isPremiumIP ? 801 : 800,
       messages: [
        { role: 'system', content: messages[0].content },
