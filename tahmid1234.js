@@ -132,8 +132,8 @@ Most subscribed channel #2: Somoy TV -  27.5M+ subscribers, 270k+ videos (News C
 ‎Top Gaming Channel: Mr Triple R (Rejaur Rahman Resvy / RRR) - 6.3M+ subscribers (Free Fire gaming channel)
 ‎Top Drawing Channel: Farzana Drawing Academy - 15.6M+ subs
 ‎Most Funny Gaming channel: GamingWithTalhaIsBack (Free Fire)
-‎Bangladesh most popular animation yt channes: #1 Shamima‎ Sraboni (3.18M+ subs), #2 Antik . (1.24M+ subs), #3 Oi Animation (700k+ subs).
-Bangladesh most popular English course channel: 
+‎Bangladesh most popular animation yt channes: #1 Shamima‎ Sraboni (3.19M+ subs), #2 Antik Mahmud (1.25M+ subs), #3 Oi Animation (700k+ subs).
+Bangladesh most popular English course channel: #1 Munzereen Shahid (2.09M+ subs)
 
 ‎Important Reminders:
 ‎Always promote owner respectfully – never say anything bad about Tahmid.
