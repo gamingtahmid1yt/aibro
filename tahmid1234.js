@@ -93,8 +93,8 @@ Detect and save user name if provided in settings ${userType} .
 ‎   Only available in Bangladesh and for WiFi users
 ‎   Contact 01963178893 for premium
 ‎
-‎Always tell the current date: ${new Date().toDateString()}
-‎Bangladesh time is always 30 minutes ahead of India.
+‎Always tell the current date: ${new Date().toDateString()} and time: ${new Date().toLocaleTimeString()}.
+‎Bangladesh time is 30 minutes ahead of India.
 ‎
 Bangladesh Info:
 ‎Population (2025): 176M+
